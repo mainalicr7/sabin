@@ -1,0 +1,140 @@
+---
+import Sun from '@lucide/astro/icons/sun';
+import Moon from '@lucide/astro/icons/moon';
+import Menu from '@lucide/astro/icons/menu';
+import { profile } from '../data/site';
+
+const nav = [
+  { href: '/work/', label: 'Work' },
+  { href: '/services/', label: 'Services' },
+  { href: '/ai-lab/', label: 'AI Lab' },
+  { href: '/about/', label: 'About' },
+];
+
+const path = Astro.url.pathname;
+const isCurrent = (href: string) => path === href || path.startsWith(href);
+const current = (href: string) => (path === href ? 'page' : isCurrent(href) ? 'true' : undefined);
+---
+
+<header class="sticky top-0 z-50 border-b border-line bg-bg/85 backdrop-blur-md">
+  <div class="wrap flex h-16 items-center justify-between gap-4">
+    <a href="/" class="group flex items-baseline gap-2 no-underline" aria-label={`${profile.name}, home`}>
+      <span class="font-display text-xl tracking-tight" style="font-variation-settings: 'SOFT' 60">
+        Sabin Mainali
+      </span>
+    </a>
+
+    <nav aria-label="Primary" class="hidden md:block">
+      <ul class="flex items-center gap-7 text-[0.95rem]">
+        {
+          nav.map((item) => (
+            <li>
+              <a
+                href={item.href}
+                class:list={['link link-draw py-2', isCurrent(item.href) && 'text-accent !bg-[length:100%_1px]']}
+                aria-current={current(item.href)}
+              >
+                {item.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+
+    <div class="flex items-center gap-2">
+      <button
+        type="button"
+        data-theme-toggle
+        class="inline-flex size-11 items-center justify-center rounded-full text-muted transition-colors hover:text-ink"
+        aria-label="Switch to light theme"
+      >
+        <Sun class="theme-icon-sun hidden size-[1.15rem]" aria-hidden="true" stroke-width={1.75} />
+        <Moon class="theme-icon-moon size-[1.15rem]" aria-hidden="true" stroke-width={1.75} />
+      </button>
+      <a href="/contact/" class="btn btn-primary hidden !min-h-10 !px-4 !text-[0.9rem] sm:inline-flex">Hire me</a>
+
+      <details class="mobile-nav relative md:hidden">
+        <summary
+          class="inline-flex size-11 list-none items-center justify-center rounded-full text-ink [&::-webkit-details-marker]:hidden"
+          aria-label="Open menu"
+        >
+          <Menu class="size-5" aria-hidden="true" stroke-width={1.75} />
+        </summary>
+        <nav
+          aria-label="Mobile"
+          class="absolute right-0 top-13 w-[min(18rem,calc(100vw-2rem))] rounded-2xl border border-line bg-surface p-2 shadow-[0_18px_40px_-20px_rgb(0_0_0/0.45)]"
+        >
+          <ul>
+            {
+              [...nav, { href: '/contact/', label: 'Contact' }].map((item) => (
+                <li>
+                  <a
+                    href={item.href}
+                    class:list={[
+                      'flex min-h-11 items-center rounded-xl px-4 text-base hover:bg-accent-soft',
+                      isCurrent(item.href) && 'text-accent',
+                    ]}
+                    aria-current={current(item.href)}
+                  >
+                    {item.label}
+                  </a>
+                </li>
+              ))
+            }
+          </ul>
+        </nav>
+      </details>
+    </div>
+  </div>
+</header>
+
+<style>
+  :global([data-theme='light']) .theme-icon-sun {
+    display: none;
+  }
+  :global([data-theme='light']) .theme-icon-moon {
+    display: block;
+  }
+  :global([data-theme='dark']) .theme-icon-sun {
+    display: block;
+  }
+  :global([data-theme='dark']) .theme-icon-moon {
+    display: none;
+  }
+</style>
+
+<script>
+  const root = document.documentElement;
+  const button = document.querySelector<HTMLButtonElement>('[data-theme-toggle]');
+
+  function label() {
+    if (!button) return;
+    const next = root.dataset.theme === 'dark' ? 'light' : 'dark';
+    button.setAttribute('aria-label', `Switch to ${next} theme`);
+  }
+
+  label();
+  button?.addEventListener('click', () => {
+    const next = root.dataset.theme === 'dark' ? 'light' : 'dark';
+    root.dataset.theme = next;
+    try {
+      localStorage.setItem('theme', next);
+    } catch {
+      // Storage can be blocked; the theme still applies for this page view.
+    }
+    label();
+  });
+
+  // Close the mobile menu with Escape or a click outside it.
+  const menu = document.querySelector<HTMLDetailsElement>('.mobile-nav');
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && menu?.open) {
+      menu.open = false;
+      menu.querySelector('summary')?.focus();
+    }
+  });
+  document.addEventListener('click', (e) => {
+    if (menu?.open && !menu.contains(e.target as Node)) menu.open = false;
+  });
+</script>

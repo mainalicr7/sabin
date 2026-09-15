@@ -1,0 +1,57 @@
+---
+title: My AI operating system - skills, hooks and memory
+summary: How I set up Claude Code as a working system for product, design, content and data work, with rules that are enforced automatically instead of remembered.
+disciplines: [ai, product, content]
+role: Designer and builder
+context: My own daily work across every discipline
+order: 4
+featured: true
+published: 2026-09-15
+updated: 2026-09-15
+outcome: Repeatable work runs through tested skills, and quality rules are enforced by automatic checks, so output is consistent from one session to the next.
+stack: [Claude Code, Claude API, Hooks, Knowledge graph]
+---
+import Flow from '../../components/Flow.astro';
+
+## Context
+
+I do product, design, content, data, sales enablement and video work. Much of it now runs with Claude Code, Anthropic's AI coding and work assistant.
+
+## Problem
+
+An AI assistant starts every session fresh. Out of the box it forgets decisions, drifts from house style, uses the wrong punctuation and burns time re-reading large files. Writing the same instructions again every day does not scale.
+
+## My role
+
+I designed and built the whole setup and I use it every working day.
+
+## Approach
+
+I moved the rules out of my head and into the system, in four layers.
+
+<Flow
+  label="How a request runs through the system"
+  steps={[
+    { title: 'Request', detail: 'I describe the task in plain language.' },
+    { title: 'Skills load', detail: 'The matching skill loads its tested method, for example the help center or screen design skill.' },
+    { title: 'Hooks guard', detail: 'Automatic checks run on every action and block output that breaks a rule.' },
+    { title: 'Verify', detail: 'Nothing is reported as done until it is checked in the real product, data or browser.' },
+  ]}
+/>
+
+## What I built
+
+- **Skills.** Packaged methods for UI generation, support articles, motion video and brand systems. Each one carries its own checklist.
+- **Hooks.** Automatic guards that run on every action: one blocks typographic punctuation, one blocks invisible Unicode characters, one stops unnecessary screenshots, and one flags topic drift.
+- **Subagents.** Small helpers that search or review in their own context and return only the conclusion.
+- **Memory.** A file-based memory of preferences and project facts that carries across sessions.
+- **A knowledge graph.** A graph over company documents, so answers come from a focused query instead of reading every file.
+- **Token discipline.** Rules that keep large files and screenshots out of the context unless they are the answer.
+
+## Outcome
+
+The quality rules I care about are enforced by the system, not by my attention on a given day. New work starts from a tested method. The same setup now powers the help center pipeline, the design system checks and the video workflow.
+
+## What I learned
+
+The value of an AI assistant is not the model alone. It is the rules, checks and memory around it. A chatbot answers. An agent finishes.

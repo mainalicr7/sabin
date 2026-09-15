@@ -1,0 +1,193 @@
+---
+import Base from '../layouts/Base.astro';
+import ContactCta from '../components/ContactCta.astro';
+import {
+  profile,
+  principles,
+  experience,
+  education,
+  certifications,
+  events,
+  skillGroups,
+} from '../data/site';
+import { absolute, breadcrumbNode } from '../lib/seo';
+
+const schema = [
+  {
+    '@type': 'AboutPage',
+    url: absolute(Astro.site, '/about/'),
+    name: `About ${profile.name}`,
+    mainEntity: { '@id': absolute(Astro.site, '/#person') },
+  },
+  breadcrumbNode(Astro.site, [
+    { name: 'Home', path: '/' },
+    { name: 'About', path: '/about/' },
+  ]),
+];
+---
+
+<Base
+  title="About"
+  description="Sabin Mainali moved from IT operations to business analysis to product and growth at Calilio. Experience, education, principles and events since 2022."
+  ogSlug="about"
+  type="profile"
+  schema={schema}
+>
+  <section class="wrap pt-16 md:pt-24" aria-labelledby="about-title">
+    <div class="grid gap-12 lg:grid-cols-12">
+      <div class="lg:col-span-7">
+        <h1 id="about-title" class="text-[clamp(2.8rem,1.6rem+4.6vw,5rem)] tracking-[-0.03em]">About Sabin</h1>
+        <p class="mt-6 max-w-[58ch] text-xl leading-relaxed">{profile.shortBio}</p>
+      </div>
+      <div class="grid content-start gap-5 rounded-2xl border border-line bg-surface p-7 text-[0.975rem] lg:col-span-4 lg:col-start-9">
+        <dl class="grid gap-5">
+        <div>
+          <dt class="text-sm text-muted">Current role</dt>
+          <dd class="mt-1">{profile.jobTitle}, {profile.employer.name}</dd>
+        </div>
+        <div>
+          <dt class="text-sm text-muted">Based in</dt>
+          <dd class="mt-1">{profile.location.city}, {profile.location.country}</dd>
+        </div>
+        <div>
+          <dt class="text-sm text-muted">Time zone</dt>
+          <dd class="mt-1">{profile.location.timezone}</dd>
+        </div>
+        <div>
+          <dt class="text-sm text-muted">Working since</dt>
+          <dd class="mt-1">{profile.experienceSince}</dd>
+        </div>
+        </dl>
+        <a href="/cv/" class="btn btn-primary mt-2 w-full">View and download CV</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="wrap mt-24" aria-labelledby="story-heading">
+    <div class="grid gap-8 md:grid-cols-12">
+      <h2 id="story-heading" class="text-[clamp(2rem,1.4rem+2.2vw,3.2rem)] md:col-span-4">The story so far</h2>
+      <div class="prose-measure space-y-5 text-lg md:col-span-7 md:col-start-6">
+        <p>
+          I started my career in IT operations at Cubix Tech in Kathmandu in October 2022. As IT Supervisor I ran day-to-day operations with cross-functional teams and led a team delivering Microsoft Office solutions, Canva design and R analysis.
+        </p>
+        <p>
+          In February 2025 I joined Calilio, a cloud phone system for businesses built by Yoddha Lab. I started with business and market analysis: competitive intelligence, pricing questions and the data behind product decisions.
+        </p>
+        <p>
+          That work grew into product and growth. Today I lead product for Calilio. I own the roadmap, and I also build the systems around it: the design system, the help center, the revenue analysis, the sales playbooks, the product videos and the AI tooling.
+        </p>
+        <p class="text-muted">
+          The thread through all of it is the same: understand the real problem, write the system down, build it, and check that it works.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="wrap mt-24" aria-labelledby="principles-heading">
+    <h2 id="principles-heading" class="text-[clamp(2rem,1.4rem+2.2vw,3.2rem)]">Principles I work by</h2>
+    <ul class="mt-10 grid gap-4 sm:grid-cols-2">
+      {
+        principles.map((p) => (
+          <li class="rounded-2xl border border-line p-7">
+            <h3 class="text-2xl">{p.name}</h3>
+            <p class="mt-3 text-muted">{p.detail}</p>
+          </li>
+        ))
+      }
+    </ul>
+  </section>
+
+  <section class="wrap mt-24" aria-labelledby="experience-heading">
+    <div class="grid gap-8 md:grid-cols-12">
+      <h2 id="experience-heading" class="text-[clamp(2rem,1.4rem+2.2vw,3.2rem)] md:col-span-4">Experience</h2>
+      <ol class="md:col-span-8">
+        {
+          experience.map((e) => (
+            <li class="grid gap-2 border-t border-line py-7 last:border-b sm:grid-cols-[11rem_1fr] sm:gap-8">
+              <p class="text-sm text-muted tabular-nums">{e.period}</p>
+              <div>
+                <h3 class="text-2xl">{e.role}</h3>
+                <p class="mt-1 text-muted">
+                  {e.org}. {e.detail}.
+                </p>
+                <p class="mt-3">{e.summary}</p>
+              </div>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+  </section>
+
+  <section class="wrap mt-24" aria-labelledby="education-heading">
+    <div class="grid gap-8 md:grid-cols-12">
+      <h2 id="education-heading" class="text-[clamp(2rem,1.4rem+2.2vw,3.2rem)] md:col-span-4">Education and certification</h2>
+      <div class="md:col-span-8">
+        <ol>
+          {
+            education.map((e) => (
+              <li class="grid gap-2 border-t border-line py-6 sm:grid-cols-[11rem_1fr] sm:gap-8">
+                <p class="text-sm text-muted tabular-nums">{e.period}</p>
+                <div>
+                  <h3 class="text-xl">{e.name}</h3>
+                  <p class="mt-1 text-muted">{e.org}</p>
+                  {e.note && <p class="mt-2 text-[0.95rem]">{e.note}</p>}
+                </div>
+              </li>
+            ))
+          }
+        </ol>
+        <ul class="border-y border-line">
+          {
+            certifications.map((c) => (
+              <li class="grid gap-2 py-6 sm:grid-cols-[11rem_1fr] sm:gap-8">
+                <p class="text-sm text-muted">Certification</p>
+                <div>
+                  <h3 class="text-xl">{c.name}</h3>
+                  <p class="mt-1 text-muted">{c.issuer}</p>
+                </div>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="wrap mt-24" aria-labelledby="events-heading">
+    <div class="grid gap-8 md:grid-cols-12">
+      <h2 id="events-heading" class="text-[clamp(2rem,1.4rem+2.2vw,3.2rem)] md:col-span-4">Events</h2>
+      <ul class="grid gap-4 sm:grid-cols-2 md:col-span-8">
+        {
+          events.map((e) => (
+            <li class="rounded-2xl border border-line p-6">
+              <p class="text-sm text-muted">{e.date}</p>
+              <h3 class="mt-2 text-xl">{e.name}</h3>
+              <p class="mt-1 text-muted">
+                {e.role}, {e.place}
+              </p>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <section class="wrap mt-24" aria-labelledby="skills-heading">
+    <div class="grid gap-8 md:grid-cols-12">
+      <h2 id="skills-heading" class="text-[clamp(2rem,1.4rem+2.2vw,3.2rem)] md:col-span-4">Skills</h2>
+      <dl class="grid gap-8 sm:grid-cols-2 md:col-span-8">
+        {
+          skillGroups.map((g) => (
+            <div>
+              <dt class="text-sm text-muted">{g.name}</dt>
+              <dd class="mt-2">{g.skills.join(', ')}</dd>
+            </div>
+          ))
+        }
+      </dl>
+    </div>
+  </section>
+
+  <ContactCta />
+</Base>

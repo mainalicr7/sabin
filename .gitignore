@@ -1,0 +1,13 @@
+node_modules/
+dist/
+.astro/
+.netlify/
+.env
+.env.*
+!.env.example
+.DS_Store
+Thumbs.db
+*.log
+
+# Private brief: mentions internal employer details, never publish it.
+MASTER_PROMPT.md

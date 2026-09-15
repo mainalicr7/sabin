@@ -1,0 +1,39 @@
+---
+title: Proving who an email campaign really reached
+summary: A campaign looked like it had won new leads. Joining the results against the full user base showed it had mostly won back existing users instead.
+disciplines: [data, sales]
+role: Analyst
+context: SaaS email campaign and list quality review
+order: 6
+featured: false
+published: 2026-09-15
+updated: 2026-09-15
+outcome: The campaign was reclassified as a win-back, which changed how it was measured and where the next campaign was aimed.
+stack: [Python, CRM exports, DNS MX lookups]
+---
+
+## Context
+
+An email campaign produced a wave of responses. It was reported as a success in reaching new, cold leads.
+
+## Problem
+
+The report only looked at the campaign list. Nobody had checked whether the people who responded were already users.
+
+## My role
+
+I ran the attribution analysis and a list quality check on the same data.
+
+## Approach
+
+- I joined the responders against the full user base, not just the campaign list.
+- I matched on cleaned email addresses, with typos and case differences handled.
+- I checked the list for disposable email domains and for domains whose mail servers point to known throwaway providers. Standard blocklists miss many of these.
+
+## Outcome
+
+Most responders were existing users. The campaign was a successful win-back, not a cold lead win. That changed how its results were reported and changed the target of the next campaign. The list checks also removed low-quality addresses that would have hurt sending reputation.
+
+## What I learned
+
+Attribution depends on the join. Always compare results against everyone you already know, not only the list you sent to.

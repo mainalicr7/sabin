@@ -1,0 +1,61 @@
+---
+title: A design system that AI screen tools cannot break
+summary: How I wrote a machine-readable DESIGN.md and a brand-checking AI skill after an AI design tool quietly rewrote the brand palette.
+disciplines: [design, ai, product]
+role: Design system author and AI tooling builder
+context: Calilio product app, web and mobile
+order: 2
+featured: true
+published: 2026-09-15
+updated: 2026-09-15
+outcome: A one-line prompt now becomes an app screen that must pass an automated brand check, and the primary brand color stays locked.
+stack: [Google Stitch, Claude Code, DESIGN.md]
+---
+import Flow from '../../components/Flow.astro';
+
+## Context
+
+I use Google Stitch, an AI tool that generates app screens from text, to explore and design Calilio product screens quickly.
+
+## Problem
+
+AI design tools are fast, but they do not respect a brand by default. Stitch silently re-derived the brand palette from what it saw and demoted the primary color to a secondary role. The screens looked plausible, which made the drift easy to miss and expensive to fix later.
+
+## My role
+
+I wrote the design system, built the prompt kit, and built the checking tool that sits between the AI output and the team.
+
+## Approach
+
+The fix was to stop describing the brand in loose words and write it as rules a machine can follow and a script can check.
+
+- I wrote **DESIGN.md**, a machine-readable spec covering tokens, color roles, type, spacing and components.
+- I locked the color tokens so the tool cannot reassign the primary color.
+- I wrote a **46-screen prompt kit** so each screen starts from the same structure.
+- I built a linter that compares generated screens with the spec and refuses to pass off-brand output.
+
+<Flow
+  label="From a one-line prompt to an approved screen"
+  steps={[
+    { title: 'Spec', detail: 'Turn a one-line request into a screen spec that references the locked design system.' },
+    { title: 'Generate', detail: 'Create the screen in Stitch against the locked tokens.' },
+    { title: 'Lint', detail: 'Check colors, type and components against DESIGN.md and list every violation.' },
+    { title: 'Fix and approve', detail: 'Correct the violations and re-run the check until it passes.' },
+  ]}
+/>
+
+## What I built
+
+- **DESIGN.md**, the single written source of truth for the product look.
+- **A locked-token design system** inside Stitch, which solved the palette drift.
+- **A 46-screen prompt kit** covering the core app flows.
+- **A Claude skill** that runs the full spec, generate, lint and fix loop, and does not report a screen as done until the linter passes.
+- **A data-visualization design system** with a validated chart palette and chart rules for reports and decks.
+
+## Outcome
+
+Off-brand screens are caught by the linter before a person reviews them, and the linter says exactly what is wrong. With the tokens locked, the primary color no longer drifts. The team gets the speed of AI design without paying for it in cleanup.
+
+## What I learned
+
+AI tools follow rules, not taste. If a brand only exists in a designer's head or a PDF, an AI tool will invent its own version. Write it down as data and check it automatically.

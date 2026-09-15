@@ -1,0 +1,180 @@
+---
+import Base from '../layouts/Base.astro';
+import {
+  profile,
+  links,
+  experience,
+  education,
+  certifications,
+  events,
+  skillGroups,
+  disciplines,
+  LAST_UPDATED,
+} from '../data/site';
+
+const contactLines = [
+  { label: 'Location', value: `${profile.location.city}, ${profile.location.country}` },
+  { label: 'LinkedIn', value: links.linkedin.replace('https://www.', '') },
+  { label: 'Contra', value: links.contra.replace('https://', '') },
+  { label: 'Email', value: links.email },
+  { label: 'Portfolio', value: (Astro.site?.host ?? '') },
+].filter((l) => l.value);
+---
+
+<Base
+  title="CV"
+  description="CV of Sabin Mainali, product manager in Kathmandu: experience at Calilio and Cubix Tech, education at KCMIT, skills and certification."
+  ogSlug="about"
+  type="profile"
+>
+  <div class="wrap pt-12 md:pt-16">
+    <div class="no-print flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-line p-4 px-5">
+      <p class="text-[0.95rem] text-muted">This CV is generated from the same data as the rest of the site.</p>
+      <button type="button" class="btn btn-primary" data-print>Save as PDF</button>
+    </div>
+
+    <article class="cv mx-auto mt-10 max-w-[52rem] rounded-3xl border border-line bg-surface p-7 md:p-14">
+      <header class="border-b border-line pb-8">
+        <h1 class="text-[clamp(2.4rem,1.6rem+3vw,3.6rem)] tracking-[-0.03em]">{profile.name}</h1>
+        <p class="mt-2 text-lg">{profile.jobTitle}. AI-native product and growth operator.</p>
+        <ul class="mt-4 flex flex-wrap gap-x-6 gap-y-1 text-[0.95rem] text-muted">
+          {contactLines.map((l) => <li><span class="sr-only">{l.label}: </span>{l.value}</li>)}
+        </ul>
+      </header>
+
+      <section class="cv-section" aria-labelledby="cv-summary">
+        <h2 id="cv-summary">Summary</h2>
+        <p>{profile.shortBio}</p>
+      </section>
+
+      <section class="cv-section" aria-labelledby="cv-experience">
+        <h2 id="cv-experience">Experience</h2>
+        {
+          experience.map((e) => (
+            <div class="cv-item">
+              <div class="flex flex-wrap items-baseline justify-between gap-x-4">
+                <h3>
+                  {e.role}, {e.org}
+                </h3>
+                <p class="text-sm text-muted tabular-nums">{e.period}</p>
+              </div>
+              <p class="text-sm text-muted">{e.detail}</p>
+              <p class="mt-1">{e.summary}</p>
+            </div>
+          ))
+        }
+      </section>
+
+      <section class="cv-section" aria-labelledby="cv-areas">
+        <h2 id="cv-areas">Areas of work</h2>
+        <ul class="grid gap-x-8 gap-y-3 sm:grid-cols-2">
+          {
+            disciplines.map((d) => (
+              <li>
+                <strong class="font-semibold">{d.name}.</strong> {d.summary}
+              </li>
+            ))
+          }
+        </ul>
+      </section>
+
+      <section class="cv-section" aria-labelledby="cv-education">
+        <h2 id="cv-education">Education</h2>
+        {
+          education.map((e) => (
+            <div class="cv-item">
+              <div class="flex flex-wrap items-baseline justify-between gap-x-4">
+                <h3>
+                  {e.name}, {e.org}
+                </h3>
+                <p class="text-sm text-muted tabular-nums">{e.period}</p>
+              </div>
+            </div>
+          ))
+        }
+      </section>
+
+      <section class="cv-section" aria-labelledby="cv-cert">
+        <h2 id="cv-cert">Certification and events</h2>
+        <ul class="space-y-1">
+          {certifications.map((c) => <li>{c.name}, {c.issuer}</li>)}
+          {events.map((e) => <li>{e.name}, {e.place}, {e.date}. {e.role}.</li>)}
+        </ul>
+      </section>
+
+      <section class="cv-section" aria-labelledby="cv-skills">
+        <h2 id="cv-skills">Skills</h2>
+        <dl class="space-y-1">
+          {
+            skillGroups.map((g) => (
+              <div class="flex flex-wrap gap-x-2">
+                <dt class="font-semibold">{g.name}:</dt>
+                <dd>{g.skills.join(', ')}</dd>
+              </div>
+            ))
+          }
+        </dl>
+      </section>
+
+      <p class="mt-10 text-sm text-muted">Last updated <time datetime={LAST_UPDATED}>{LAST_UPDATED}</time></p>
+    </article>
+  </div>
+</Base>
+
+<style>
+  .cv-section {
+    margin-top: 2.25rem;
+  }
+  .cv-section h2 {
+    font-size: 1.35rem;
+    margin-bottom: 0.9rem;
+  }
+  .cv-item + .cv-item {
+    margin-top: 1.1rem;
+  }
+  .cv h3 {
+    font-family: var(--font-sans);
+    font-size: 1.05rem;
+    font-weight: 600;
+    letter-spacing: 0;
+  }
+
+  @media print {
+    @page {
+      size: A4;
+      margin: 14mm;
+    }
+    :global(html),
+    :global(html[data-theme]) {
+      --bg: #ffffff;
+      --surface: #ffffff;
+      --text: #111111;
+      --muted: #444444;
+      --line: #cccccc;
+      --accent: #111111;
+      background: #fff !important;
+    }
+    :global(header.sticky),
+    :global(footer),
+    :global(a[href='#main']),
+    .no-print {
+      display: none !important;
+    }
+    .cv {
+      border: 0 !important;
+      padding: 0 !important;
+      margin: 0 !important;
+      max-width: none !important;
+      font-size: 10.5pt;
+      line-height: 1.45;
+    }
+    .cv-section {
+      margin-top: 1.1rem;
+      break-inside: avoid-page;
+    }
+  }
+</style>
+
+<script>
+  document.querySelector('[data-print]')?.addEventListener('click', () => window.print());
+</script>

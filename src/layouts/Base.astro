@@ -1,0 +1,116 @@
+---
+import '../styles/global.css';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import { profile, analytics } from '../data/site';
+import { absolute, personNode, websiteNode } from '../lib/seo';
+
+interface Props {
+  title: string;
+  description: string;
+  ogSlug?: string;
+  type?: 'website' | 'article' | 'profile';
+  schema?: Record<string, unknown>[];
+  noindex?: boolean;
+  published?: Date;
+  updated?: Date;
+}
+
+const {
+  title,
+  description,
+  ogSlug = 'home',
+  type = 'website',
+  schema = [],
+  noindex = false,
+  published,
+  updated,
+} = Astro.props;
+
+const site = Astro.site;
+const canonical = absolute(site, Astro.url.pathname);
+const ogImage = absolute(site, `/og/${ogSlug}.png`);
+const fullTitle = title.includes(profile.name) ? title : `${title} | ${profile.name}`;
+
+const graph = {
+  '@context': 'https://schema.org',
+  '@graph': [personNode(site), websiteNode(site), ...schema],
+};
+---
+
+<!doctype html>
+<html lang="en" data-theme="dark">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script is:inline>
+      (function () {
+        var stored = null;
+        try {
+          stored = localStorage.getItem('theme');
+        } catch (e) {}
+        var theme =
+          stored === 'light' || stored === 'dark'
+            ? stored
+            : window.matchMedia('(prefers-color-scheme: light)').matches
+              ? 'light'
+              : 'dark';
+        document.documentElement.setAttribute('data-theme', theme);
+      })();
+    </script>
+    <title>{fullTitle}</title>
+    <meta name="description" content={description} />
+    {!noindex && <link rel="canonical" href={canonical} />}
+    <meta
+      name="robots"
+      content={noindex ? 'noindex, follow' : 'index, follow, max-snippet:-1, max-image-preview:large'}
+    />
+    <meta name="author" content={profile.name} />
+    <meta name="theme-color" content="#0e1013" media="(prefers-color-scheme: dark)" />
+    <meta name="theme-color" content="#f2f2ee" media="(prefers-color-scheme: light)" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+    <link rel="alternate" type="text/plain" href="/llms.txt" title="llms.txt" />
+
+    <meta property="og:type" content={type} />
+    <meta property="og:site_name" content={profile.name} />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content={`${title} - ${profile.name}`} />
+    <meta property="og:locale" content="en_US" />
+    {published && <meta property="article:published_time" content={published.toISOString()} />}
+    {updated && <meta property="article:modified_time" content={updated.toISOString()} />}
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={fullTitle} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+
+    <script is:inline type="application/ld+json" set:html={JSON.stringify(graph).replace(/</g, '\\u003c')} />
+  </head>
+  <body class="bg-bg text-ink antialiased">
+    <a
+      href="#main"
+      class="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-[70] focus:rounded-full focus:bg-ink focus:px-4 focus:py-2 focus:text-bg"
+      >Skip to content</a
+    >
+    <Header />
+    <main id="main" tabindex="-1" class="outline-none">
+      <slot />
+    </main>
+    <Footer />
+    {
+      analytics.cloudflareToken && (
+        <script
+          is:inline
+          defer
+          src="https://static.cloudflareinsights.com/beacon.min.js"
+          data-cf-beacon={JSON.stringify({ token: analytics.cloudflareToken })}
+        />
+      )
+    }
+  </body>
+</html>

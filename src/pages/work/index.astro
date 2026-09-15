@@ -1,0 +1,115 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import CaseRow from '../../components/CaseRow.astro';
+import ContactCta from '../../components/ContactCta.astro';
+import { disciplines, profile } from '../../data/site';
+import { absolute, breadcrumbNode } from '../../lib/seo';
+
+const work = (await getCollection('work')).sort((a, b) => a.data.order - b.data.order);
+const used = new Set(work.flatMap((w) => w.data.disciplines));
+const filters = disciplines.filter((d) => used.has(d.id));
+
+const schema = [
+  {
+    '@type': 'CollectionPage',
+    url: absolute(Astro.site, '/work/'),
+    name: `Work - ${profile.name}`,
+    hasPart: work.map((w) => ({
+      '@type': 'Article',
+      headline: w.data.title,
+      url: absolute(Astro.site, `/work/${w.id}/`),
+    })),
+  },
+  breadcrumbNode(Astro.site, [
+    { name: 'Home', path: '/' },
+    { name: 'Work', path: '/work/' },
+  ]),
+];
+---
+
+<Base
+  title="Work and case studies"
+  description="Case studies by Sabin Mainali across product management, design systems, help centers, data analysis, sales enablement, video and AI automation."
+  ogSlug="work"
+  schema={schema}
+>
+  <section class="wrap pt-16 md:pt-24" aria-labelledby="work-title">
+    <h1 id="work-title" class="text-[clamp(2.8rem,1.6rem+4.6vw,5rem)] tracking-[-0.03em]">Work</h1>
+    <p class="mt-5 max-w-[58ch] text-lg text-muted">
+      {work.length} case studies from my work in product, design, content, data, sales, video and AI. Each one follows the same shape: the problem, what I did, how, and what changed.
+    </p>
+
+    <div class="mt-12 flex flex-wrap gap-2" role="group" aria-label="Filter case studies by discipline" data-filters hidden>
+      <button type="button" class="filter" data-filter="all" aria-pressed="true">All</button>
+      {
+        filters.map((f) => (
+          <button type="button" class="filter" data-filter={f.id} aria-pressed="false">
+            {f.short}
+          </button>
+        ))
+      }
+    </div>
+    <p class="sr-only" aria-live="polite" data-filter-status></p>
+
+    <div class="mt-8 border-b border-line" data-list>
+      {work.map((entry, i) => <CaseRow entry={entry} index={i} headingLevel="h2" />)}
+    </div>
+  </section>
+
+  <ContactCta />
+</Base>
+
+<style>
+  .filter {
+    min-height: 2.75rem;
+    padding: 0.5rem 1rem;
+    border-radius: 999px;
+    border: 1px solid var(--line);
+    color: var(--muted);
+    font-size: 0.95rem;
+    transition: color 200ms ease, border-color 200ms ease, background-color 200ms ease;
+  }
+  .filter:hover {
+    color: var(--text);
+    border-color: var(--line-strong);
+  }
+  .filter[aria-pressed='true'] {
+    background: var(--text);
+    border-color: var(--text);
+    color: var(--bg);
+  }
+</style>
+
+<script>
+  const group = document.querySelector<HTMLElement>('[data-filters]');
+  const rows = document.querySelectorAll<HTMLElement>('.case-row');
+  const status = document.querySelector('[data-filter-status]');
+
+  if (group) {
+    group.hidden = false;
+    const buttons = group.querySelectorAll<HTMLButtonElement>('[data-filter]');
+
+    const apply = (id: string, updateUrl: boolean) => {
+      let shown = 0;
+      rows.forEach((row) => {
+        const match = id === 'all' || (row.dataset.disciplines || '').split(' ').includes(id);
+        row.hidden = !match;
+        if (match) shown++;
+      });
+      buttons.forEach((b) => b.setAttribute('aria-pressed', b.dataset.filter === id ? 'true' : 'false'));
+      if (status) status.textContent = `Showing ${shown} case ${shown === 1 ? 'study' : 'studies'}`;
+      if (updateUrl) {
+        const url = new URL(window.location.href);
+        if (id === 'all') url.searchParams.delete('d');
+        else url.searchParams.set('d', id);
+        history.replaceState(null, '', url);
+      }
+    };
+
+    buttons.forEach((b) => b.addEventListener('click', () => apply(b.dataset.filter || 'all', true)));
+
+    const initial = new URL(window.location.href).searchParams.get('d');
+    if (initial && [...buttons].some((b) => b.dataset.filter === initial)) apply(initial, false);
+  }
+</script>

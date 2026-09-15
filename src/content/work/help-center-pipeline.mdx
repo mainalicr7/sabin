@@ -1,0 +1,61 @@
+---
+title: Building a 293-topic help center with a quality pipeline
+summary: How I planned a full knowledge base for a cloud phone system and built the writing pipeline that keeps every article accurate, consistent and searchable.
+disciplines: [content, ai, product]
+role: Planner, writer and pipeline builder
+context: Calilio, a cloud phone system for businesses
+order: 1
+featured: true
+published: 2026-09-15
+updated: 2026-09-15
+outcome: A help center planned as 293 topics and shipped in waves, with more than 190 articles live and a pipeline that checks each one before it goes out.
+stack: [Claude Code, JSON, Python, Screenshot masking]
+---
+import Flow from '../../components/Flow.astro';
+
+## Context
+
+Calilio is a cloud phone system for businesses. It covers virtual numbers, calls, SMS, voicemail, IVR menus, call tagging, a power dialer, WhatsApp and shared team inboxes. Every one of those features creates support questions.
+
+## Problem
+
+Support was answering the same questions by hand. Help content existed in pieces, written at different times in different styles. Some steps no longer matched the product. There was no plan for what the full help center should cover, and no way to check an article before it went live.
+
+## My role
+
+I owned the help center end to end: the topic plan, the article standard, the writing, and the tooling that checks the work.
+
+## Approach
+
+I treated the help center as a product with its own backlog, not a writing task.
+
+- I mapped every feature and every common question into **293 topics**.
+- I grouped the topics into build waves, so the most-asked questions shipped first.
+- I wrote house rules once: US English, the serial comma, one task per article, and a fixed escalation block at the end of each article.
+- I made "click-proof" the standard. Every step in an article is checked against the live product before it is published.
+
+<Flow
+  label="The article pipeline, from topic to published page"
+  steps={[
+    { title: 'Plan', detail: 'Pick the next topic from the wave plan and confirm the exact user question.' },
+    { title: 'Write', detail: 'Draft into a structured JSON store using the house template and voice rules.' },
+    { title: 'Check', detail: 'Validators and pre-publish checks catch missing sections, style breaks and stray characters.' },
+    { title: 'Verify and ship', detail: 'Walk every step in the live product, mask personal data in screenshots, then publish.' },
+  ]}
+/>
+
+## What I built
+
+- **A JSON article store.** Articles live as structured data, so they can be validated, reused and exported.
+- **Validators and pre-publish hooks.** Automated checks block an article that breaks the template or the voice rules.
+- **Screenshot marking with masking.** Screenshots are annotated, and names, numbers and emails are masked before publishing.
+- **Search-ready output.** Articles answer the question in the first lines, use real headings, and are exported as a full-text file for AI search tools.
+- **A custom AI skill.** The writing rules are packaged as a Claude skill, so drafts start inside the standard instead of being fixed afterwards.
+
+## Outcome
+
+More than 190 articles are live against the 293-topic plan. New articles follow one standard no matter who drafts them. Because every article is checked against the product, support can link to articles with confidence instead of rewriting answers by hand.
+
+## What I learned
+
+A help center stays accurate only when checking is part of the pipeline. Style guides get ignored. A validator that blocks publishing does not.

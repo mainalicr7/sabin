@@ -1,0 +1,198 @@
+---
+// Signature moment: an interactive map of how the disciplines feed each other.
+// Without JavaScript the default selection still reads, and every summary is in the bento below;
+// with JavaScript, selecting a node highlights its connections.
+import { disciplines, type DisciplineId } from '../data/site';
+
+const R = 38;
+const nodes = disciplines.map((d, i) => {
+  const angle = (-90 + (i * 360) / disciplines.length) * (Math.PI / 180);
+  const x = 50 + R * Math.cos(angle);
+  const y = 50 + R * Math.sin(angle);
+  const side = y < 30 ? 'top' : y > 70 ? 'bottom' : x < 50 ? 'left' : 'right';
+  return { ...d, x, y, side };
+});
+const pos = Object.fromEntries(nodes.map((n) => [n.id, n])) as Record<DisciplineId, (typeof nodes)[number]>;
+
+const edges: [DisciplineId, DisciplineId][] = [
+  ['product', 'data'],
+  ['product', 'design'],
+  ['product', 'sales'],
+  ['product', 'ai'],
+  ['design', 'content'],
+  ['design', 'motion'],
+  ['content', 'ai'],
+  ['content', 'sales'],
+  ['data', 'sales'],
+  ['data', 'ai'],
+  ['motion', 'ai'],
+];
+
+const initial: DisciplineId = 'ai';
+const first = pos[initial];
+---
+
+<figure class="system-map" data-system-map data-active={initial}>
+  <div class="mx-auto w-full max-w-[30rem] px-14 py-6">
+  <div class="relative aspect-square w-full">
+    <svg viewBox="0 0 100 100" class="absolute inset-0 size-full overflow-visible" aria-hidden="true">
+      <circle cx="50" cy="50" r={R} fill="none" stroke="var(--line)" stroke-width="0.25" stroke-dasharray="0.6 1.2"></circle>
+      {
+        edges.map(([a, b]) => (
+          <line
+            class="edge"
+            data-a={a}
+            data-b={b}
+            x1={pos[a].x}
+            y1={pos[a].y}
+            x2={pos[b].x}
+            y2={pos[b].y}
+            vector-effect="non-scaling-stroke"
+          />
+        ))
+      }
+    </svg>
+
+    {
+      nodes.map((n) => (
+        <button
+          type="button"
+          class="node absolute -translate-x-1/2 -translate-y-1/2"
+          style={`left:${n.x}%;top:${n.y}%`}
+          data-node={n.id}
+          data-side={n.side}
+          aria-pressed={n.id === initial ? 'true' : 'false'}
+          aria-controls="system-map-detail"
+        >
+          <span class="node-dot" aria-hidden="true" />
+          <span class="node-label">{n.short}</span>
+        </button>
+      ))
+    }
+  </div>
+  </div>
+
+  <figcaption id="system-map-detail" class="mx-auto mt-6 min-h-[8.5rem] max-w-[30rem] border-t border-line pt-4">
+    <p class="text-sm text-muted">One operator, one system. Select a discipline to see what it connects to.</p>
+    <p class="mt-3 font-display text-xl" data-detail-name>{first.name}</p>
+    <p class="mt-1 text-[0.975rem] text-muted" data-detail-summary>{first.summary}</p>
+  </figcaption>
+  <p class="sr-only" aria-live="polite" data-map-status></p>
+
+  <script is:inline type="application/json" data-map-data set:html={JSON.stringify(disciplines.map(({ id, name, summary }) => ({ id, name, summary }))).replace(/</g, '\\u003c')} />
+</figure>
+
+<style>
+  .edge {
+    stroke: var(--line);
+    stroke-width: 1;
+    transition: stroke 240ms ease;
+  }
+  .edge.on {
+    stroke: var(--accent);
+    stroke-width: 1.5;
+  }
+  .node {
+    width: 2.75rem;
+    height: 2.75rem;
+    border-radius: 999px;
+    color: var(--muted);
+    font-size: clamp(0.8rem, 2.4vw, 0.95rem);
+    line-height: 1;
+    transition: color 200ms ease;
+  }
+  .node-dot {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 0.8rem;
+    height: 0.8rem;
+    margin: -0.4rem 0 0 -0.4rem;
+    border-radius: 999px;
+    border: 1.5px solid var(--line-strong);
+    background: var(--bg);
+    transition: background-color 200ms ease, border-color 200ms ease, transform 240ms var(--ease-out-soft);
+  }
+  .node-label {
+    position: absolute;
+    white-space: nowrap;
+    padding: 0.2rem 0.35rem;
+    border-radius: 0.4rem;
+    background: var(--bg);
+  }
+  .node[data-side='top'] .node-label {
+    bottom: 78%;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+  .node[data-side='bottom'] .node-label {
+    top: 78%;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+  .node[data-side='left'] .node-label {
+    right: 78%;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+  .node[data-side='right'] .node-label {
+    left: 78%;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+  .node:hover,
+  .node[aria-pressed='true'],
+  .node.linked {
+    color: var(--text);
+  }
+  .node.linked .node-dot {
+    border-color: var(--accent);
+  }
+  .node[aria-pressed='true'] .node-dot {
+    background: var(--accent);
+    border-color: var(--accent);
+    transform: scale(1.4);
+  }
+</style>
+
+<script>
+  type Item = { id: string; name: string; summary: string };
+
+  document.querySelectorAll<HTMLElement>('[data-system-map]').forEach((map) => {
+    const dataEl = map.querySelector('[data-map-data]');
+    const items: Item[] = dataEl ? JSON.parse(dataEl.textContent || '[]') : [];
+    const nameEl = map.querySelector('[data-detail-name]');
+    const summaryEl = map.querySelector('[data-detail-summary]');
+    const buttons = map.querySelectorAll<HTMLButtonElement>('[data-node]');
+    const edges = map.querySelectorAll<SVGLineElement>('.edge');
+
+    const status = map.querySelector('[data-map-status]');
+
+    function select(id: string, announce = false) {
+      const item = items.find((i) => i.id === id);
+      if (!item) return;
+      const linked = new Set<string>();
+      edges.forEach((e) => {
+        const on = e.dataset.a === id || e.dataset.b === id;
+        e.classList.toggle('on', on);
+        if (on) linked.add(e.dataset.a === id ? e.dataset.b! : e.dataset.a!);
+      });
+      buttons.forEach((b) => {
+        b.setAttribute('aria-pressed', b.dataset.node === id ? 'true' : 'false');
+        b.classList.toggle('linked', linked.has(b.dataset.node!));
+      });
+      if (nameEl) nameEl.textContent = item.name;
+      if (summaryEl) summaryEl.textContent = item.summary;
+      if (announce && status) status.textContent = `${item.name}. ${item.summary}`;
+    }
+
+    buttons.forEach((b) => {
+      b.addEventListener('click', () => select(b.dataset.node!, true));
+      b.addEventListener('pointerenter', (e) => {
+        if (e.pointerType === 'mouse') select(b.dataset.node!);
+      });
+    });
+
+    select(map.dataset.active || 'ai');
+  });
+</script>

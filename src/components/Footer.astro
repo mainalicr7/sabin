@@ -1,0 +1,62 @@
+---
+import { profile, links, LAST_UPDATED } from '../data/site';
+
+const year = new Date().getFullYear();
+const elsewhere = [
+  { href: links.contra, label: 'Contra' },
+  { href: links.linkedin, label: 'LinkedIn' },
+  { href: links.github, label: 'GitHub' },
+].filter((l) => l.href);
+---
+
+<footer class="mt-24 border-t border-line">
+  <div class="wrap grid gap-10 py-14 md:grid-cols-12">
+    <div class="md:col-span-5">
+      <p class="font-display text-2xl leading-snug">
+        Product, design, data, content and AI, built as one system.
+      </p>
+      <p class="kicker mt-3">
+        {profile.location.city}, {profile.location.country}. {profile.location.timezone}.
+      </p>
+    </div>
+
+    <nav aria-label="Footer" class="grid grid-cols-2 gap-8 text-[0.95rem] md:col-span-7 md:grid-cols-3">
+      <div>
+        <h2 class="kicker mb-3 font-sans !text-sm !font-normal !tracking-normal">Site</h2>
+        <ul class="space-y-2">
+          <li><a class="link link-draw" href="/work/">Work</a></li>
+          <li><a class="link link-draw" href="/services/">Services</a></li>
+          <li><a class="link link-draw" href="/ai-lab/">AI Lab</a></li>
+          <li><a class="link link-draw" href="/about/">About</a></li>
+        </ul>
+      </div>
+      <div>
+        <h2 class="kicker mb-3 font-sans !text-sm !font-normal !tracking-normal">Work with me</h2>
+        <ul class="space-y-2">
+          <li><a class="link link-draw" href="/contact/">Contact</a></li>
+          <li><a class="link link-draw" href="/cv/">CV</a></li>
+          <li><a class="link link-draw" href="/llms.txt">llms.txt</a></li>
+        </ul>
+      </div>
+      <div>
+        <h2 class="kicker mb-3 font-sans !text-sm !font-normal !tracking-normal">Elsewhere</h2>
+        <ul class="space-y-2">
+          {
+            elsewhere.map((l) => (
+              <li>
+                <a class="link link-draw" href={l.href} rel="me noopener" target="_blank">
+                  {l.label}
+                  <span class="sr-only"> (opens in a new tab)</span>
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+    </nav>
+  </div>
+  <div class="wrap flex flex-col gap-2 border-t border-line py-6 text-sm text-muted sm:flex-row sm:justify-between">
+    <p>&copy; {year} {profile.name}</p>
+    <p>Last updated <time datetime={LAST_UPDATED}>{LAST_UPDATED}</time></p>
+  </div>
+</footer>

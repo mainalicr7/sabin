@@ -1,0 +1,192 @@
+---
+import Base from '../layouts/Base.astro';
+import ContactCta from '../components/ContactCta.astro';
+import Faq from '../components/Faq.astro';
+import { absolute, breadcrumbNode, faqNode } from '../lib/seo';
+import { LAST_UPDATED } from '../data/site';
+
+const parts = [
+  {
+    id: 'skills',
+    name: 'Skills',
+    like: 'Like a recipe card',
+    detail: 'A skill is a written, tested method for one kind of job. When a task matches, the skill loads and the work follows its steps and checklist.',
+    examples: [
+      'Help center articles: voice rules, click-proof steps, personal data masking',
+      'App screen design: spec, generate, brand lint, fix',
+      'Product video: storyboard first, then a visual QA loop',
+      'Published pages: search and AI-search structure applied by default',
+    ],
+  },
+  {
+    id: 'hooks',
+    name: 'Hooks',
+    like: 'Like a spell checker that cannot be switched off',
+    detail: 'A hook is an automatic check that runs every time the assistant acts. It can block the action and explain why, so a rule never depends on memory.',
+    examples: [
+      'Punctuation guard: blocks typographic characters such as curly quotes',
+      'Hidden character guard: blocks invisible Unicode in files',
+      'Screenshot guard: stops screenshots unless pixels are the answer',
+      'Topic drift guard: flags work that wanders from the request',
+    ],
+  },
+  {
+    id: 'subagents',
+    name: 'Subagents',
+    like: 'Like sending an assistant to the archive',
+    detail: 'A subagent is a helper with its own workspace. It searches or reviews a large amount of material and brings back only the conclusion.',
+    examples: [
+      'An investigator that finds where something is defined',
+      'A reviewer that checks a change for defects',
+      'A builder that makes a small, well-scoped edit',
+    ],
+  },
+  {
+    id: 'memory',
+    name: 'Memory',
+    like: 'Like a notebook that carries between days',
+    detail: 'Memory is a set of small files with preferences, decisions and project facts. Each new session starts with what matters instead of from zero.',
+    examples: [
+      'How I want work reported back',
+      'Standing project decisions and constraints',
+      'Pointers to the right dashboards and documents',
+    ],
+  },
+  {
+    id: 'graph',
+    name: 'Knowledge graph',
+    like: 'Like an index at the back of a book',
+    detail: 'A knowledge graph maps company documents and how they connect. A question pulls a small, relevant slice instead of reading every file.',
+    examples: ['Fast answers across product, support and sales documents', 'Relationships between features, articles and decisions'],
+  },
+];
+
+const flow = [
+  { name: 'Request', detail: 'I describe the task in plain words.' },
+  { name: 'Skill', detail: 'The matching method loads with its checklist.' },
+  { name: 'Guard', detail: 'Hooks check every action as it happens.' },
+  { name: 'Verify', detail: 'The result is checked in the real product, data or browser.' },
+  { name: 'Done', detail: 'Only verified work is reported as finished.' },
+];
+
+const labFaqs = [
+  {
+    q: 'What is Claude Code?',
+    a: 'Claude Code is an AI assistant made by Anthropic that works directly with files, tools and the command line. Sabin uses it for product, design, content, data and video work, not only for writing software.',
+  },
+  {
+    q: 'What is the difference between a chatbot and an AI agent?',
+    a: 'A chatbot answers a question and stops. An agent finishes a task: it plans the steps, uses tools, checks its own work and reports when the job is done. Sabin builds setups that behave like agents.',
+  },
+  {
+    q: 'Can Sabin set up a system like this for my team?',
+    a: 'Yes. The AI workflow automation service starts with an audit of one real workflow, then adds the skills, prompts and automatic checks that fit it, and ends with a short handover guide for the team.',
+  },
+];
+
+const schema = [
+  {
+    '@type': 'Article',
+    headline: 'AI Lab: how Sabin Mainali runs his work with Claude Code',
+    description:
+      'A plain-language guide to the skills, hooks, subagents, memory and knowledge graph behind Sabin Mainali\'s work.',
+    url: absolute(Astro.site, '/ai-lab/'),
+    author: { '@id': absolute(Astro.site, '/#person') },
+    datePublished: LAST_UPDATED,
+    dateModified: LAST_UPDATED,
+  },
+  faqNode(labFaqs),
+  breadcrumbNode(Astro.site, [
+    { name: 'Home', path: '/' },
+    { name: 'AI Lab', path: '/ai-lab/' },
+  ]),
+];
+---
+
+<Base
+  title="AI Lab"
+  description="How Sabin Mainali runs his work with Claude Code: skills, automatic checks, helper agents, memory and a knowledge graph, explained in plain language."
+  ogSlug="ai-lab"
+  type="article"
+  schema={schema}
+>
+  <section class="wrap pt-16 md:pt-24" aria-labelledby="lab-title">
+    <div class="grid gap-10 lg:grid-cols-12">
+      <div class="lg:col-span-8">
+        <h1 id="lab-title" class="text-[clamp(2.8rem,1.6rem+4.6vw,5rem)] tracking-[-0.03em]">AI Lab</h1>
+        <p class="mt-6 max-w-[58ch] text-xl leading-relaxed">
+          This page explains the AI setup I use to do my work, in plain language. It is built on Claude Code, and it turns a general AI assistant into a system that follows my rules and checks its own output.
+        </p>
+      </div>
+    </div>
+    <blockquote class="mt-14 max-w-[40ch] border-l-2 border-accent pl-6 font-display text-[clamp(1.6rem,1.2rem+1.6vw,2.4rem)] leading-snug" style="font-variation-settings:'SOFT' 80">
+      <p>"A chatbot answers. An agent finishes."</p>
+    </blockquote>
+  </section>
+
+  <section class="wrap mt-24" aria-labelledby="flow-heading">
+    <h2 id="flow-heading" class="text-[clamp(2rem,1.4rem+2.2vw,3.2rem)]">How a task runs</h2>
+    <p class="mt-3 max-w-[58ch] text-lg text-muted">Every task passes through the same five stages. The guard and verify stages are what make the output reliable.</p>
+
+    <figure class="mt-10">
+      <ol class="grid gap-3 md:grid-cols-5" aria-label="Five stages of a task">
+        {
+          flow.map((f, i) => (
+            <li class="relative rounded-2xl border border-line bg-surface p-5">
+              <span class="text-sm text-muted tabular-nums">Stage {i + 1}</span>
+              <h3 class="mt-2 text-xl">{f.name}</h3>
+              <p class="mt-2 text-[0.95rem] text-muted">{f.detail}</p>
+              {i < flow.length - 1 && (
+                <span class="absolute left-1/2 top-full hidden h-3 w-px bg-line-strong max-md:block" aria-hidden="true" />
+              )}
+              {i < flow.length - 1 && (
+                <span class="absolute left-full top-1/2 hidden h-px w-3 bg-line-strong md:block" aria-hidden="true" />
+              )}
+            </li>
+          ))
+        }
+      </ol>
+      <figcaption class="mt-3 text-sm text-muted">From request to verified result.</figcaption>
+    </figure>
+  </section>
+
+  <section class="wrap mt-24" aria-labelledby="parts-heading">
+    <h2 id="parts-heading" class="text-[clamp(2rem,1.4rem+2.2vw,3.2rem)]">The five parts of the system</h2>
+    <p class="mt-3 max-w-[58ch] text-lg text-muted">Each part solves one weakness of a plain AI assistant.</p>
+    <div class="mt-10 border-b border-line">
+      {
+        parts.map((p) => (
+          <section id={p.id} class="grid scroll-mt-24 gap-6 border-t border-line py-10 md:grid-cols-12 md:gap-8" aria-labelledby={`${p.id}-h`}>
+            <div class="md:col-span-4">
+              <h3 id={`${p.id}-h`} class="text-3xl">{p.name}</h3>
+              <p class="mt-2 text-muted">{p.like}</p>
+            </div>
+            <div class="md:col-span-8">
+              <p class="text-lg">{p.detail}</p>
+              <ul class="mt-5 space-y-2 text-[0.975rem] text-muted">
+                {p.examples.map((x) => (
+                  <li class="relative pl-4 before:absolute before:left-0 before:top-[0.75em] before:h-px before:w-2 before:bg-accent">{x}</li>
+                ))}
+              </ul>
+            </div>
+          </section>
+        ))
+      }
+    </div>
+  </section>
+
+  <section class="wrap mt-24" aria-labelledby="result-heading">
+    <div class="grid gap-8 rounded-3xl border border-line p-8 md:grid-cols-12 md:p-12">
+      <h2 id="result-heading" class="text-[clamp(1.8rem,1.3rem+1.8vw,2.6rem)] md:col-span-5">What this changes in practice</h2>
+      <ul class="space-y-4 text-lg md:col-span-7">
+        <li>Rules I care about are enforced by the system, not by my attention on a given day.</li>
+        <li>New work starts from a tested method instead of a blank prompt.</li>
+        <li>The same setup powers the <a class="link" href="/work/help-center-pipeline/">help center pipeline</a>, the <a class="link" href="/work/design-system-ai/">design system checks</a> and the <a class="link" href="/work/product-videos-in-code/">video workflow</a>.</li>
+        <li>I can build the same kind of setup for a client team, around their own workflow. See <a class="link" href="/services/#ai-automation">AI workflow automation</a>.</li>
+      </ul>
+    </div>
+  </section>
+
+  <Faq items={labFaqs} id="lab-faq" />
+  <ContactCta heading="Want AI built into how your team actually works?" />
+</Base>

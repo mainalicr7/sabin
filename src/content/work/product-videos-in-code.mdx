@@ -1,0 +1,55 @@
+---
+title: Product videos made in code
+summary: Why I build product and promo videos in Remotion, and the storyboard, motion system and QA loop that make code-made video look intentional.
+disciplines: [motion, design, ai]
+role: Director and builder
+context: Calilio promo and product demo videos
+order: 5
+featured: false
+published: 2026-09-15
+updated: 2026-09-15
+outcome: Videos are versioned like software, so a product change becomes an edit and a re-render instead of a new production.
+stack: [Remotion, React, Kokoro TTS]
+---
+import Flow from '../../components/Flow.astro';
+
+## Context
+
+A SaaS product changes every month. Launch and demo videos made in a traditional editor go out of date quickly and are slow to update.
+
+## Problem
+
+Each update meant rebuilding scenes by hand. Brand colors, type and timing drifted between videos, and there was no consistent quality check before a video went out.
+
+## My role
+
+I storyboarded, built, reviewed and rendered the videos.
+
+## Approach
+
+I build videos in **Remotion**, a framework that renders React code to MP4. Every scene is code, so it can be versioned, reviewed and re-rendered.
+
+<Flow
+  label="The video workflow"
+  steps={[
+    { title: 'Storyboard', detail: 'Write the shot list before any code, using a fixed shot grammar for product promos.' },
+    { title: 'Build', detail: 'Compose scenes from a brand motion system with shared colors, type and timing.' },
+    { title: 'Review stills', detail: 'Render still frames, check them, fix, and repeat until every shot reads clearly.' },
+    { title: 'Final checks', detail: 'Check captions, safe zones, aspect ratios and audio loudness before export.' },
+  ]}
+/>
+
+## What I built
+
+- **A brand motion system** with shared tokens for color, type and timing.
+- **A visual QA loop** that renders stills for review before a full render.
+- **A local AI voiceover server** using Kokoro text-to-speech for narration drafts.
+- **Two Claude skills**: one for directing product videos and one that holds the brand motion facts.
+
+## Outcome
+
+Updating a video is now an edit and a re-render. Every video uses the same motion rules, so they look like one family.
+
+## What I learned
+
+Video is easier to keep consistent when it is treated like software: one source, shared components, and a check before release.

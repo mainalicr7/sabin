@@ -1,0 +1,178 @@
+---
+import { getCollection, render, type CollectionEntry } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import ContactCta from '../../components/ContactCta.astro';
+import { disciplines } from '../../data/site';
+import { absolute, breadcrumbNode } from '../../lib/seo';
+
+export async function getStaticPaths() {
+  const work = (await getCollection('work')).sort((a, b) => a.data.order - b.data.order);
+  return work.map((entry, i) => ({
+    params: { slug: entry.id },
+    props: {
+      entry,
+      prev: i > 0 ? work[i - 1] : null,
+      next: i < work.length - 1 ? work[i + 1] : null,
+    },
+  }));
+}
+
+interface Props {
+  entry: CollectionEntry<'work'>;
+  prev: CollectionEntry<'work'> | null;
+  next: CollectionEntry<'work'> | null;
+}
+
+const { entry, prev, next } = Astro.props;
+const { Content, headings } = await render(entry);
+const d = entry.data;
+
+const prose = (entry.body ?? '')
+  .replace(/^import .*$/gm, '')
+  .replace(/<Flow[\s\S]*?\/>/g, '');
+const words = prose.split(/\s+/).filter(Boolean).length;
+const minutes = Math.max(1, Math.round(words / 220));
+const iso = (date: Date) => date.toISOString().slice(0, 10);
+const tagNames = d.disciplines.map((id) => disciplines.find((x) => x.id === id)?.name ?? id);
+const toc = headings.filter((h) => h.depth === 2);
+const url = absolute(Astro.site, `/work/${entry.id}/`);
+
+const schema = [
+  {
+    '@type': 'Article',
+    '@id': `${url}#article`,
+    headline: d.title,
+    description: d.summary,
+    url,
+    image: absolute(Astro.site, `/og/work-${entry.id}.png`),
+    datePublished: iso(d.published),
+    dateModified: iso(d.updated),
+    author: { '@id': absolute(Astro.site, '/#person') },
+    publisher: { '@id': absolute(Astro.site, '/#person') },
+    about: tagNames,
+    wordCount: words,
+    inLanguage: 'en',
+    isPartOf: { '@id': absolute(Astro.site, '/#website') },
+  },
+  breadcrumbNode(Astro.site, [
+    { name: 'Home', path: '/' },
+    { name: 'Work', path: '/work/' },
+    { name: d.title, path: `/work/${entry.id}/` },
+  ]),
+];
+---
+
+<Base
+  title={d.title}
+  description={d.summary}
+  ogSlug={`work-${entry.id}`}
+  type="article"
+  schema={schema}
+  published={d.published}
+  updated={d.updated}
+>
+  <article class="wrap pt-10 md:pt-16">
+    <nav aria-label="Breadcrumb" class="text-sm text-muted">
+      <ol class="flex flex-wrap gap-2">
+        <li><a class="link link-draw" href="/">Home</a><span class="ml-2" aria-hidden="true">/</span></li>
+        <li><a class="link link-draw" href="/work/">Work</a><span class="ml-2" aria-hidden="true">/</span></li>
+        <li aria-current="page" class="text-ink">Case study</li>
+      </ol>
+    </nav>
+
+    <header class="mt-10 grid gap-10 lg:grid-cols-12">
+      <div class="lg:col-span-8">
+        <h1 class="text-[clamp(2.3rem,1.4rem+3.6vw,4.2rem)] tracking-[-0.03em]">{d.title}</h1>
+        <p class="mt-6 max-w-[60ch] text-lg text-muted">{d.summary}</p>
+      </div>
+    </header>
+
+    <div class="mt-12 grid gap-12 lg:grid-cols-12">
+      <aside class="lg:col-span-4 lg:order-2" aria-label="Case study facts">
+        <div class="lg:sticky lg:top-24">
+          <dl class="grid grid-cols-2 gap-x-6 gap-y-5 rounded-2xl border border-line bg-surface p-6 text-[0.95rem] lg:grid-cols-1">
+            <div>
+              <dt class="text-sm text-muted">My role</dt>
+              <dd class="mt-1">{d.role}</dd>
+            </div>
+            <div>
+              <dt class="text-sm text-muted">Context</dt>
+              <dd class="mt-1">{d.context}</dd>
+            </div>
+            <div>
+              <dt class="text-sm text-muted">Disciplines</dt>
+              <dd class="mt-1">{tagNames.join(', ')}</dd>
+            </div>
+            {
+              d.stack.length > 0 && (
+                <div>
+                  <dt class="text-sm text-muted">Tools</dt>
+                  <dd class="mt-1">{d.stack.join(', ')}</dd>
+                </div>
+              )
+            }
+            <div>
+              <dt class="text-sm text-muted">Reading time</dt>
+              <dd class="mt-1">{minutes} min</dd>
+            </div>
+            <div>
+              <dt class="text-sm text-muted">Last updated</dt>
+              <dd class="mt-1"><time datetime={iso(d.updated)}>{iso(d.updated)}</time></dd>
+            </div>
+          </dl>
+
+          {
+            toc.length > 3 && (
+              <nav aria-label="On this page" class="mt-6 hidden px-2 lg:block">
+                <p class="text-sm text-muted">On this page</p>
+                <ul class="mt-3 space-y-2 text-[0.95rem]">
+                  {toc.map((h) => (
+                    <li>
+                      <a class="link link-draw" href={`#${h.slug}`}>
+                        {h.text}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </nav>
+            )
+          }
+        </div>
+      </aside>
+
+      <div class="lg:col-span-8 lg:order-1">
+        <section class="rounded-2xl border-l-2 border-accent bg-accent-soft px-6 py-5" aria-labelledby="outcome-heading">
+          <h2 id="outcome-heading" class="font-sans text-sm font-medium tracking-normal text-muted">Outcome at a glance</h2>
+          <p class="mt-2 font-display text-xl leading-snug">{d.outcome}</p>
+        </section>
+
+        <div class="article prose-measure mt-6">
+          <Content />
+        </div>
+      </div>
+    </div>
+
+    <nav aria-label="More case studies" class="mt-20 grid gap-4 border-t border-line pt-10 sm:grid-cols-2">
+      {
+        prev ? (
+          <a href={`/work/${prev.id}/`} class="group rounded-2xl border border-line p-6 transition-colors hover:border-line-strong">
+            <span class="text-sm text-muted">Previous case study</span>
+            <span class="mt-2 block font-display text-xl group-hover:text-accent">{prev.data.title}</span>
+          </a>
+        ) : (
+          <span />
+        )
+      }
+      {
+        next && (
+          <a href={`/work/${next.id}/`} class="group rounded-2xl border border-line p-6 text-right transition-colors hover:border-line-strong">
+            <span class="text-sm text-muted">Next case study</span>
+            <span class="mt-2 block font-display text-xl group-hover:text-accent">{next.data.title}</span>
+          </a>
+        )
+      }
+    </nav>
+  </article>
+
+  <ContactCta heading={`Need work like this for your team?`} />
+</Base>
