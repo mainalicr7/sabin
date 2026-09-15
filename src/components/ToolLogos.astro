@@ -1,35 +1,106 @@
 ---
 // Tool marquee with real brand marks from Simple Icons, in one neutral color.
-// The list renders twice for a seamless loop; the copy is hidden from assistive tech.
-import { siClaude, siN8n, siGoogle, siPython, siR, siStripe, siBrevo, siGit, siDocker, siCloudflare } from 'simple-icons';
+// Brands without a Simple Icons mark get a neutral Lucide glyph instead of a lookalike logo.
+// Two rows: AI and build, then growth and product. Row two scrolls the other way.
+// Each list renders twice for a seamless loop; the copy is hidden from assistive tech.
+import {
+  siClaude,
+  siGooglegemini,
+  siNotebooklm,
+  siPerplexity,
+  siElevenlabs,
+  siN8n,
+  siGoogle,
+  siPython,
+  siR,
+  siGit,
+  siDocker,
+  siCloudflare,
+  siBrevo,
+  siMailchimp,
+  siCalendly,
+  siStripe,
+  siNotion,
+  siJira,
+  siClickup,
+  siFigma,
+  siMiro,
+  siGoogleanalytics,
+  siGooglesheets,
+} from 'simple-icons';
+import Sparkles from '@lucide/astro/icons/sparkles';
+import Funnel from '@lucide/astro/icons/funnel';
+import Target from '@lucide/astro/icons/target';
+import ChartColumn from '@lucide/astro/icons/chart-column';
 
-const tools = [
-  { icon: siClaude, name: 'Claude Code' },
-  { icon: siN8n, name: 'n8n' },
-  { icon: siGoogle, name: 'Google Stitch' },
-  { icon: siPython, name: 'Python' },
-  { icon: siR, name: 'R' },
-  { icon: siStripe, name: 'Stripe' },
-  { icon: siBrevo, name: 'Brevo' },
-  { icon: siGit, name: 'Git' },
-  { icon: siDocker, name: 'Docker' },
-  { icon: siCloudflare, name: 'Cloudflare' },
+type Tool = { name: string; path?: string; Glyph?: typeof Sparkles };
+
+const rows: { label: string; tools: Tool[] }[] = [
+  {
+    label: 'AI, automation and build tools',
+    tools: [
+      { path: siClaude.path, name: 'Claude Code' },
+      { Glyph: Sparkles, name: 'ChatGPT' },
+      { path: siGooglegemini.path, name: 'Gemini' },
+      { path: siNotebooklm.path, name: 'NotebookLM' },
+      { path: siPerplexity.path, name: 'Perplexity' },
+      { path: siElevenlabs.path, name: 'ElevenLabs' },
+      { path: siN8n.path, name: 'n8n' },
+      { path: siGoogle.path, name: 'Google Stitch' },
+      { path: siPython.path, name: 'Python' },
+      { path: siR.path, name: 'R' },
+      { path: siGit.path, name: 'Git' },
+      { path: siDocker.path, name: 'Docker' },
+      { path: siCloudflare.path, name: 'Cloudflare' },
+    ],
+  },
+  {
+    label: 'CRM, marketing and product tools',
+    tools: [
+      { Glyph: Funnel, name: 'Pipedrive' },
+      { Glyph: Target, name: 'Apollo.io' },
+      { path: siBrevo.path, name: 'Brevo' },
+      { path: siMailchimp.path, name: 'Mailchimp' },
+      { path: siCalendly.path, name: 'Calendly' },
+      { path: siStripe.path, name: 'Stripe' },
+      { path: siNotion.path, name: 'Notion' },
+      { path: siJira.path, name: 'Jira' },
+      { path: siClickup.path, name: 'ClickUp' },
+      { path: siFigma.path, name: 'Figma' },
+      { path: siMiro.path, name: 'Miro' },
+      { path: siGoogleanalytics.path, name: 'Google Analytics' },
+      { path: siGooglesheets.path, name: 'Google Sheets' },
+      { Glyph: ChartColumn, name: 'Looker Studio' },
+    ],
+  },
 ];
 ---
 
-<div class="marquee" data-reveal>
+<div class="space-y-3" data-reveal>
   {
-    [false, true].map((copy) => (
-      <ul class="marquee-track" aria-label={copy ? undefined : 'Tools'} aria-hidden={copy ? 'true' : undefined}>
-        {tools.map((t) => (
-          <li class="flex items-center gap-3 rounded-full border border-line bg-surface py-2.5 pr-5 pl-3 whitespace-nowrap">
-            <svg viewBox="0 0 24 24" class="size-5 fill-current text-muted" aria-hidden="true">
-              <path d={t.icon.path} />
-            </svg>
-            <span class="text-[0.9375rem]">{t.name}</span>
-          </li>
+    rows.map((row, i) => (
+      <div class="marquee" style={`--marquee-duration: ${row.tools.length * 4}s`}>
+        {[false, true].map((copy) => (
+          <ul
+            class:list={['marquee-track', { 'marquee-reverse': i % 2 === 1 }]}
+            aria-label={copy ? undefined : row.label}
+            aria-hidden={copy ? 'true' : undefined}
+          >
+            {row.tools.map((t) => (
+              <li class="flex items-center gap-3 rounded-full border border-line bg-surface py-2.5 pr-5 pl-3 whitespace-nowrap">
+                {t.Glyph ? (
+                  <t.Glyph class="size-5 text-muted" stroke-width={1.75} aria-hidden="true" />
+                ) : (
+                  <svg viewBox="0 0 24 24" class="size-5 fill-current text-muted" aria-hidden="true">
+                    <path d={t.path} />
+                  </svg>
+                )}
+                <span class="text-[0.9375rem]">{t.name}</span>
+              </li>
+            ))}
+          </ul>
         ))}
-      </ul>
+      </div>
     ))
   }
 </div>

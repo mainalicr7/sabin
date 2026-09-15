@@ -5,6 +5,7 @@ import {
   certifications,
   disciplines,
   skillGroups,
+  roles,
 } from '../data/site';
 
 export function absolute(site: URL | undefined, path: string): string {
@@ -49,6 +50,7 @@ export function personNode(site: URL | undefined) {
       ...disciplines.map((d) => d.name),
       ...skillGroups.flatMap((g) => g.skills).slice(0, 12),
     ],
+    hasOccupation: roles.map((r) => ({ '@type': 'Occupation', name: r.title, description: r.does })),
     sameAs: sameAs(),
   };
 }

@@ -17,8 +17,20 @@ const mobileNav = [...nav, { href: '/contact/', label: 'Contact' }];
 
 <header class="site-header sticky top-0 z-50 border-b border-transparent bg-bg/80 backdrop-blur-md transition-[border-color] duration-300" data-header>
   <div class="wrap flex h-16 items-center justify-between gap-4">
-    <a href="/" class="flex items-center gap-2.5 no-underline">
-      <span class="grid size-8 place-items-center rounded-lg bg-ink font-display text-[0.95rem] font-extrabold text-bg" aria-hidden="true">S</span>
+    <a href="/" class="brand flex items-center gap-2.5 no-underline">
+      <!-- Route S: one path from an open idea ring, through a milestone, to a shipped accent dot. -->
+      <svg class="brand-mark" viewBox="0 0 40 40" width="34" height="34" aria-hidden="true" focusable="false">
+        <rect class="brand-tile" width="40" height="40" rx="11" />
+        <rect class="brand-edge" x="0.5" y="0.5" width="39" height="39" rx="10.5" />
+        <g class="brand-grid">
+          <circle cx="8" cy="8" r="0.9" /><circle cx="8" cy="20" r="0.9" /><circle cx="8" cy="32" r="0.9" />
+          <circle cx="32" cy="20" r="0.9" /><circle cx="32" cy="32" r="0.9" />
+        </g>
+        <path class="brand-route" pathLength="1" d="M25.63 10.25 A6.5 6.5 0 1 0 20 20 A6.5 6.5 0 1 1 14.37 29.75" />
+        <circle class="brand-milestone" cx="20" cy="20" r="1.1" />
+        <circle class="brand-start" cx="25.63" cy="10.25" r="2.3" />
+        <circle class="brand-end" cx="14.37" cy="29.75" r="3.3" />
+      </svg>
       <span class="font-display text-[1.15rem] font-bold tracking-[-0.01em]">Sabin Mainali</span>
     </a>
 
@@ -92,6 +104,86 @@ const mobileNav = [...nav, { href: '/contact/', label: 'Contact' }];
 <style>
   .site-header.is-scrolled {
     border-color: var(--line);
+  }
+
+  /* Route S mark. On hover the route redraws from the idea ring and lands on the shipped dot. */
+  .brand-mark {
+    flex: none;
+    width: 2.125rem;
+    height: 2.125rem;
+    overflow: visible;
+    filter: drop-shadow(0 6px 10px color-mix(in oklab, var(--accent) 30%, transparent));
+  }
+  .brand-tile {
+    fill: var(--tile);
+  }
+  .brand-edge {
+    fill: none;
+    stroke: var(--tile-line);
+  }
+  .brand-grid {
+    fill: var(--tile-text);
+    opacity: 0.16;
+  }
+  .brand-route {
+    fill: none;
+    stroke: var(--tile-text);
+    stroke-width: 3.4;
+    stroke-linecap: round;
+    stroke-dasharray: 1;
+    stroke-dashoffset: 0;
+  }
+  .brand-milestone {
+    fill: var(--tile);
+  }
+  .brand-start {
+    fill: var(--tile);
+    stroke: var(--tile-text);
+    stroke-width: 1.8;
+  }
+  .brand-end {
+    fill: color-mix(in oklab, var(--accent), white 40%);
+  }
+  .brand-start,
+  .brand-end {
+    transform-box: fill-box;
+    transform-origin: center;
+  }
+  .brand:hover .brand-route,
+  .brand:focus-visible .brand-route {
+    animation: brand-route 720ms var(--ease-out-soft) both;
+  }
+  .brand:hover .brand-start,
+  .brand:focus-visible .brand-start {
+    animation: brand-pop 360ms var(--ease-out-soft) both;
+  }
+  .brand:hover .brand-end,
+  .brand:focus-visible .brand-end {
+    animation: brand-land 520ms var(--ease-out-soft) 560ms both;
+  }
+  @keyframes brand-route {
+    from {
+      stroke-dashoffset: 1;
+    }
+  }
+  @keyframes brand-pop {
+    40% {
+      transform: scale(1.35);
+    }
+  }
+  @keyframes brand-land {
+    0% {
+      transform: scale(0);
+    }
+    60% {
+      transform: scale(1.3);
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .brand:hover :is(.brand-route, .brand-start, .brand-end),
+    .brand:focus-visible :is(.brand-route, .brand-start, .brand-end) {
+      animation: none;
+    }
   }
 
   /* Pill behind desktop nav links on hover and for the current section. */

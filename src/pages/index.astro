@@ -10,6 +10,7 @@ import DisciplineIcon from '../components/DisciplineIcon.astro';
 import ToolLogos from '../components/ToolLogos.astro';
 import BuiltSection from '../components/BuiltSection.astro';
 import MiniVisual from '../components/MiniVisual.astro';
+import RolesList from '../components/RolesList.astro';
 import { profile, disciplines, method, faqs, links, projects, type DisciplineId } from '../data/site';
 import { faqNode, absolute } from '../lib/seo';
 
@@ -31,7 +32,7 @@ const schema = [
     '@type': 'ProfilePage',
     '@id': absolute(Astro.site, '/#webpage'),
     url: absolute(Astro.site, '/'),
-    name: `${profile.name} - AI-native product manager`,
+    name: `${profile.name} - Product manager and AI automation freelancer`,
     mainEntity: { '@id': absolute(Astro.site, '/#person') },
     isPartOf: { '@id': absolute(Astro.site, '/#website') },
   },
@@ -49,8 +50,8 @@ const schema = [
 ---
 
 <Base
-  title={`${profile.name} - AI-native product manager`}
-  description="Sabin Mainali is a product manager in Kathmandu who builds the whole product system: roadmap, design systems, help centers, data analysis and AI automation."
+  title={`${profile.name} - Product Manager and AI Automation Freelancer`}
+  description="Sabin Mainali is a freelance product manager in Kathmandu, Nepal. He takes projects in AI and n8n automation, websites, help centers and SaaS data analysis."
   type="profile"
   schema={schema}
 >
@@ -65,7 +66,7 @@ const schema = [
         )
       }
       <h1 id="hero-heading" class="mt-7 text-[clamp(2.6rem,1.7rem+3.2vw,4rem)] leading-[1.02] font-extrabold tracking-[-0.03em]">
-        <span class="sr-only">Sabin Mainali, AI-native product manager. </span>
+        <span class="sr-only">Sabin Mainali, freelance product manager and AI automation builder. </span>
         {headline.map((word, i) => (
           <>
             <span class="word-mask"><span class="word" style={`--i:${i}`}>{word}</span></span>{i < headline.length - 1 && ' '}
@@ -105,7 +106,7 @@ const schema = [
   <section id="what-i-do" class="wrap mt-28" aria-labelledby="do-heading">
     <h2 id="do-heading" class="text-[clamp(2rem,1.4rem+2.2vw,3rem)]" data-reveal>What I do</h2>
     <p class="mt-4 max-w-[58ch] text-lg text-muted">
-      Seven disciplines that usually sit with seven people. I run them together, so each one feeds the next.
+      Seven areas I work in. They connect: the analysis shapes the roadmap, and the help center and automations follow the product.
     </p>
 
     <ul class="mt-12 grid auto-rows-auto gap-4 md:grid-cols-6 lg:grid-cols-12">
@@ -212,6 +213,8 @@ const schema = [
     </ul>
   </section>
 
+  <RolesList />
+
   <!-- Selected work -->
   <section id="selected-work" class="wrap mt-28" aria-labelledby="work-heading">
     <h2 id="work-heading" class="text-[clamp(2rem,1.4rem+2.2vw,3rem)]" data-reveal>Selected work</h2>
@@ -266,7 +269,7 @@ const schema = [
           I started in IT operations in {profile.experienceSince}, moved into business analysis and product management, and now build products, websites and AI automations.
         </p>
         <p class="mt-4 max-w-[56ch] text-muted">
-          I do not hand work off at the spec. I write the design system, plan the help center, run the analysis, build the sales playbooks, make the videos, and build the AI tooling that lets one person work like a small product team.
+          On a project I stay past the spec. I write the design system, plan the help center, run the analysis, build the sales playbooks and set up the AI automations, so fewer handoffs are needed.
         </p>
         <a href="/about/" class="btn btn-ghost mt-8">Read the full story</a>
       </div>

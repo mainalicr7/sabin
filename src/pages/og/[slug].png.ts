@@ -16,7 +16,7 @@ const sans = fontFile('satoshi-500.woff');
 const pages: Record<string, { title: string; label: string }> = {
   home: { title: 'Product manager and builder of Chatonics.', label: 'Product manager' },
   work: { title: 'Case studies in product, design, content, data and AI.', label: 'Work' },
-  services: { title: 'Freelance product, design, content, data and AI work.', label: 'Services' },
+  services: { title: 'Freelance AI automation, websites, product and data work.', label: 'Services' },
   about: { title: 'From IT operations to AI-native product management.', label: 'About' },
   'ai-lab': { title: 'Skills, hooks and memory that run my work.', label: 'AI Lab' },
   contact: { title: 'Tell me the problem you want solved.', label: 'Contact' },

@@ -416,7 +416,7 @@ html.js [data-reveal].is-in {
   box-shadow: 0 22px 40px -28px color-mix(in srgb, var(--accent) 45%, transparent);
 }
 
-/* Infinite marquee (one per page). */
+/* Infinite marquee. Set --marquee-duration per row to keep item speed even. */
 .marquee {
   display: flex;
   overflow: hidden;
@@ -427,7 +427,10 @@ html.js [data-reveal].is-in {
   flex-shrink: 0;
   gap: 0.75rem;
   padding-right: 0.75rem;
-  animation: marquee 38s linear infinite;
+  animation: marquee var(--marquee-duration, 38s) linear infinite;
+}
+.marquee-reverse {
+  animation-direction: reverse;
 }
 .marquee:hover .marquee-track {
   animation-play-state: paused;

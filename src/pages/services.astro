@@ -1,8 +1,9 @@
 ---
 import Base from '../layouts/Base.astro';
 import Faq from '../components/Faq.astro';
-import { services, engagementTypes, method, faqs, profile, disciplines } from '../data/site';
-import { absolute, breadcrumbNode } from '../lib/seo';
+import RolesList from '../components/RolesList.astro';
+import { services, engagementTypes, method, serviceFaqs, profile, disciplines } from '../data/site';
+import { absolute, breadcrumbNode, faqNode } from '../lib/seo';
 
 const schema = [
   {
@@ -25,6 +26,7 @@ const schema = [
       },
     })),
   },
+  faqNode(serviceFaqs),
   breadcrumbNode(Astro.site, [
     { name: 'Home', path: '/' },
     { name: 'Services', path: '/services/' },
@@ -35,17 +37,17 @@ const disciplineName = (id: string) => disciplines.find((d) => d.id === id)?.sho
 ---
 
 <Base
-  title="Freelance services"
-  description="Hire Sabin Mainali for product strategy, AI-ready design systems, help center builds, revenue analysis, sales enablement, AI automation and product video."
+  title="Freelance AI, Web and Product Services"
+  description="Hire Sabin Mainali for AI and n8n automation, AI support agents, websites, product strategy, help centers, SaaS data analysis and Remotion product videos."
   ogSlug="services"
   schema={schema}
 >
   <section class="wrap pt-16 md:pt-24" aria-labelledby="services-title">
     <div class="grid gap-8 lg:grid-cols-12">
       <div class="lg:col-span-8">
-        <h1 id="services-title" class="text-[clamp(2.8rem,1.6rem+4.6vw,5rem)] tracking-[-0.03em]">Services</h1>
+        <h1 id="services-title" class="text-[clamp(2.8rem,1.6rem+4.6vw,5rem)] tracking-[-0.03em]">Freelance services</h1>
         <p class="mt-5 max-w-[58ch] text-lg text-muted">
-          I take freelance projects in seven areas. Every project has a written scope, a clear definition of done, and a deliverable that is checked before handover.
+          I take freelance projects in {services.length} areas, from AI and n8n automation to websites, SEO and AI search content, market research reports and QA testing. Every project has a written scope, a clear definition of done, and a deliverable that is checked before handover.
         </p>
       </div>
     </div>
@@ -95,6 +97,8 @@ const disciplineName = (id: string) => disciplines.find((d) => d.id === id)?.sho
     </div>
   </section>
 
+  <RolesList />
+
   <section class="wrap mt-28" aria-labelledby="formats-heading">
     <h2 id="formats-heading" class="text-[clamp(2.2rem,1.5rem+2.6vw,3.6rem)]">Ways to work together</h2>
     <p class="mt-3 max-w-[58ch] text-lg text-muted">
@@ -127,5 +131,5 @@ const disciplineName = (id: string) => disciplines.find((d) => d.id === id)?.sho
     </ol>
   </section>
 
-  <Faq items={faqs} />
+  <Faq items={serviceFaqs} />
 </Base>

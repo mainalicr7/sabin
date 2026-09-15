@@ -12,9 +12,9 @@ export const profile = {
   headline:
     'Product Manager | AI-Native Product & Growth Operator | SaaS, Automation & Cross-Functional Execution',
   positioning:
-    'I am an AI-native product manager. I ship the whole system: product, growth, design, data, content, and the AI automation that runs them.',
+    'I am a product manager who also builds: product plans, websites, help centers, data analysis and the AI automations that connect them.',
   shortBio:
-    'Sabin Mainali is a product manager and builder based in Kathmandu, Nepal. He builds SaaS products, company websites and AI automations, including Chatonics, an AI-assisted customer messaging platform, and the Yoddha Lab website. He takes freelance work in product, design systems, help centers, data analysis and AI automation.',
+    'Sabin Mainali is a product manager and builder based in Kathmandu, Nepal, working since 2022. He built Chatonics, an AI-assisted customer messaging platform, and the Yoddha Lab company website. He takes freelance projects in AI and n8n automation, websites, product strategy, help centers, design systems and SaaS data analysis.',
   location: { city: 'Kathmandu', country: 'Nepal', timezone: 'Nepal Time (UTC+5:45)' },
   experienceSince: 2022,
   employer: {
@@ -232,7 +232,7 @@ export const disciplines: {
     id: 'ai',
     name: 'AI automation',
     short: 'AI',
-    summary: 'I build the AI tooling that runs my own work: skills, checks, helpers and memory.',
+    summary: 'I build AI workflows and n8n automations that take repeated manual steps out of a team week, with checks on the output.',
     points: [
       'A Claude Code setup with custom skills, subagents and hooks',
       'n8n workflow automations that connect everyday tools',
@@ -252,6 +252,45 @@ export const services: {
   fit: string;
   discipline: DisciplineId;
 }[] = [
+  {
+    id: 'ai-automation',
+    title: 'AI and n8n workflow automation',
+    answer: 'A working automation for one real workflow in your team, built in n8n or with Claude, with checks that stop bad output before it reaches a customer.',
+    deliverables: [
+      'Workflow audit to find the steps worth automating',
+      'n8n workflows, custom Claude skills or scheduled AI jobs',
+      'Quality checks on the AI output',
+      'A short handover guide so your team can run it',
+    ],
+    fit: 'Your team copies data between tools by hand, or uses AI only in a chat window.',
+    discipline: 'ai',
+  },
+  {
+    id: 'ai-support-agent',
+    title: 'AI customer support agent and shared inbox',
+    answer: 'An AI agent that answers customers from your own help content, inside a shared inbox where a person can review or take over any conversation.',
+    deliverables: [
+      'Channel setup for the inbox your customers already use',
+      'Knowledge base content the AI answers from',
+      'Rules for when the AI replies and when a person steps in',
+      'Testing against real customer questions before launch',
+    ],
+    fit: 'Customer messages arrive on several channels and simple questions wait hours for a reply.',
+    discipline: 'ai',
+  },
+  {
+    id: 'website',
+    title: 'Company website and landing page',
+    answer: 'A fast company website or landing page with clear service pages, a working contact path, and search and AI-search structure built in from the start.',
+    deliverables: [
+      'Page plan and copy structure for each service',
+      'Responsive build that works on phones',
+      'Meta tags, structured data, sitemap and llms.txt',
+      'Contact or consultation booking path',
+    ],
+    fit: 'Your current site does not explain what you sell, or it does not show up when people search for it.',
+    discipline: 'design',
+  },
   {
     id: 'product-sprint',
     title: 'Product strategy and roadmap sprint',
@@ -280,7 +319,7 @@ export const services: {
   {
     id: 'help-center',
     title: 'Help center from zero',
-    answer: 'A planned knowledge base with a repeatable writing and review pipeline, not a pile of one-off articles.',
+    answer: 'A planned knowledge base with a topic map, an article template and a review checklist, so every new article follows the same standard.',
     deliverables: [
       'Topic map grouped into build waves',
       'Article template, voice rules and review checklist',
@@ -293,7 +332,7 @@ export const services: {
   {
     id: 'revenue-analysis',
     title: 'Revenue, churn and payments analysis',
-    answer: 'An analysis of your billing, payment and user exports that ends in a decision, not just a chart.',
+    answer: 'An analysis of your billing, payment and user exports that ends with a written recommendation your team can act on.',
     deliverables: [
       'Clean, deduplicated dataset with written definitions',
       'Failed payment, refund or churn breakdown',
@@ -316,18 +355,6 @@ export const services: {
     discipline: 'sales',
   },
   {
-    id: 'ai-automation',
-    title: 'AI workflow automation',
-    answer: 'A working AI setup for a real workflow in your team, with checks that stop bad output before it ships.',
-    deliverables: [
-      'Workflow audit to find the steps worth automating',
-      'Custom Claude skills, n8n workflows or scheduled agents',
-      'Quality gates and a short handover guide',
-    ],
-    fit: 'Your team uses AI in chat windows and wants it built into the actual work.',
-    discipline: 'ai',
-  },
-  {
     id: 'product-video',
     title: 'Product video made in code',
     answer: 'A product or promo video built in Remotion, so every scene is editable and re-renders in minutes.',
@@ -338,6 +365,196 @@ export const services: {
     ],
     fit: 'You need a launch or demo video that will change as the product changes.',
     discipline: 'motion',
+  },
+  {
+    id: 'seo-ai-content',
+    title: 'SEO and AI search content',
+    answer: 'Content that ranks in Google and is easy for AI tools like ChatGPT, Gemini and Perplexity to read and quote. Covers SEO, AEO (answer engine optimization) and GEO (generative engine optimization).',
+    deliverables: [
+      'Keyword and customer question research',
+      'Pages, articles and reports written for search and AI answers',
+      'FAQ blocks, structured data and llms.txt',
+      'Audit of existing pages with a fix list',
+    ],
+    fit: 'Your pages get little search traffic, or AI tools never mention your business.',
+    discipline: 'content',
+  },
+  {
+    id: 'research-reports',
+    title: 'Market research, feasibility reports and data visualization',
+    answer: 'A written report that answers one business question, such as whether a market is worth entering, with sources, charts and the assumptions stated.',
+    deliverables: [
+      'Market size, customer and competitor research',
+      'Business feasibility report with risks and a clear verdict',
+      'Charts and dashboards in Google Sheets or Looker Studio',
+      'Report structured so search engines and AI tools can read it',
+    ],
+    fit: 'You need a decision on a new product, market or investment and do not have the facts in one place.',
+    discipline: 'data',
+  },
+  {
+    id: 'qa-testing',
+    title: 'SaaS QA testing',
+    answer: 'Hands-on testing of your web app before release, with bug reports your developers can act on straight away.',
+    deliverables: [
+      'Test cases for the main user flows',
+      'Bug reports with steps, expected result and screenshots',
+      'Re-testing of fixes before each release',
+    ],
+    fit: 'Bugs reach customers because nobody tests the full flow before a release.',
+    discipline: 'product',
+  },
+];
+
+// Job titles clients use when they post freelance work, mapped to proof on this site.
+// Titles mirror real posting language on Upwork, Fiverr and Malt (checked 2026-09-15).
+// Only roles with a real project or case study behind them are listed.
+export const roles: {
+  id: string;
+  title: string;
+  alsoCalled: string[];
+  does: string;
+  proof: { label: string; href: string }[];
+  service: string;
+}[] = [
+  {
+    id: 'ai-automation-specialist',
+    title: 'AI Automation Specialist',
+    alsoCalled: ['n8n automation expert', 'AI workflow automation engineer'],
+    does: 'Builds n8n workflows and Claude-powered automations that move data between tools and draft content, with checks on the output.',
+    proof: [
+      { label: 'n8n automations and content writing automation', href: '' },
+      { label: 'AI operating system case study', href: '/work/ai-operating-system/' },
+    ],
+    service: 'ai-automation',
+  },
+  {
+    id: 'claude-code-specialist',
+    title: 'Claude Code Specialist',
+    alsoCalled: ['Claude AI agent developer', 'AI agent builder'],
+    does: 'Sets up Claude Code with custom skills, automatic checks, helper agents and memory, so AI work follows the team\'s rules every time.',
+    proof: [{ label: 'AI Lab: the full setup explained', href: '/ai-lab/' }],
+    service: 'ai-automation',
+  },
+  {
+    id: 'ai-chatbot-developer',
+    title: 'AI Chatbot Developer',
+    alsoCalled: ['AI customer support agent', 'knowledge base chatbot'],
+    does: 'Builds AI agents that answer customers from a company knowledge base inside a shared inbox, with a person able to approve or take over.',
+    proof: [{ label: 'Chatonics case study', href: '/work/chatonics/' }],
+    service: 'ai-support-agent',
+  },
+  {
+    id: 'fractional-product-manager',
+    title: 'Fractional SaaS Product Manager',
+    alsoCalled: ['fractional product owner', 'part-time product manager'],
+    does: 'Owns the roadmap part time: market scan, feature scoping, prioritization with the reasoning written down, and success metrics.',
+    proof: [
+      { label: 'Product management experience', href: '/about/#experience-heading' },
+      { label: 'Cost review case study', href: '/work/cost-review-decision/' },
+    ],
+    service: 'product-sprint',
+  },
+  {
+    id: 'website-developer',
+    title: 'Website and Landing Page Developer',
+    alsoCalled: ['company website builder', 'landing page designer'],
+    does: 'Plans and builds company websites and landing pages with clear service pages and search-ready structure.',
+    proof: [{ label: 'Yoddha Lab website', href: 'https://yoddhalab.com' }],
+    service: 'website',
+  },
+  {
+    id: 'help-center-writer',
+    title: 'Help Center and Knowledge Base Writer',
+    alsoCalled: ['SaaS technical writer', 'support content writer'],
+    does: 'Plans a full topic map and writes help articles where every step is checked against the live product.',
+    proof: [{ label: 'Help center pipeline case study', href: '/work/help-center-pipeline/' }],
+    service: 'help-center',
+  },
+  {
+    id: 'saas-data-analyst',
+    title: 'SaaS Data Analyst',
+    alsoCalled: ['revenue and churn analyst', 'Stripe data analyst'],
+    does: 'Cleans billing, payment and CRM exports and turns them into a written recommendation with the assumptions stated.',
+    proof: [
+      { label: 'Email attribution case study', href: '/work/email-attribution/' },
+      { label: 'Cost review case study', href: '/work/cost-review-decision/' },
+    ],
+    service: 'revenue-analysis',
+  },
+  {
+    id: 'design-system-specialist',
+    title: 'SaaS Design System Specialist',
+    alsoCalled: ['UI design system for AI tools', 'DESIGN.md author'],
+    does: 'Writes a machine-readable design system and brand checks so AI screen tools and developers produce on-brand screens.',
+    proof: [{ label: 'Design system case study', href: '/work/design-system-ai/' }],
+    service: 'design-system',
+  },
+  {
+    id: 'sales-ops-specialist',
+    title: 'Sales Operations and Lead Generation Specialist',
+    alsoCalled: ['lead list builder', 'sales enablement specialist'],
+    does: 'Builds lead extraction tools, sales trackers, lead scoring rules and the meeting playbooks a small sales team runs on.',
+    proof: [{ label: 'Leads extraction tool and sales tracker', href: '' }],
+    service: 'sales-kit',
+  },
+  {
+    id: 'seo-ai-search-writer',
+    title: 'SEO and AI Search Content Specialist',
+    alsoCalled: ['GEO content writer', 'AEO specialist', 'AI SEO content writer'],
+    does: 'Writes pages, articles and reports that rank in Google and get quoted by AI answer engines such as ChatGPT, Gemini and Perplexity.',
+    proof: [{ label: 'Help center pipeline case study', href: '/work/help-center-pipeline/' }],
+    service: 'seo-ai-content',
+  },
+  {
+    id: 'market-research-analyst',
+    title: 'Market Research and Business Feasibility Analyst',
+    alsoCalled: ['feasibility study consultant', 'data visualization specialist', 'business report writer'],
+    does: 'Researches markets and competitors, tests whether a business idea holds up, and delivers a clear report with charts.',
+    proof: [
+      { label: 'Business analyst experience', href: '/about/#experience-heading' },
+      { label: 'Cost review case study', href: '/work/cost-review-decision/' },
+    ],
+    service: 'research-reports',
+  },
+  {
+    id: 'qa-tester',
+    title: 'SaaS QA Tester',
+    alsoCalled: ['manual QA tester', 'software tester', 'QA analyst'],
+    does: 'Tests a SaaS product before release, writes clear bug reports and re-checks fixes so broken flows do not reach customers.',
+    proof: [{ label: 'QA on Kudos CRM (in development)', href: '/about/#experience-heading' }],
+    service: 'qa-testing',
+  },
+  {
+    id: 'remotion-developer',
+    title: 'Remotion Developer for SaaS Product Videos',
+    alsoCalled: ['SaaS product demo video creator', 'motion designer for SaaS'],
+    does: 'Makes product and promo videos in Remotion code, so each scene can be edited and re-rendered when the product changes.',
+    proof: [{ label: 'Product videos case study', href: '/work/product-videos-in-code/' }],
+    service: 'product-video',
+  },
+];
+
+export const serviceFaqs = [
+  {
+    q: 'How much does a project cost?',
+    a: 'It depends on scope. You get a written proposal with a fixed price or monthly fee first. Nothing is billed before you approve it.',
+  },
+  {
+    q: 'What do you need from me to start?',
+    a: 'A short brief: the problem, the deadline and what done looks like. A sample export or tool access helps for automation and data work.',
+  },
+  {
+    q: 'Can I hire Sabin through a freelance platform?',
+    a: 'Yes. Hire directly through this site or LinkedIn, or name your preferred platform in the brief.',
+  },
+  {
+    q: 'What do I get at the end?',
+    a: 'The finished work, the source files and short notes on how to run or update it.',
+  },
+  {
+    q: 'Which tools does Sabin work with?',
+    a: 'n8n, Claude, ChatGPT and Gemini for AI and automation. Python, R, Google Sheets and Looker Studio for data. Remotion for video.',
   },
 ];
 
@@ -371,7 +588,7 @@ export const method = [
   },
   {
     name: 'Measure',
-    detail: 'I compare the result with the goal and change the system, not just the output.',
+    detail: 'I compare the result with the goal and fix the process that produced any gap, so it does not repeat.',
   },
 ];
 
@@ -414,6 +631,15 @@ export const experience = [
     period: 'Feb 2025 - Present',
     summary:
       'Business and market analysis, competitive intelligence, and data analysis for product and pricing decisions.',
+  },
+  {
+    role: 'QA Tester',
+    detail: 'CRM product in development',
+    org: 'Kudos CRM',
+    start: '',
+    end: null as string | null,
+    period: 'Current',
+    summary: 'Test the CRM while it is being built: check user flows, report bugs and re-test fixes before release.',
   },
   {
     role: 'IT Supervisor',
@@ -474,9 +700,12 @@ export const events = [
 ];
 
 export const toolGroups = [
-  { name: 'AI and automation', tools: ['Claude Code', 'Claude API', 'n8n', 'Google Stitch'] },
-  { name: 'Data', tools: ['Python', 'R', 'Stripe exports', 'Excel'] },
-  { name: 'Build', tools: ['Git', 'Docker', 'Cloudflare', 'HTML email'] },
+  { name: 'AI and automation', tools: ['Claude Code', 'Claude API', 'ChatGPT', 'Gemini', 'NotebookLM', 'Perplexity', 'ElevenLabs', 'n8n', 'Google Stitch'] },
+  { name: 'CRM and sales', tools: ['Pipedrive', 'Apollo.io', 'Calendly'] },
+  { name: 'Email marketing', tools: ['Brevo', 'Mailchimp', 'HTML email'] },
+  { name: 'Product and design', tools: ['Notion', 'Jira', 'ClickUp', 'Figma', 'Miro'] },
+  { name: 'Data', tools: ['Python', 'R', 'Google Analytics', 'Google Sheets', 'Looker Studio', 'Stripe exports', 'Excel'] },
+  { name: 'Build', tools: ['Git', 'Docker', 'Cloudflare'] },
   { name: 'Design and video', tools: ['Remotion', 'Canva', 'Microsoft Office'] },
 ];
 
@@ -497,26 +726,26 @@ export const skillGroups = [
 export const faqs = [
   {
     q: 'What does Sabin Mainali do?',
-    a: 'Sabin Mainali is a product manager and builder in Kathmandu, Nepal. He built Chatonics, an AI-assisted customer messaging platform, developed the Yoddha Lab website, and builds internal tools and AI automations. He does freelance work in product strategy, design systems, help centers, data analysis and AI automation.',
+    a: 'Sabin is a product manager and builder in Kathmandu, Nepal. He builds SaaS products, websites, AI automations and research reports.',
   },
   {
     q: 'What freelance projects does Sabin take?',
-    a: 'Sabin takes product strategy sprints, design systems for AI screen tools, help center builds, revenue and churn analysis, sales enablement kits, AI workflow automation with Claude, and product videos made in Remotion. Each one ends in a shipped, checked deliverable.',
+    a: 'AI and n8n automation, AI support agents, websites, SEO and AI search content, market research and feasibility reports, data analysis, help centers, QA testing and product videos.',
   },
   {
-    q: 'How do I hire Sabin for a project?',
-    a: 'Send a short brief through the contact form on this site or message Sabin on LinkedIn. Describe the problem, the deadline and what done looks like. You get a reply with questions or a proposed scope before any work starts.',
+    q: 'How do I hire Sabin?',
+    a: 'Send a short brief through the contact form or LinkedIn. You get questions or a proposed scope before any work starts.',
   },
   {
     q: 'Which time zone does Sabin work in?',
-    a: 'Sabin is based in Kathmandu and works in Nepal Time (UTC+5:45). He already works with a team spread across Nepal, Singapore, India and Australia, and plans overlap hours with clients in other regions at the start of a project.',
+    a: 'Nepal Time (UTC+5:45). Overlap hours with your time zone are agreed at the start.',
   },
   {
-    q: 'How does Sabin handle confidential client data?',
-    a: 'Client data stays private. Case studies on this site describe the method and the qualitative outcome, never an employer\'s or client\'s revenue, customers or internal numbers. Screenshots are public images or mocks with fake data.',
+    q: 'Is my data kept private?',
+    a: 'Yes. Case studies never show client revenue, customers or internal numbers. Screenshots use public images or fake data.',
   },
   {
     q: 'What tools does Sabin use?',
-    a: 'Claude Code, the Claude API and n8n for AI and workflow automation, Google Stitch for AI screen design, Remotion for video, Python and R for data work, plus Git, Docker and Cloudflare for building and shipping.',
+    a: 'Claude, ChatGPT, Gemini, Perplexity and n8n for AI. Pipedrive, Apollo.io, Brevo and Mailchimp for sales and email. Notion, Jira, Figma, Python and Looker Studio for product and data.',
   },
 ];

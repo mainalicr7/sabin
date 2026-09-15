@@ -1,6 +1,6 @@
 import type { APIRoute } from 'astro';
 import { getCollection } from 'astro:content';
-import { profile, links, disciplines, services, experience, faqs, projects, LAST_UPDATED } from '../data/site';
+import { profile, links, disciplines, services, experience, faqs, serviceFaqs, roles, projects, LAST_UPDATED } from '../data/site';
 
 // llms.txt: a plain-text map of the site for AI assistants and answer engines.
 export const GET: APIRoute = async ({ site }) => {
@@ -28,11 +28,15 @@ export const GET: APIRoute = async ({ site }) => {
     '',
     `- [Home](${url('/')}): who Sabin is, what he does, selected work`,
     `- [Work](${url('/work/')}): all case studies`,
-    `- [Services](${url('/services/')}): freelance services and ways to work together`,
+    `- [Services](${url('/services/')}): freelance services, roles clients hire Sabin for, pricing and process questions`,
     `- [AI Lab](${url('/ai-lab/')}): the Claude Code setup behind the work, in plain language`,
     `- [About](${url('/about/')}): story, experience, education, events`,
     `- [CV](${url('/cv/')}): printable CV`,
     `- [Contact](${url('/contact/')}): send a project brief`,
+    '',
+    '## Freelance roles Sabin is hired for',
+    '',
+    ...roles.map((r) => `- ${r.title} (also posted as: ${r.alsoCalled.join(', ')}): ${r.does} Proof: ${r.proof.map((p) => (p.href ? `${p.label} ${url(p.href)}` : p.label)).join(', ')}`),
     '',
     '## Things Sabin has built',
     '',
@@ -56,7 +60,7 @@ export const GET: APIRoute = async ({ site }) => {
     '',
     '## FAQ',
     '',
-    ...faqs.flatMap((f) => [`### ${f.q}`, '', f.a, '']),
+    ...[...faqs, ...serviceFaqs].flatMap((f) => [`### ${f.q}`, '', f.a, '']),
   ];
 
   return new Response(lines.join('\n'), { headers: { 'Content-Type': 'text/plain; charset=utf-8' } });

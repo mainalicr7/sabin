@@ -1,0 +1,59 @@
+---
+// Freelance job titles clients post, each tied to proof on this site and the matching service.
+import ArrowUpRight from '@lucide/astro/icons/arrow-up-right';
+import { roles, services } from '../data/site';
+
+interface Props {
+  id?: string;
+  heading?: string;
+  intro?: string;
+}
+
+const {
+  id = 'roles',
+  heading = 'Roles clients hire me for',
+  intro = 'These are the job titles clients use when they post freelance work. Each one links to a real project or case study, so you can check the work before you get in touch.',
+} = Astro.props;
+
+const serviceTitle = (sid: string) => services.find((s) => s.id === sid)?.title ?? '';
+---
+
+<section id={id} class="wrap mt-28 scroll-mt-24" aria-labelledby={`${id}-heading`}>
+  <h2 id={`${id}-heading`} class="text-[clamp(2rem,1.4rem+2.2vw,3rem)]" data-reveal>{heading}</h2>
+  <p class="mt-4 max-w-[62ch] text-lg text-muted">{intro}</p>
+
+  <ul class="mt-10 grid gap-4 md:grid-cols-2">
+    {
+      roles.map((r, i) => (
+        <li id={r.id} class="spotlight flex scroll-mt-24 flex-col rounded-2xl border border-line bg-surface p-7" data-reveal style={`--i:${i % 2}`}>
+          <h3 class="text-xl">{r.title}</h3>
+          <p class="mt-1 text-[0.875rem] text-muted">Also posted as: {r.alsoCalled.join(', ')}</p>
+          <p class="mt-4 text-[0.975rem]">{r.does}</p>
+          <div class="mt-auto pt-6">
+            <p class="text-[0.8125rem] text-muted">Proof</p>
+            <ul class="mt-2 space-y-1.5 text-[0.9375rem]">
+              {r.proof.map((p) => (
+                <li>
+                  {!p.href ? (
+                    <span>{p.label}</span>
+                  ) : p.href.startsWith('http') ? (
+                    <a class="link link-draw" href={p.href} target="_blank" rel="noopener">
+                      {p.label}
+                      <span class="sr-only"> (opens in a new tab)</span>
+                    </a>
+                  ) : (
+                    <a class="link link-draw" href={p.href}>{p.label}</a>
+                  )}
+                </li>
+              ))}
+            </ul>
+            <a href={`/services/#${r.service}`} class="group mt-5 inline-flex items-center gap-1 text-[0.9375rem] text-muted hover:text-ink">
+              Service: {serviceTitle(r.service)}
+              <ArrowUpRight class="size-4 transition-transform duration-200 group-hover:-translate-y-0.5 group-hover:translate-x-0.5" stroke-width={1.5} aria-hidden="true" />
+            </a>
+          </div>
+        </li>
+      ))
+    }
+  </ul>
+</section>

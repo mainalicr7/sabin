@@ -50,19 +50,21 @@ The Open Graph image, sitemap entry, llms.txt entry, JSON-LD and previous/next l
 
 ## Deploy (Netlify)
 
-Netlify was chosen because it has built-in form handling (the contact form works with no server code), a free `*.netlify.app` address, automatic deploys from GitHub and preview deploys for pull requests.
+Netlify was chosen because it has a free `*.netlify.app` address, automatic deploys from GitHub and preview deploys for pull requests.
 
 1. Push this folder to a GitHub repository.
 2. In Netlify: **Add new site > Import an existing project > GitHub**, pick the repository. Build settings are read from `netlify.toml` (`npm run build`, publish `dist`).
-3. Deploy. Canonical URLs, the sitemap and OG tags use Netlify's site URL automatically.
-4. In **Site configuration > Forms**, confirm the `contact` form was detected, then add an email notification under **Form notifications** so briefs reach your inbox.
-5. Optional: rename the site under **Site configuration > Site details** to get a nicer `your-name.netlify.app` address.
+3. In Netlify: **Forms > Enable form detection**. Netlify only finds the contact form on deploys made after this is on.
+4. Deploy. Canonical URLs, the sitemap and OG tags use Netlify's site URL automatically.
+5. In **Forms**, confirm the `contact` form is listed. Then open **Forms > Form notifications > Add notification > Email notification** and enter the inbox that should receive briefs.
+6. Send a test brief from the live contact page and check that it arrives. The form does not deliver on a local preview; that is expected.
+7. Optional: rename the site under **Site configuration > Site details** to get a nicer `your-name.netlify.app` address.
 
 Later, with a custom domain: add it in **Domain management**; HTTPS is automatic. If you set `PUBLIC_SITE_URL` in Netlify environment variables, that URL wins over the default.
 
 ### Other hosts
 
-The site is plain static files, so Cloudflare Pages and Vercel also work (build `npm run build`, output `dist`). The site URL is detected from their build variables too. Two differences: the contact form needs Netlify, so replace it with a form service or a Worker on those hosts, and the security headers in `netlify.toml` must be moved to that host's header config.
+The site is plain static files, so Cloudflare Pages and Vercel also work (build `npm run build`, output `dist`). The site URL is detected from their build variables too. The contact form uses Netlify Forms by default. To use it on another host, add a Web3Forms access key to `WEB3FORMS_KEY` in `src/pages/contact/index.astro`; the form then sends through Web3Forms instead. One difference: the security headers in `netlify.toml` must be moved to that host's header config.
 
 ## What is inside
 
