@@ -8,8 +8,9 @@ import { readdirSync, readFileSync, statSync, existsSync } from 'node:fs';
 import { join, relative, sep } from 'node:path';
 
 const DIST = 'dist';
-// On a real deploy build (Netlify sets NETLIFY=true) localhost URLs are a failure.
-const PRODUCTION = process.argv.includes('--production') || process.env.NETLIFY === 'true';
+// On a real deploy build (Cloudflare Pages sets CF_PAGES=1) localhost URLs are a failure.
+const PRODUCTION =
+  process.argv.includes('--production') || process.env.CF_PAGES === '1' || process.env.NETLIFY === 'true';
 const problems = [];
 const warn = (file, msg) => problems.push(`${file}: ${msg}`);
 

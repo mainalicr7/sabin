@@ -1,6 +1,6 @@
 # Sabin Mainali - portfolio website
 
-Personal portfolio of Sabin Mainali, AI-native product manager. Static site built with Astro 7 and Tailwind CSS 4, deployed on Netlify.
+Personal portfolio of Sabin Mainali, AI-native product manager. Static site built with Astro 7 and Tailwind CSS 4, deployed on Cloudflare Pages.
 
 ## Run it locally
 
@@ -48,28 +48,24 @@ The Open Graph image, sitemap entry, llms.txt entry, JSON-LD and previous/next l
 
 **Confidentiality rule:** no Calilio revenue, margins, user counts, pricing internals, vendor contract terms, funding or exit details, customer names or internal screenshots. Outcomes stay qualitative unless a number is approved.
 
-## Deploy (Netlify)
+## Deploy (Cloudflare Pages)
 
-Netlify was chosen because it has a free `*.netlify.app` address, automatic deploys from GitHub and preview deploys for pull requests.
+Cloudflare Pages was chosen because the free plan has unlimited requests and bandwidth, never pauses a site, and Cloudflare Registrar sells domains at cost.
 
-1. Push this folder to a GitHub repository.
-2. In Netlify: **Add new site > Import an existing project > GitHub**, pick the repository. Build settings are read from `netlify.toml` (`npm run build`, publish `dist`).
-3. In Netlify: **Forms > Enable form detection**. Netlify only finds the contact form on deploys made after this is on.
-4. Deploy. Canonical URLs, the sitemap and OG tags use Netlify's site URL automatically.
-5. In **Forms**, confirm the `contact` form is listed. Then open **Forms > Form notifications > Add notification > Email notification** and enter the inbox that should receive briefs.
-6. Send a test brief from the live contact page and check that it arrives. The form does not deliver on a local preview; that is expected.
-7. Optional: rename the site under **Site configuration > Site details** to get a nicer `your-name.netlify.app` address.
+1. In Cloudflare: **Workers & Pages > Create > Pages > Connect to Git**, pick `mainalicr7/sabin`, branch `main`.
+2. Build settings: framework preset **Astro**, build command `npm run build && npm run verify`, output directory `dist`. Node comes from `.node-version` (22).
+3. **Settings > Variables and Secrets**, production: `PUBLIC_SITE_URL` = the live address (for example `https://sabinmainali.pages.dev`, later `https://sabinmainali.com`). The build fails without it, so canonical links, the sitemap and OG tags are never wrong.
+4. The contact form needs a Web3Forms access key in `WEB3FORMS_KEY` (`src/pages/contact/index.astro`). The Cloudflare build fails while it is empty, so a broken form is never shipped.
+5. Send a test brief from the live contact page and check that it arrives.
 
-Later, with a custom domain: add it in **Domain management**; HTTPS is automatic. If you set `PUBLIC_SITE_URL` in Netlify environment variables, that URL wins over the default.
+Custom domain: **Custom domains > Set up a domain** on the Pages project, then update `PUBLIC_SITE_URL` and redeploy. HTTPS is automatic. Every push to `main` deploys; other branches get preview URLs.
 
-### Other hosts
-
-The site is plain static files, so Cloudflare Pages and Vercel also work (build `npm run build`, output `dist`). The site URL is detected from their build variables too. The contact form uses Netlify Forms by default. To use it on another host, add a Web3Forms access key to `WEB3FORMS_KEY` in `src/pages/contact/index.astro`; the form then sends through Web3Forms instead. One difference: the security headers in `netlify.toml` must be moved to that host's header config.
+Security headers and asset caching live in `public/_headers`.
 
 ## What is inside
 
 - `src/pages/` - Home, Work, case study template, Services, AI Lab, About, CV (print to PDF), Contact, thank-you page, 404, plus `llms.txt`, `robots.txt` and OG image endpoints.
 - `src/components/SystemMap.astro` - the interactive discipline map in the hero.
 - `src/lib/seo.ts` - JSON-LD builders (Person, WebSite, BreadcrumbList, FAQPage).
-- `netlify.toml` - build settings, security headers (CSP, HSTS, nosniff, frame and referrer policy) and asset caching.
+- `public/_headers` - security headers (CSP, HSTS, nosniff, frame and referrer policy) and asset caching for Cloudflare Pages.
 - Fonts are self-hosted through Fontsource (Fraunces and Instrument Sans). No third-party requests by default.

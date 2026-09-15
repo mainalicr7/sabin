@@ -26,10 +26,15 @@ const direct = [
 // The form is always shown. Delivery uses one of two providers:
 // - Web3Forms (web3forms.com), when WEB3FORMS_KEY is set. Emails every brief to the inbox
 //   the key was created for. Works on any host and on localhost. The key is safe to be public.
-// - Netlify Forms, when the key is empty. Works on the live Netlify site once
+// - Netlify Forms, when the key is empty. Only works if the site is hosted on Netlify, once
 //   "Enable form detection" is on (Netlify > Forms) and an email notification is added.
 //   It does not work on a local preview, only on Netlify.
 const WEB3FORMS_KEY = '';
+// Netlify Forms cannot receive posts on Cloudflare Pages. Fail the deploy instead of
+// shipping a contact form that silently loses every brief.
+if (!WEB3FORMS_KEY && process.env.CF_PAGES === '1') {
+  throw new Error('Contact form: set WEB3FORMS_KEY before deploying to Cloudflare Pages.');
+}
 const provider = WEB3FORMS_KEY ? 'web3forms' : 'netlify';
 const formAction = provider === 'web3forms' ? 'https://api.web3forms.com/submit' : '/contact/thanks/';
 const thanksUrl = absolute(Astro.site, '/contact/thanks/');

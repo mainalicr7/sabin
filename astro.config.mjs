@@ -13,6 +13,11 @@ function resolveSite() {
   if (env.NETLIFY && env.CONTEXT === 'production' && env.URL) return env.URL;
   if (env.NETLIFY && env.DEPLOY_PRIME_URL) return env.DEPLOY_PRIME_URL;
   if (env.VERCEL_PROJECT_PRODUCTION_URL) return `https://${env.VERCEL_PROJECT_PRODUCTION_URL}`;
+  // CF_PAGES_URL is the per-deploy hash URL, never the real address. A production
+  // build on Cloudflare must set PUBLIC_SITE_URL, or canonical links would be wrong.
+  if (env.CF_PAGES === '1' && env.CF_PAGES_BRANCH === 'main') {
+    throw new Error('Set PUBLIC_SITE_URL in Cloudflare Pages > Settings > Variables (e.g. https://sabinmainali.pages.dev).');
+  }
   if (env.CF_PAGES_URL) return env.CF_PAGES_URL;
   return 'http://localhost:4321';
 }
