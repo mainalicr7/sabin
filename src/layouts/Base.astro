@@ -56,6 +56,7 @@ const graph = {
               ? 'light'
               : 'dark';
         document.documentElement.setAttribute('data-theme', theme);
+        document.documentElement.classList.add('js');
       })();
     </script>
     <title>{fullTitle}</title>
@@ -68,6 +69,8 @@ const graph = {
     <meta name="author" content={profile.name} />
     <meta name="theme-color" content="#0e1013" media="(prefers-color-scheme: dark)" />
     <meta name="theme-color" content="#f2f2ee" media="(prefers-color-scheme: light)" />
+    <link rel="preload" href="/fonts/cabinet-grotesk-800.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/satoshi-400.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="sitemap" href="/sitemap-index.xml" />
     <link rel="alternate" type="text/plain" href="/llms.txt" title="llms.txt" />
@@ -102,6 +105,36 @@ const graph = {
       <slot />
     </main>
     <Footer />
+    <script>
+      // Scroll reveal and card spotlight. Reveal fails open: without IntersectionObserver everything shows.
+      const reveal = document.querySelectorAll<HTMLElement>('[data-reveal]');
+      if (!('IntersectionObserver' in window)) {
+        reveal.forEach((el) => el.classList.add('is-in'));
+      } else {
+        const io = new IntersectionObserver(
+          (entries) => {
+            entries.forEach((entry) => {
+              if (entry.isIntersecting) {
+                entry.target.classList.add('is-in');
+                io.unobserve(entry.target);
+              }
+            });
+          },
+          { rootMargin: '0px 0px -8% 0px', threshold: 0.08 },
+        );
+        reveal.forEach((el) => io.observe(el));
+      }
+
+      if (window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
+        document.querySelectorAll<HTMLElement>('.spotlight').forEach((card) => {
+          card.addEventListener('pointermove', (e) => {
+            const r = card.getBoundingClientRect();
+            card.style.setProperty('--mx', `${e.clientX - r.left}px`);
+            card.style.setProperty('--my', `${e.clientY - r.top}px`);
+          });
+        });
+      }
+    </script>
     {
       analytics.cloudflareToken && (
         <script

@@ -1,6 +1,49 @@
 @import 'tailwindcss';
-@import '@fontsource-variable/geist/wght.css';
 @import '@fontsource-variable/geist-mono/wght.css';
+
+/* Cabinet Grotesk (display) and Satoshi (text) by Indian Type Foundry, self-hosted from Fontshare (ITF Free Font License). */
+@font-face {
+  font-family: 'Cabinet Grotesk';
+  src: url('/fonts/cabinet-grotesk-500.woff2') format('woff2');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Cabinet Grotesk';
+  src: url('/fonts/cabinet-grotesk-700.woff2') format('woff2');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Cabinet Grotesk';
+  src: url('/fonts/cabinet-grotesk-800.woff2') format('woff2');
+  font-weight: 800;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Satoshi';
+  src: url('/fonts/satoshi-400.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Satoshi';
+  src: url('/fonts/satoshi-500.woff2') format('woff2');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Satoshi';
+  src: url('/fonts/satoshi-700.woff2') format('woff2');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
 
 /* Theme switch is driven by [data-theme] on <html>, set before paint. */
 @custom-variant dark (&:where([data-theme='dark'], [data-theme='dark'] *));
@@ -59,8 +102,8 @@
   --color-tile-muted: var(--tile-muted);
   --color-tile-line: var(--tile-line);
 
-  --font-display: 'Geist Variable', ui-sans-serif, system-ui, 'Segoe UI', Roboto, sans-serif;
-  --font-sans: 'Geist Variable', ui-sans-serif, system-ui, 'Segoe UI', Roboto, sans-serif;
+  --font-display: 'Cabinet Grotesk', ui-sans-serif, system-ui, 'Segoe UI', Roboto, sans-serif;
+  --font-sans: 'Satoshi', ui-sans-serif, system-ui, 'Segoe UI', Roboto, sans-serif;
   --font-mono: 'Geist Mono Variable', ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
 
   --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);
@@ -82,10 +125,9 @@
 
   body {
     min-height: 100dvh;
-    font-size: 1rem;
+    font-size: 1.0625rem;
     line-height: 1.6;
     font-kerning: normal;
-    font-feature-settings: 'ss01' 0;
     overflow-x: hidden;
   }
 
@@ -105,9 +147,9 @@
   h3 {
     font-family: var(--font-display);
     text-wrap: balance;
-    font-weight: 600;
-    letter-spacing: -0.03em;
-    line-height: 1.1;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 1.05;
   }
 
   p {
@@ -193,9 +235,33 @@
     background: var(--text);
     color: var(--bg);
   }
-  .btn-primary:hover {
+  .btn-primary {
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+  }
+  /* Accent fill sweeps in from the left on hover. */
+  .btn-primary::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
     background: var(--accent);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 320ms var(--ease-out-soft);
+  }
+  .btn-primary:hover {
     color: var(--on-accent);
+  }
+  .btn-primary:hover::before {
+    transform: scaleX(1);
+  }
+  .btn .btn-icon {
+    transition: transform 320ms var(--ease-out-soft);
+  }
+  .btn:hover .btn-icon {
+    transform: translate(2px, -2px);
   }
   .btn-ghost {
     border-color: var(--line-strong);
@@ -271,7 +337,10 @@
   }
 }
 
-/* One orchestrated page-load moment on the home hero. */
+/* ---------- Motion system ----------
+   Durations: 180ms feedback, 320ms state change, 700ms entrance.
+   Every effect below is switched off by the reduced-motion block at the end. */
+
 @keyframes rise {
   from {
     opacity: 0;
@@ -284,6 +353,108 @@
 }
 .rise {
   animation: rise 700ms var(--ease-out-soft) both;
+}
+
+/* Hero headline: each word slides up from behind a mask. */
+.word-mask {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: bottom;
+  padding-bottom: 0.1em;
+  margin-bottom: -0.1em;
+}
+.word {
+  display: inline-block;
+  animation: word-up 820ms var(--ease-out-soft) both;
+  animation-delay: calc(80ms + var(--i, 0) * 55ms);
+}
+@keyframes word-up {
+  from {
+    transform: translateY(110%);
+  }
+  to {
+    transform: none;
+  }
+}
+
+/* Scroll reveal. Content is only hidden once JS is running, so it never stays invisible. */
+html.js [data-reveal] {
+  opacity: 0;
+  transform: translateY(22px);
+  transition: opacity 700ms var(--ease-out-soft), transform 700ms var(--ease-out-soft);
+  transition-delay: calc(var(--i, 0) * 70ms);
+}
+html.js [data-reveal].is-in {
+  opacity: 1;
+  transform: none;
+}
+
+/* Cursor spotlight on cards (fine pointers only, position set by JS). */
+.spotlight {
+  position: relative;
+  isolation: isolate;
+}
+.spotlight::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  pointer-events: none;
+  opacity: 0;
+  background: radial-gradient(420px circle at var(--mx, 50%) var(--my, 50%), color-mix(in srgb, var(--accent) 12%, transparent), transparent 60%);
+  transition: opacity 320ms ease;
+}
+.spotlight:hover::after {
+  opacity: 1;
+}
+.lift {
+  transition: transform 320ms var(--ease-out-soft), border-color 320ms ease, box-shadow 320ms ease;
+}
+.lift:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 22px 40px -28px color-mix(in srgb, var(--accent) 45%, transparent);
+}
+
+/* Infinite marquee (one per page). */
+.marquee {
+  display: flex;
+  overflow: hidden;
+  mask-image: linear-gradient(to right, transparent, black 8%, black 92%, transparent);
+}
+.marquee-track {
+  display: flex;
+  flex-shrink: 0;
+  gap: 0.75rem;
+  padding-right: 0.75rem;
+  animation: marquee 38s linear infinite;
+}
+.marquee:hover .marquee-track {
+  animation-play-state: paused;
+}
+@keyframes marquee {
+  to {
+    transform: translateX(-100%);
+  }
+}
+
+/* Screenshot settles into place while it scrolls into view (scroll-driven; static where unsupported). */
+@supports (animation-timeline: view()) {
+  .settle {
+    animation: settle linear both;
+    animation-timeline: view();
+    animation-range: entry 0% cover 40%;
+  }
+  @keyframes settle {
+    from {
+      transform: perspective(1400px) rotateX(12deg) scale(0.94);
+      opacity: 0.5;
+    }
+    to {
+      transform: none;
+      opacity: 1;
+    }
+  }
 }
 
 /* Native cross-document page transitions. No client router, so forms post normally. */
@@ -306,6 +477,29 @@
   }
   @view-transition {
     navigation: none;
+  }
+  html.js [data-reveal] {
+    opacity: 1;
+    transform: none;
+  }
+  .word,
+  .settle,
+  .marquee-track {
+    animation: none !important;
+    transform: none !important;
+    opacity: 1 !important;
+  }
+  .marquee {
+    mask-image: none;
+  }
+  .marquee-track {
+    flex-wrap: wrap;
+  }
+  .marquee-track[aria-hidden='true'] {
+    display: none;
+  }
+  .lift:hover {
+    transform: none;
   }
 }
 

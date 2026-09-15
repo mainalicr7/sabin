@@ -15,7 +15,7 @@ const { items, id = 'faq' } = Astro.props;
     <div class="md:col-span-8">
       {
         items.map((f) => (
-          <details class="faq group border-t border-line last:border-b">
+          <details class="faq group border-t border-line last:border-b" data-reveal>
             <summary class="flex min-h-14 list-none items-center justify-between gap-6 py-5 text-lg [&::-webkit-details-marker]:hidden">
               <span class="faq-q font-medium">{f.q}</span>
               <span class="faq-mark relative size-4 shrink-0" aria-hidden="true" />
@@ -48,5 +48,35 @@ const { items, id = 'faq' } = Astro.props;
   }
   .faq summary:hover .faq-q {
     color: var(--accent);
+  }
+  .faq-q {
+    transition: color 200ms ease;
+  }
+  /* Smooth height animation where ::details-content is supported; instant elsewhere. */
+  .faq {
+    interpolate-size: allow-keywords;
+  }
+  .faq::details-content {
+    block-size: 0;
+    overflow: hidden;
+    transition: block-size 420ms var(--ease-out-soft), content-visibility 420ms allow-discrete;
+  }
+  .faq[open]::details-content {
+    block-size: auto;
+  }
+  .faq > p {
+    opacity: 0;
+    transform: translateY(-6px);
+    transition: opacity 320ms ease 60ms, transform 420ms var(--ease-out-soft);
+  }
+  .faq[open] > p {
+    opacity: 1;
+    transform: none;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .faq > p {
+      opacity: 1;
+      transform: none;
+    }
   }
 </style>

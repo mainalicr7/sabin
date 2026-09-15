@@ -1,6 +1,5 @@
 ---
 import Base from '../layouts/Base.astro';
-import ContactCta from '../components/ContactCta.astro';
 import Faq from '../components/Faq.astro';
 import { services, engagementTypes, method, faqs, profile, disciplines } from '../data/site';
 import { absolute, breadcrumbNode } from '../lib/seo';
@@ -129,5 +128,4 @@ const disciplineName = (id: string) => disciplines.find((d) => d.id === id)?.sho
   </section>
 
   <Faq items={faqs} />
-  <ContactCta />
 </Base>

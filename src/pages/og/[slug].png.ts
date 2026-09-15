@@ -8,12 +8,13 @@ import { profile } from '../../data/site';
 
 // Open Graph images are rendered at build time: 1200x630 PNG per page.
 
-const fontDir = (pkg: string) => join(process.cwd(), 'node_modules', '@fontsource', pkg, 'files');
-const display = readFileSync(join(fontDir('geist'), 'geist-latin-600-normal.woff'));
-const sans = readFileSync(join(fontDir('geist'), 'geist-latin-500-normal.woff'));
+// .woff copies of the site fonts live in scripts/fonts because satori cannot read woff2.
+const fontFile = (name: string) => readFileSync(join(process.cwd(), 'scripts', 'fonts', name));
+const display = fontFile('cabinet-grotesk-800.woff');
+const sans = fontFile('satoshi-500.woff');
 
 const pages: Record<string, { title: string; label: string }> = {
-  home: { title: 'Product, design, data and AI as one system.', label: 'Product manager' },
+  home: { title: 'Product manager and builder of Chatonics.', label: 'Product manager' },
   work: { title: 'Case studies in product, design, content, data and AI.', label: 'Work' },
   services: { title: 'Freelance product, design, content, data and AI work.', label: 'Services' },
   about: { title: 'From IT operations to AI-native product management.', label: 'About' },
@@ -50,16 +51,16 @@ export const GET: APIRoute = async ({ props }) => {
       padding: '72px 80px',
       background: '#0c0c0e',
       color: '#f1f1f3',
-      fontFamily: 'Geist',
+      fontFamily: 'Satoshi',
     },
     [
       el('div', { display: 'flex', alignItems: 'center', gap: '16px', fontSize: '28px', color: '#a1a1aa' }, [
         el('div', { width: '14px', height: '14px', borderRadius: '999px', background: '#7c95ff' }),
         el('div', { display: 'flex' }, label),
       ]),
-      el('div', { display: 'flex', fontFamily: 'Geist Display', fontSize: `${size}px`, lineHeight: 1.05, letterSpacing: '-2.5px', maxWidth: '1000px' }, title),
+      el('div', { display: 'flex', fontFamily: 'Cabinet Grotesk', fontSize: `${size}px`, lineHeight: 1.02, letterSpacing: '-1.5px', maxWidth: '1000px' }, title),
       el('div', { display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', borderTop: '1px solid #26262b', paddingTop: '28px' }, [
-        el('div', { display: 'flex', fontFamily: 'Geist Display', fontSize: '34px', letterSpacing: '-0.5px' }, profile.name),
+        el('div', { display: 'flex', fontFamily: 'Cabinet Grotesk', fontSize: '36px', letterSpacing: '-0.3px' }, profile.name),
         el('div', { display: 'flex', fontSize: '24px', color: '#a1a1aa' }, `${profile.location.city}, ${profile.location.country}`),
       ]),
     ],
@@ -69,8 +70,8 @@ export const GET: APIRoute = async ({ props }) => {
     width: 1200,
     height: 630,
     fonts: [
-      { name: 'Geist Display', data: display, weight: 600, style: 'normal' },
-      { name: 'Geist', data: sans, weight: 500, style: 'normal' },
+      { name: 'Cabinet Grotesk', data: display, weight: 800, style: 'normal' },
+      { name: 'Satoshi', data: sans, weight: 500, style: 'normal' },
     ],
   });
   const png = await sharp(Buffer.from(svg)).png({ compressionLevel: 9 }).toBuffer();

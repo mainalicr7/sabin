@@ -1,6 +1,6 @@
 import type { APIRoute } from 'astro';
 import { getCollection } from 'astro:content';
-import { profile, links, disciplines, services, experience, faqs, LAST_UPDATED } from '../data/site';
+import { profile, links, disciplines, services, experience, faqs, projects, LAST_UPDATED } from '../data/site';
 
 // llms.txt: a plain-text map of the site for AI assistants and answer engines.
 export const GET: APIRoute = async ({ site }) => {
@@ -33,6 +33,10 @@ export const GET: APIRoute = async ({ site }) => {
     `- [About](${url('/about/')}): story, experience, education, events`,
     `- [CV](${url('/cv/')}): printable CV`,
     `- [Contact](${url('/contact/')}): send a project brief`,
+    '',
+    '## Things Sabin has built',
+    '',
+    ...projects.map((p) => `- ${p.name} (${p.kind})${p.url ? ` ${p.url}` : ''}: ${p.summary}`),
     '',
     '## Case studies',
     '',

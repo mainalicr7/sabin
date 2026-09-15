@@ -80,12 +80,14 @@ const first = payload.find((p) => p.id === initial)!;
           data-side={n.side}
           aria-pressed={n.id === initial ? 'true' : 'false'}
           aria-controls="system-map-detail"
-          aria-label={n.name}
         >
           <span class="node-disc">
             <DisciplineIcon id={n.id} class="size-[1.1rem]" />
           </span>
-          <span class="node-label" aria-hidden="true">{n.short}</span>
+          <span class="node-label">
+            {n.short}
+            <span class="sr-only">, {n.name}</span>
+          </span>
         </button>
       ))
     }

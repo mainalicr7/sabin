@@ -2,7 +2,6 @@
 import { getCollection } from 'astro:content';
 import Base from '../../layouts/Base.astro';
 import CaseRow from '../../components/CaseRow.astro';
-import ContactCta from '../../components/ContactCta.astro';
 import { disciplines, profile } from '../../data/site';
 import { absolute, breadcrumbNode } from '../../lib/seo';
 
@@ -57,7 +56,6 @@ const schema = [
     </div>
   </section>
 
-  <ContactCta />
 </Base>
 
 <style>

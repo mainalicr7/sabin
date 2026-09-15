@@ -14,7 +14,7 @@ export const profile = {
   positioning:
     'I am an AI-native product manager. I ship the whole system: product, growth, design, data, content, and the AI automation that runs them.',
   shortBio:
-    'Sabin Mainali is a product manager based in Kathmandu, Nepal. He leads product and growth for Calilio, a cloud phone system for businesses, and takes freelance work in product, design systems, help centers, data analysis and AI automation.',
+    'Sabin Mainali is a product manager and builder based in Kathmandu, Nepal. He leads product and growth for Calilio, a cloud phone system for businesses, built Chatonics, an AI-assisted customer messaging platform, and takes freelance work in product, design systems, help centers, data analysis and AI automation.',
   location: { city: 'Kathmandu', country: 'Nepal', timezone: 'Nepal Time (UTC+5:45)' },
   experienceSince: 2022,
   employer: {
@@ -42,6 +42,67 @@ export const analytics = {
   cloudflareToken: '',
 };
 
+
+// Products and tools Sabin has built himself, outside client and employer case studies.
+export type ProjectIcon = 'chat' | 'radar' | 'tracker' | 'flow';
+
+export const projects: {
+  id: string;
+  name: string;
+  kind: string;
+  summary: string;
+  features: string[];
+  url: string;
+  icon: ProjectIcon;
+  caseStudy?: string;
+}[] = [
+  {
+    id: 'chatonics',
+    name: 'Chatonics',
+    kind: 'SaaS product, live',
+    summary:
+      'An AI-assisted omnichannel customer messaging platform. It brings WhatsApp, Instagram, Messenger, Telegram, email, SMS and more into one shared inbox, and helps small teams reply faster with AI.',
+    features: [
+      'AI agent and workspace copilot',
+      'Unified shared inbox',
+      'Live chat widget',
+      'Ticketing and SLA timers',
+      'Knowledge base that grounds the AI',
+      'Two-way translation',
+    ],
+    url: 'https://chatonics.com',
+    icon: 'chat',
+    caseStudy: 'chatonics',
+  },
+  {
+    id: 'competitor-watch',
+    name: 'Competitor Watch',
+    kind: 'Internal tool',
+    summary: 'An automated app that monitors competitors and delivers a daily brief on a schedule, so product decisions start from current market facts.',
+    features: ['Scheduled monitoring', 'Daily competitor brief'],
+    url: '',
+    icon: 'radar',
+  },
+  {
+    id: 'sales-tracker',
+    name: 'Sales tracker',
+    kind: 'Internal tool',
+    summary: 'A sales tracker built for the sales team, working alongside the meeting rhythm playbook and lead scoring rules.',
+    features: ['Sales activity tracking', 'Lead follow-up'],
+    url: '',
+    icon: 'tracker',
+  },
+  {
+    id: 'n8n-automations',
+    name: 'n8n automations',
+    kind: 'Workflow automation',
+    summary: 'Workflow automations built in n8n that connect everyday tools and remove repeated manual steps from the team week.',
+    features: ['Tool-to-tool workflows', 'Scheduled jobs'],
+    url: '',
+    icon: 'flow',
+  },
+];
+
 export type DisciplineId = 'product' | 'design' | 'content' | 'data' | 'sales' | 'motion' | 'ai';
 
 export const disciplines: {
@@ -59,7 +120,7 @@ export const disciplines: {
     summary: 'I own a SaaS roadmap end to end: what gets built, in what order, and why.',
     points: [
       'Roadmap, feature scoping and prioritization across web and mobile',
-      'Competitive intelligence, including an automated daily competitor brief',
+      'Competitor Watch: an automated daily competitor brief',
       'Role charters with decision rights and KPI tables',
       'Integration scoping and compliance-facing pages',
     ],
@@ -112,10 +173,10 @@ export const disciplines: {
     points: [
       'Daily, weekly and monthly sales meeting playbook',
       'Sales readiness certification with a 100-point rubric',
-      'Lead recovery callsheets with lead scoring and tiering',
+      'A sales tracker plus lead recovery callsheets with scoring and tiering',
       'Lifecycle and outreach email templates that survive dark mode',
     ],
-    tags: ['Playbooks', 'Lead scoring', 'Email templates'],
+    tags: ['Sales tracker', 'Playbooks', 'Lead scoring'],
   },
   {
     id: 'motion',
@@ -137,11 +198,12 @@ export const disciplines: {
     summary: 'I build the AI tooling that runs my own work: skills, checks, helpers and memory.',
     points: [
       'A Claude Code setup with custom skills, subagents and hooks',
+      'n8n workflow automations that connect everyday tools',
       'Automatic guards for punctuation, hidden characters and scope drift',
       'A knowledge graph over company documents for fast retrieval',
       'Reusable prompt systems for sales and support teams',
     ],
-    tags: ['Claude Code', 'Skills and hooks', 'Agents'],
+    tags: ['Claude Code', 'n8n', 'Agents'],
   },
 ];
 
@@ -222,7 +284,7 @@ export const services: {
     answer: 'A working AI setup for a real workflow in your team, with checks that stop bad output before it ships.',
     deliverables: [
       'Workflow audit to find the steps worth automating',
-      'Custom Claude skills, prompts or scheduled agents',
+      'Custom Claude skills, n8n workflows or scheduled agents',
       'Quality gates and a short handover guide',
     ],
     fit: 'Your team uses AI in chat windows and wants it built into the actual work.',
@@ -375,7 +437,7 @@ export const events = [
 ];
 
 export const toolGroups = [
-  { name: 'AI', tools: ['Claude Code', 'Claude API', 'Google Stitch'] },
+  { name: 'AI and automation', tools: ['Claude Code', 'Claude API', 'n8n', 'Google Stitch'] },
   { name: 'Data', tools: ['Python', 'R', 'Stripe exports', 'Excel'] },
   { name: 'Build', tools: ['Git', 'Docker', 'Cloudflare', 'HTML email'] },
   { name: 'Design and video', tools: ['Remotion', 'Canva', 'Microsoft Office'] },
@@ -398,7 +460,7 @@ export const skillGroups = [
 export const faqs = [
   {
     q: 'What does Sabin Mainali do?',
-    a: 'Sabin Mainali is a product manager in Kathmandu, Nepal. He leads product and growth at Calilio, a cloud phone system for businesses, and does freelance work in product strategy, design systems, help centers, data analysis, sales enablement and AI automation.',
+    a: 'Sabin Mainali is a product manager and builder in Kathmandu, Nepal. He leads product and growth at Calilio, a cloud phone system for businesses, built Chatonics, an AI-assisted customer messaging platform, and does freelance work in product strategy, design systems, help centers, data analysis and AI automation.',
   },
   {
     q: 'What freelance projects does Sabin take?',
@@ -418,6 +480,6 @@ export const faqs = [
   },
   {
     q: 'What tools does Sabin use?',
-    a: 'Claude Code and the Claude API for AI automation, Google Stitch for AI screen design, Remotion for video, Python and R for data work, plus Git, Docker and Cloudflare for building and shipping.',
+    a: 'Claude Code, the Claude API and n8n for AI and workflow automation, Google Stitch for AI screen design, Remotion for video, Python and R for data work, plus Git, Docker and Cloudflare for building and shipping.',
   },
 ];

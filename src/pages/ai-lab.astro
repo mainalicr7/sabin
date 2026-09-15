@@ -1,6 +1,5 @@
 ---
 import Base from '../layouts/Base.astro';
-import ContactCta from '../components/ContactCta.astro';
 import Faq from '../components/Faq.astro';
 import { absolute, breadcrumbNode, faqNode } from '../lib/seo';
 import { LAST_UPDATED } from '../data/site';
@@ -188,5 +187,4 @@ const schema = [
   </section>
 
   <Faq items={labFaqs} id="lab-faq" />
-  <ContactCta heading="Want AI built into how your team actually works?" />
 </Base>

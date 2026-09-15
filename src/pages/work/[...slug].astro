@@ -1,7 +1,6 @@
 ---
 import { getCollection, render, type CollectionEntry } from 'astro:content';
 import Base from '../../layouts/Base.astro';
-import ContactCta from '../../components/ContactCta.astro';
 import { disciplines } from '../../data/site';
 import { absolute, breadcrumbNode } from '../../lib/seo';
 
@@ -174,5 +173,4 @@ const schema = [
     </nav>
   </article>
 
-  <ContactCta heading={`Need work like this for your team?`} />
 </Base>

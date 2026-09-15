@@ -1,8 +1,6 @@
 ---
 import Sun from '@lucide/astro/icons/sun';
 import Moon from '@lucide/astro/icons/moon';
-import Menu from '@lucide/astro/icons/menu';
-import { profile } from '../data/site';
 
 const nav = [
   { href: '/work/', label: 'Work' },
@@ -14,24 +12,24 @@ const nav = [
 const path = Astro.url.pathname;
 const isCurrent = (href: string) => path === href || path.startsWith(href);
 const current = (href: string) => (path === href ? 'page' : isCurrent(href) ? 'true' : undefined);
+const mobileNav = [...nav, { href: '/contact/', label: 'Contact' }];
 ---
 
-<header class="sticky top-0 z-50 border-b border-line bg-bg/85 backdrop-blur-md">
+<header class="site-header sticky top-0 z-50 border-b border-transparent bg-bg/80 backdrop-blur-md transition-[border-color] duration-300" data-header>
   <div class="wrap flex h-16 items-center justify-between gap-4">
-    <a href="/" class="group flex items-baseline gap-2 no-underline" aria-label={`${profile.name}, home`}>
-      <span class="text-[1.05rem] font-semibold tracking-[-0.02em]">
-        Sabin Mainali
-      </span>
+    <a href="/" class="flex items-center gap-2.5 no-underline">
+      <span class="grid size-8 place-items-center rounded-lg bg-ink font-display text-[0.95rem] font-extrabold text-bg" aria-hidden="true">S</span>
+      <span class="font-display text-[1.15rem] font-bold tracking-[-0.01em]">Sabin Mainali</span>
     </a>
 
     <nav aria-label="Primary" class="hidden md:block">
-      <ul class="flex items-center gap-7 text-[0.95rem]">
+      <ul class="flex items-center gap-1 text-[0.9375rem]">
         {
           nav.map((item) => (
             <li>
               <a
                 href={item.href}
-                class:list={['link link-draw py-2', isCurrent(item.href) && 'text-accent !bg-[length:100%_1px]']}
+                class:list={['nav-link relative isolate rounded-full px-3.5 py-2 transition-colors duration-200 hover:text-ink', isCurrent(item.href) ? 'text-ink' : 'text-muted']}
                 aria-current={current(item.href)}
               >
                 {item.label}
@@ -42,80 +40,159 @@ const current = (href: string) => (path === href ? 'page' : isCurrent(href) ? 't
       </ul>
     </nav>
 
-    <div class="flex items-center gap-2">
+    <div class="flex items-center gap-1.5">
       <button
         type="button"
         data-theme-toggle
-        class="inline-flex size-11 items-center justify-center rounded-full text-muted transition-colors hover:text-ink"
+        class="relative inline-flex size-11 items-center justify-center rounded-full text-muted transition-colors hover:text-ink"
         aria-label="Switch to light theme"
       >
-        <Sun class="theme-icon-sun hidden size-[1.15rem]" aria-hidden="true" stroke-width={1.75} />
-        <Moon class="theme-icon-moon size-[1.15rem]" aria-hidden="true" stroke-width={1.75} />
+        <Sun class="theme-icon theme-icon-sun absolute size-[1.15rem]" aria-hidden="true" stroke-width={1.75} />
+        <Moon class="theme-icon theme-icon-moon absolute size-[1.15rem]" aria-hidden="true" stroke-width={1.75} />
       </button>
       <a href="/contact/" class="btn btn-primary hidden !min-h-10 !px-4 !text-[0.9rem] sm:inline-flex">Hire me</a>
 
-      <details class="mobile-nav relative md:hidden">
-        <summary
-          class="inline-flex size-11 list-none items-center justify-center rounded-full text-ink [&::-webkit-details-marker]:hidden"
-          aria-label="Open menu"
-        >
-          <Menu class="size-5" aria-hidden="true" stroke-width={1.75} />
-        </summary>
-        <nav
-          aria-label="Mobile"
-          class="absolute right-0 top-13 w-[min(18rem,calc(100vw-2rem))] rounded-2xl border border-line bg-surface p-2 shadow-[0_18px_40px_-20px_rgb(0_0_0/0.45)]"
-        >
-          <ul>
-            {
-              [...nav, { href: '/contact/', label: 'Contact' }].map((item) => (
-                <li>
-                  <a
-                    href={item.href}
-                    class:list={[
-                      'flex min-h-11 items-center rounded-xl px-4 text-base hover:bg-accent-soft',
-                      isCurrent(item.href) && 'text-accent',
-                    ]}
-                    aria-current={current(item.href)}
-                  >
-                    {item.label}
-                  </a>
-                </li>
-              ))
-            }
-          </ul>
-        </nav>
-      </details>
+      <button
+        type="button"
+        class="relative inline-flex size-11 items-center justify-center rounded-full md:hidden"
+        aria-expanded="false"
+        aria-controls="mobile-menu"
+        data-menu-button
+      >
+        <span class="sr-only" data-menu-label>Open menu</span>
+        <span class="menu-bars" aria-hidden="true"><span></span><span></span></span>
+      </button>
     </div>
+  </div>
+
+  <div id="mobile-menu" class="mobile-menu absolute inset-x-0 top-full border-b border-line bg-bg shadow-[0_24px_40px_-24px_rgb(0_0_0/0.35)] md:hidden" data-menu hidden>
+    <nav aria-label="Mobile" class="wrap">
+      <div class="pb-6">
+        <ul class="border-t border-line pt-2">
+          {
+            mobileNav.map((item, i) => (
+              <li style={`--i:${i}`}>
+                <a
+                  href={item.href}
+                  class:list={['flex min-h-14 items-center border-b border-line font-display text-2xl font-bold tracking-[-0.01em]', isCurrent(item.href) ? 'text-accent' : 'text-ink']}
+                  aria-current={current(item.href)}
+                >
+                  {item.label}
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+        <a href="/contact/" class="btn btn-primary mt-6 w-full" style={`--i:${mobileNav.length}`}>Hire me</a>
+      </div>
+    </nav>
   </div>
 </header>
 
 <style>
+  .site-header.is-scrolled {
+    border-color: var(--line);
+  }
+
+  /* Pill behind desktop nav links on hover and for the current section. */
+  .nav-link::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    border-radius: 999px;
+    background: var(--surface-2);
+    opacity: 0;
+    transform: scale(0.85);
+    transition: opacity 200ms ease, transform 320ms var(--ease-out-soft);
+  }
+  .nav-link:hover::before,
+  .nav-link[aria-current]::before {
+    opacity: 1;
+    transform: none;
+  }
+
+  /* Sun and moon rotate through each other when the theme changes. */
+  .theme-icon {
+    transition: transform 420ms var(--ease-out-soft), opacity 240ms ease;
+  }
+  :global([data-theme='dark']) .theme-icon-moon,
   :global([data-theme='light']) .theme-icon-sun {
-    display: none;
+    opacity: 0;
+    transform: rotate(-90deg) scale(0.5);
   }
-  :global([data-theme='light']) .theme-icon-moon {
-    display: block;
+
+  /* Two bars that morph into an X. */
+  .menu-bars {
+    position: relative;
+    width: 1.25rem;
+    height: 0.75rem;
   }
-  :global([data-theme='dark']) .theme-icon-sun {
-    display: block;
+  .menu-bars span {
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 1.5px;
+    border-radius: 2px;
+    background: var(--text);
+    transition: transform 360ms var(--ease-out-soft), top 360ms var(--ease-out-soft);
   }
-  :global([data-theme='dark']) .theme-icon-moon {
-    display: none;
+  .menu-bars span:first-child {
+    top: 0;
+  }
+  .menu-bars span:last-child {
+    top: calc(100% - 1.5px);
+  }
+  [aria-expanded='true'] .menu-bars span:first-child {
+    top: calc(50% - 0.75px);
+    transform: rotate(45deg);
+  }
+  [aria-expanded='true'] .menu-bars span:last-child {
+    top: calc(50% - 0.75px);
+    transform: rotate(-45deg);
+  }
+
+  /* Menu panel grows open; links follow in a short stagger. */
+  .mobile-menu:not([hidden]) {
+    display: grid;
+  }
+  .mobile-menu {
+    grid-template-rows: 0fr;
+    opacity: 0;
+    transition: grid-template-rows 420ms var(--ease-out-soft), opacity 260ms ease;
+  }
+  .mobile-menu > nav {
+    overflow: hidden;
+    min-height: 0;
+  }
+  .mobile-menu.is-open {
+    grid-template-rows: 1fr;
+    opacity: 1;
+  }
+  .mobile-menu li,
+  .mobile-menu .btn {
+    opacity: 0;
+    transform: translateY(-10px);
+    transition: opacity 260ms ease, transform 420ms var(--ease-out-soft);
+  }
+  .mobile-menu.is-open li,
+  .mobile-menu.is-open .btn {
+    opacity: 1;
+    transform: none;
+    transition-delay: calc(80ms + var(--i) * 45ms);
   }
 </style>
 
 <script>
   const root = document.documentElement;
-  const button = document.querySelector<HTMLButtonElement>('[data-theme-toggle]');
+  const toggle = document.querySelector<HTMLButtonElement>('[data-theme-toggle]');
 
-  function label() {
-    if (!button) return;
+  const label = () => {
     const next = root.dataset.theme === 'dark' ? 'light' : 'dark';
-    button.setAttribute('aria-label', `Switch to ${next} theme`);
-  }
-
+    toggle?.setAttribute('aria-label', `Switch to ${next} theme`);
+  };
   label();
-  button?.addEventListener('click', () => {
+  toggle?.addEventListener('click', () => {
     const next = root.dataset.theme === 'dark' ? 'light' : 'dark';
     root.dataset.theme = next;
     try {
@@ -126,15 +203,44 @@ const current = (href: string) => (path === href ? 'page' : isCurrent(href) ? 't
     label();
   });
 
-  // Close the mobile menu with Escape or a click outside it.
-  const menu = document.querySelector<HTMLDetailsElement>('.mobile-nav');
+  // Mobile menu with open and close animation.
+  const header = document.querySelector<HTMLElement>('[data-header]');
+  const button = document.querySelector<HTMLButtonElement>('[data-menu-button]');
+  const menu = document.querySelector<HTMLElement>('[data-menu]');
+  const menuLabel = document.querySelector('[data-menu-label]');
+  let closeTimer: number | undefined;
+
+  const setOpen = (open: boolean) => {
+    if (!button || !menu) return;
+    window.clearTimeout(closeTimer);
+    button.setAttribute('aria-expanded', String(open));
+    if (menuLabel) menuLabel.textContent = open ? 'Close menu' : 'Open menu';
+    if (open) {
+      menu.hidden = false;
+      // Force a style flush so the closed state is committed before the open transition starts.
+      void menu.offsetHeight;
+      menu.classList.add('is-open');
+    } else {
+      menu.classList.remove('is-open');
+      closeTimer = window.setTimeout(() => (menu.hidden = true), 420);
+    }
+  };
+
+  button?.addEventListener('click', () => setOpen(button.getAttribute('aria-expanded') !== 'true'));
   document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && menu?.open) {
-      menu.open = false;
-      menu.querySelector('summary')?.focus();
+    if (e.key === 'Escape' && button?.getAttribute('aria-expanded') === 'true') {
+      setOpen(false);
+      button.focus();
     }
   });
-  document.addEventListener('click', (e) => {
-    if (menu?.open && !menu.contains(e.target as Node)) menu.open = false;
+  window.matchMedia('(min-width: 768px)').addEventListener('change', (e) => {
+    if (e.matches) setOpen(false);
   });
+
+  // Hairline under the header once the page has scrolled.
+  const sentinel = document.createElement('div');
+  sentinel.setAttribute('aria-hidden', 'true');
+  sentinel.style.cssText = 'position:absolute;top:0;left:0;height:8px;width:1px;pointer-events:none';
+  document.body.prepend(sentinel);
+  new IntersectionObserver(([entry]) => header?.classList.toggle('is-scrolled', !entry.isIntersecting)).observe(sentinel);
 </script>

@@ -1,9 +1,11 @@
 ---
-// Tool wall with real brand marks from Simple Icons, rendered in one neutral color.
-import { siClaude, siGoogle, siPython, siR, siStripe, siBrevo, siGit, siDocker, siCloudflare } from 'simple-icons';
+// Tool marquee with real brand marks from Simple Icons, in one neutral color.
+// The list renders twice for a seamless loop; the copy is hidden from assistive tech.
+import { siClaude, siN8n, siGoogle, siPython, siR, siStripe, siBrevo, siGit, siDocker, siCloudflare } from 'simple-icons';
 
 const tools = [
   { icon: siClaude, name: 'Claude Code' },
+  { icon: siN8n, name: 'n8n' },
   { icon: siGoogle, name: 'Google Stitch' },
   { icon: siPython, name: 'Python' },
   { icon: siR, name: 'R' },
@@ -15,15 +17,19 @@ const tools = [
 ];
 ---
 
-<ul class="grid grid-cols-2 gap-px overflow-hidden rounded-2xl border border-line bg-line sm:grid-cols-3 lg:grid-cols-9" aria-label="Tools">
+<div class="marquee" data-reveal>
   {
-    tools.map((t) => (
-      <li class="group flex flex-col items-center justify-center gap-3 bg-bg px-3 py-7 text-center">
-        <svg viewBox="0 0 24 24" class="size-7 fill-current text-muted transition-colors duration-200 group-hover:text-ink" role="img" aria-label={t.name}>
-          <path d={t.icon.path} />
-        </svg>
-        <span class="text-[0.8125rem] text-muted" aria-hidden="true">{t.name}</span>
-      </li>
+    [false, true].map((copy) => (
+      <ul class="marquee-track" aria-label={copy ? undefined : 'Tools'} aria-hidden={copy ? 'true' : undefined}>
+        {tools.map((t) => (
+          <li class="flex items-center gap-3 rounded-full border border-line bg-surface py-2.5 pr-5 pl-3 whitespace-nowrap">
+            <svg viewBox="0 0 24 24" class="size-5 fill-current text-muted" aria-hidden="true">
+              <path d={t.icon.path} />
+            </svg>
+            <span class="text-[0.9375rem]">{t.name}</span>
+          </li>
+        ))}
+      </ul>
     ))
   }
-</ul>
+</div>
