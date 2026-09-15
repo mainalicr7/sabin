@@ -20,13 +20,17 @@ function walk(dir) {
   });
 }
 
-if (!existsSync(DIST)) {
+if (!existsSync(DIST) || readdirSync(DIST).length === 0) {
   console.error('dist/ not found. Run npm run build first.');
   process.exit(1);
 }
 
 const files = walk(DIST);
 const html = files.filter((f) => f.endsWith('.html'));
+if (html.length === 0) {
+  console.error('verify: no HTML pages found in dist/. Did the build fail?');
+  process.exit(1);
+}
 const text = files.filter((f) => /\.(html|txt|xml)$/.test(f));
 
 // Map every built page to its set of element ids, for link and anchor checks.

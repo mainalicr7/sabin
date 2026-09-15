@@ -14,7 +14,7 @@ export const profile = {
   positioning:
     'I am an AI-native product manager. I ship the whole system: product, growth, design, data, content, and the AI automation that runs them.',
   shortBio:
-    'Sabin Mainali is a product manager and builder based in Kathmandu, Nepal. He leads product and growth for Calilio, a cloud phone system for businesses, built Chatonics, an AI-assisted customer messaging platform, and takes freelance work in product, design systems, help centers, data analysis and AI automation.',
+    'Sabin Mainali is a product manager and builder based in Kathmandu, Nepal. He builds SaaS products, company websites and AI automations, including Chatonics, an AI-assisted customer messaging platform, and the Yoddha Lab website. He takes freelance work in product, design systems, help centers, data analysis and AI automation.',
   location: { city: 'Kathmandu', country: 'Nepal', timezone: 'Nepal Time (UTC+5:45)' },
   experienceSince: 2022,
   employer: {
@@ -44,7 +44,7 @@ export const analytics = {
 
 
 // Products and tools Sabin has built himself, outside client and employer case studies.
-export type ProjectIcon = 'chat' | 'radar' | 'tracker' | 'flow';
+export type ProjectIcon = 'chat' | 'web' | 'radar' | 'extract' | 'tracker' | 'writing' | 'voice' | 'flow';
 
 export const projects: {
   id: string;
@@ -75,6 +75,16 @@ export const projects: {
     caseStudy: 'chatonics',
   },
   {
+    id: 'yoddhalab-website',
+    name: 'Yoddha Lab website',
+    kind: 'Company website, live',
+    summary:
+      'The website for Yoddha Lab, a software development and business process reengineering company in Kathmandu. It presents the services, in-house products, delivery process and team, with a clear path to book a consultation.',
+    features: ['Services and products', 'Delivery process', 'Team pages', 'Consultation booking'],
+    url: 'https://yoddhalab.com',
+    icon: 'web',
+  },
+  {
     id: 'competitor-watch',
     name: 'Competitor Watch',
     kind: 'Internal tool',
@@ -84,13 +94,40 @@ export const projects: {
     icon: 'radar',
   },
   {
+    id: 'leads-extraction',
+    name: 'Leads extraction tool',
+    kind: 'Sales tool',
+    summary: 'A tool that extracts lead details from raw sources into a clean, structured list the sales team can work from.',
+    features: ['Lead extraction', 'Clean lead lists'],
+    url: '',
+    icon: 'extract',
+  },
+  {
     id: 'sales-tracker',
     name: 'Sales tracker',
-    kind: 'Internal tool',
+    kind: 'Sales tool',
     summary: 'A sales tracker built for the sales team, working alongside the meeting rhythm playbook and lead scoring rules.',
     features: ['Sales activity tracking', 'Lead follow-up'],
     url: '',
     icon: 'tracker',
+  },
+  {
+    id: 'content-automation',
+    name: 'Content writing automation',
+    kind: 'AI automation',
+    summary: 'An AI automation for content writing that turns a brief into a structured draft, ready for a human editing pass.',
+    features: ['Brief to draft', 'Structured output'],
+    url: '',
+    icon: 'writing',
+  },
+  {
+    id: 'voiceover-app',
+    name: 'Voiceover app',
+    kind: 'AI app',
+    summary: 'A voiceover app that turns scripts into narration with a local AI text-to-speech model, used for product and promo videos.',
+    features: ['Script to speech', 'Runs locally'],
+    url: '',
+    icon: 'voice',
   },
   {
     id: 'n8n-automations',
@@ -366,7 +403,7 @@ export const experience = [
     end: null as string | null,
     period: 'Feb 2025 - Present',
     summary:
-      'Lead product and growth for Calilio: product management, project management, team leadership, sales growth and lead management.',
+      'Lead product and growth: product management, project management, team leadership, sales growth and lead management.',
   },
   {
     role: 'Business Analyst',
@@ -460,7 +497,7 @@ export const skillGroups = [
 export const faqs = [
   {
     q: 'What does Sabin Mainali do?',
-    a: 'Sabin Mainali is a product manager and builder in Kathmandu, Nepal. He leads product and growth at Calilio, a cloud phone system for businesses, built Chatonics, an AI-assisted customer messaging platform, and does freelance work in product strategy, design systems, help centers, data analysis and AI automation.',
+    a: 'Sabin Mainali is a product manager and builder in Kathmandu, Nepal. He built Chatonics, an AI-assisted customer messaging platform, developed the Yoddha Lab website, and builds internal tools and AI automations. He does freelance work in product strategy, design systems, help centers, data analysis and AI automation.',
   },
   {
     q: 'What freelance projects does Sabin take?',

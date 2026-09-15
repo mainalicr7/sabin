@@ -145,9 +145,21 @@ const first = payload.find((p) => p.id === initial)!;
     stroke: var(--accent);
     stroke-opacity: 1;
     stroke-width: 0.42;
-    animation: draw 700ms var(--ease-out-soft) both;
+    animation: draw-a 700ms var(--ease-out-soft) both;
   }
-  @keyframes draw {
+  /* Two identical keyframes: swapping the name replays the draw without forcing a layout. */
+  :global([data-cycle='b']) .edge.on {
+    animation-name: draw-b;
+  }
+  @keyframes draw-a {
+    from {
+      stroke-dashoffset: 1;
+    }
+    to {
+      stroke-dashoffset: 0;
+    }
+  }
+  @keyframes draw-b {
     from {
       stroke-dashoffset: 1;
     }
@@ -259,15 +271,11 @@ const first = payload.find((p) => p.id === initial)!;
       if (!item) return;
       current = id;
       const linked = new Set<string>();
+      map.dataset.cycle = map.dataset.cycle === 'a' ? 'b' : 'a';
       edges.forEach((e) => {
         const on = e.dataset.a === id || e.dataset.b === id;
-        // Remove then re-add so the draw animation replays on each selection.
-        e.classList.remove('on');
-        if (on) {
-          void e.getBoundingClientRect();
-          e.classList.add('on');
-          linked.add(e.dataset.a === id ? e.dataset.b! : e.dataset.a!);
-        }
+        e.classList.toggle('on', on);
+        if (on) linked.add(e.dataset.a === id ? e.dataset.b! : e.dataset.a!);
       });
       spokes.forEach((s) => s.classList.toggle('on', s.dataset.a === id));
       buttons.forEach((b) => {

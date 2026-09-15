@@ -17,7 +17,7 @@ export const GET: APIRoute = async ({ site }) => {
     '## Key facts',
     '',
     `- Name: ${profile.name}`,
-    `- Role: ${profile.jobTitle} at ${profile.employer.name} (${profile.employer.url}), ${profile.employer.description}`,
+    `- Role: ${profile.jobTitle} and builder`,
     `- Based in: ${profile.location.city}, ${profile.location.country}, ${profile.location.timezone}`,
     `- Working since: ${profile.experienceSince}`,
     `- Freelance status: ${profile.availability.open ? profile.availability.label : 'Not taking projects right now'}`,

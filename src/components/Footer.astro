@@ -1,27 +1,27 @@
 ---
 import ArrowUpRight from '@lucide/astro/icons/arrow-up-right';
 import ArrowUp from '@lucide/astro/icons/arrow-up';
-import { profile, links, projects } from '../data/site';
+import { profile, links } from '../data/site';
 
 const year = new Date().getFullYear();
-const chatonics = projects.find((p) => p.id === 'chatonics');
+const wordmark = [...profile.name];
 
 const columns = [
   {
     title: 'Explore',
     items: [
-      { href: '/work/', label: 'Work' },
-      { href: '/services/', label: 'Services' },
-      { href: '/ai-lab/', label: 'AI Lab' },
-      { href: '/about/', label: 'About' },
+      { href: '/work/', label: 'Work', external: false },
+      { href: '/services/', label: 'Services', external: false },
+      { href: '/ai-lab/', label: 'AI Lab', external: false },
+      { href: '/about/', label: 'About', external: false },
     ],
   },
   {
     title: 'Work with me',
     items: [
-      { href: '/contact/', label: 'Contact' },
-      { href: '/cv/', label: 'CV' },
-      { href: '/work/chatonics/', label: 'Chatonics case study' },
+      { href: '/contact/', label: 'Contact', external: false },
+      { href: '/#built', label: 'Things I have built', external: false },
+      { href: '/cv/', label: 'CV', external: false },
     ],
   },
   {
@@ -29,49 +29,60 @@ const columns = [
     items: [
       { href: links.contra, label: 'Contra', external: true },
       { href: links.linkedin, label: 'LinkedIn', external: true },
-      { href: chatonics?.url ?? '', label: 'chatonics.com', external: true },
       { href: links.github, label: 'GitHub', external: true },
     ].filter((l) => l.href),
   },
 ];
 ---
 
-<footer class="relative mt-28 overflow-hidden border-t border-line bg-surface">
-  <div class="footer-glow pointer-events-none absolute -top-40 left-1/2 h-80 w-[60rem] max-w-full -translate-x-1/2 rounded-full" aria-hidden="true"></div>
+<footer class="site-footer relative mt-28 overflow-hidden border-t border-line bg-surface">
+  <div class="footer-glow pointer-events-none absolute -top-48 left-1/2 h-96 w-[64rem] max-w-full -translate-x-1/2 rounded-full" aria-hidden="true"></div>
+  <div class="footer-grid pointer-events-none absolute inset-0" aria-hidden="true"></div>
 
-  <div class="wrap relative grid gap-14 pt-20 pb-12 lg:grid-cols-12">
-    <div class="lg:col-span-6" data-reveal>
+  <div class="wrap relative grid gap-14 pt-20 pb-14 lg:grid-cols-12 lg:gap-10">
+    <div class="lg:col-span-7" data-reveal>
       {
         profile.availability.open && (
-          <p class="flex items-center gap-2 text-sm text-muted">
-            <span class="inline-flex size-2 rounded-full bg-emerald-500" aria-hidden="true" />
+          <p class="inline-flex items-center gap-2 rounded-full border border-line bg-bg py-1.5 pr-3.5 pl-2.5 text-[0.8125rem] text-muted">
+            <span class="relative flex size-2" aria-hidden="true">
+              <span class="absolute inline-flex size-full rounded-full bg-emerald-500 opacity-50 motion-safe:animate-ping" />
+              <span class="relative inline-flex size-2 rounded-full bg-emerald-500" />
+            </span>
             {profile.availability.label}
           </p>
         )
       }
-      <p class="mt-5 font-display text-[clamp(2rem,1.3rem+2.8vw,3.4rem)] leading-[1.02] font-extrabold tracking-[-0.02em]">
-        Have a product, content or AI problem? Let us build the system.
+      <p class="mt-6 max-w-[16ch] font-display text-[clamp(2.2rem,1.4rem+3vw,3.75rem)] leading-[1] font-extrabold tracking-[-0.025em]">
+        Got a product, content or AI problem?
       </p>
-      <a href="/contact/" class="btn btn-primary mt-8">
-        Hire me<ArrowUpRight class="btn-icon size-4" stroke-width={1.75} aria-hidden="true" />
-      </a>
+      <p class="mt-5 max-w-[44ch] text-lg text-muted">
+        Send a short brief. I reply with questions or a proposed scope before any work starts.
+      </p>
+      <div class="mt-8 flex flex-wrap items-center gap-3">
+        <a href="/contact/" class="btn btn-primary">
+          Hire me<ArrowUpRight class="btn-icon size-4" stroke-width={1.75} aria-hidden="true" />
+        </a>
+        <a href={links.linkedin} class="btn btn-ghost" target="_blank" rel="me noopener">
+          Message on LinkedIn<span class="sr-only"> (opens in a new tab)</span>
+        </a>
+      </div>
     </div>
 
-    <nav aria-label="Footer" class="grid grid-cols-2 gap-10 sm:grid-cols-3 lg:col-span-6 lg:pt-3">
+    <nav aria-label="Footer" class="grid grid-cols-2 gap-10 sm:grid-cols-3 lg:col-span-5 lg:pt-14">
       {
         columns.map((col, i) => (
           <div data-reveal style={`--i:${i + 1}`}>
-            <h2 class="font-sans text-sm font-medium tracking-normal text-muted">{col.title}</h2>
+            <h2 class="font-sans text-[0.8125rem] font-medium tracking-normal text-muted">{col.title}</h2>
             <ul class="mt-4 space-y-3">
               {col.items.map((item) => (
                 <li>
                   <a
-                    class="footer-link group inline-flex items-center gap-1 text-[0.975rem]"
+                    class="group inline-flex items-center gap-1 text-[0.975rem]"
                     href={item.href}
-                    {...('external' in item && item.external ? { target: '_blank', rel: 'me noopener' } : {})}
+                    {...(item.external ? { target: '_blank', rel: 'me noopener' } : {})}
                   >
                     <span class="link link-draw">{item.label}</span>
-                    {'external' in item && item.external && (
+                    {item.external && (
                       <>
                         <ArrowUpRight class="size-3.5 text-muted transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-accent" stroke-width={1.75} aria-hidden="true" />
                         <span class="sr-only"> (opens in a new tab)</span>
@@ -88,15 +99,19 @@ const columns = [
   </div>
 
   <div class="wrap relative">
-    <p class="footer-wordmark select-none font-display font-extrabold leading-[0.8] tracking-[-0.045em]" aria-hidden="true" data-reveal>
-      Sabin Mainali
+    <p class="footer-wordmark select-none font-display font-extrabold" aria-hidden="true" data-wordmark>
+      {wordmark.map((ch, i) => (ch === ' ' ? <span class="gap" /> : <span class="ch" style={`--i:${i}`}>{ch}</span>))}
     </p>
   </div>
 
-  <div class="relative border-t border-line">
-    <div class="wrap flex flex-col gap-4 py-6 text-sm text-muted sm:flex-row sm:items-center sm:justify-between">
-      <p>&copy; {year} {profile.name}. {profile.location.city}, {profile.location.country}.</p>
-      <a href="#main" class="group inline-flex items-center gap-2 self-start rounded-full border border-line px-4 py-2 text-ink transition-colors hover:border-ink sm:self-auto" data-back-to-top>
+  <div class="relative border-t border-line bg-surface">
+    <div class="wrap grid gap-4 py-6 text-sm text-muted sm:grid-cols-3 sm:items-center">
+      <p>&copy; {year} {profile.name}</p>
+      <p class="sm:text-center">
+        {profile.location.city}, {profile.location.country}
+        <span class="text-ink" data-local-time></span>
+      </p>
+      <a href="#main" class="group inline-flex items-center gap-2 justify-self-start rounded-full border border-line px-4 py-2 text-ink transition-colors hover:border-ink sm:justify-self-end" data-back-to-top>
         Back to top
         <ArrowUp class="size-4 transition-transform duration-300 group-hover:-translate-y-0.5" stroke-width={1.75} aria-hidden="true" />
       </a>
@@ -106,18 +121,61 @@ const columns = [
 
 <style>
   .footer-glow {
-    background: radial-gradient(closest-side, color-mix(in srgb, var(--accent) 22%, transparent), transparent);
+    background: radial-gradient(closest-side, color-mix(in srgb, var(--accent) 24%, transparent), transparent);
     opacity: 0.7;
   }
-  /* Oversized name that fills the footer width and fades into the bottom edge. */
+  /* Faint grid that fades toward the edges. */
+  .footer-grid {
+    background-image:
+      linear-gradient(to right, var(--line) 1px, transparent 1px),
+      linear-gradient(to bottom, var(--line) 1px, transparent 1px);
+    background-size: 64px 64px;
+    opacity: 0.35;
+    mask-image: radial-gradient(ellipse at 50% 0%, black, transparent 70%);
+  }
+
+  /* Oversized name: letters rise in when revealed, and lift one by one under the cursor. */
   .footer-wordmark {
+    display: flex;
+    justify-content: space-between;
     font-size: clamp(3rem, 14vw, 13.25rem);
+    line-height: 0.8;
+    letter-spacing: -0.045em;
     white-space: nowrap;
-    margin-bottom: -0.12em;
-    background: linear-gradient(to bottom, var(--text) 10%, color-mix(in srgb, var(--text) 8%, transparent) 95%);
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
+    margin-bottom: -0.1em;
+    color: var(--text);
+    mask-image: linear-gradient(to bottom, black 35%, transparent 100%);
+  }
+  .footer-wordmark .gap {
+    width: 0.22em;
+  }
+  .footer-wordmark .ch {
+    display: inline-block;
+    transition: transform 520ms var(--ease-out-soft), color 300ms ease;
+  }
+  .footer-wordmark .ch:hover {
+    transform: translateY(-0.08em);
+    color: var(--accent);
+  }
+  :global(html.js) .footer-wordmark .ch {
+    transform: translateY(70%);
+    opacity: 0;
+    transition: transform 900ms var(--ease-out-soft), opacity 600ms ease, color 300ms ease;
+    transition-delay: calc(var(--i) * 40ms);
+  }
+  :global(html.js) .footer-wordmark.is-in .ch {
+    transform: none;
+    opacity: 1;
+  }
+  :global(html.js) .footer-wordmark.is-in .ch:hover {
+    transform: translateY(-0.08em);
+    transition-delay: 0ms;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    :global(html.js) .footer-wordmark .ch {
+      transform: none;
+      opacity: 1;
+    }
   }
 </style>
 
@@ -128,4 +186,29 @@ const columns = [
     window.scrollTo({ top: 0, behavior: reduced ? 'auto' : 'smooth' });
     document.getElementById('main')?.focus({ preventScroll: true });
   });
+
+  // Reveal the wordmark letters once the footer scrolls into view.
+  const mark = document.querySelector<HTMLElement>('[data-wordmark]');
+  if (mark) {
+    if ('IntersectionObserver' in window) {
+      const io = new IntersectionObserver(([entry]) => {
+        if (entry.isIntersecting) {
+          mark.classList.add('is-in');
+          io.disconnect();
+        }
+      }, { threshold: 0.3 });
+      io.observe(mark);
+    } else {
+      mark.classList.add('is-in');
+    }
+  }
+
+  // Live local time in Kathmandu, so clients in other time zones can plan.
+  const clock = document.querySelector('[data-local-time]');
+  if (clock) {
+    const format = new Intl.DateTimeFormat('en-GB', { timeZone: 'Asia/Kathmandu', hour: '2-digit', minute: '2-digit' });
+    const tick = () => (clock.textContent = ` - ${format.format(new Date())} local time`);
+    tick();
+    window.setInterval(tick, 30_000);
+  }
 </script>
