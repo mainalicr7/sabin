@@ -9,11 +9,11 @@ import { profile } from '../../data/site';
 // Open Graph images are rendered at build time: 1200x630 PNG per page.
 
 const fontDir = (pkg: string) => join(process.cwd(), 'node_modules', '@fontsource', pkg, 'files');
-const fraunces = readFileSync(join(fontDir('fraunces'), 'fraunces-latin-400-normal.woff'));
-const sans = readFileSync(join(fontDir('instrument-sans'), 'instrument-sans-latin-500-normal.woff'));
+const display = readFileSync(join(fontDir('geist'), 'geist-latin-600-normal.woff'));
+const sans = readFileSync(join(fontDir('geist'), 'geist-latin-500-normal.woff'));
 
 const pages: Record<string, { title: string; label: string }> = {
-  home: { title: 'I run product, design, data, content and AI as one system.', label: 'Product manager' },
+  home: { title: 'Product, design, data and AI as one system.', label: 'Product manager' },
   work: { title: 'Case studies in product, design, content, data and AI.', label: 'Work' },
   services: { title: 'Freelance product, design, content, data and AI work.', label: 'Services' },
   about: { title: 'From IT operations to AI-native product management.', label: 'About' },
@@ -48,19 +48,19 @@ export const GET: APIRoute = async ({ props }) => {
       flexDirection: 'column',
       justifyContent: 'space-between',
       padding: '72px 80px',
-      background: '#0e1013',
-      color: '#ece6dc',
-      fontFamily: 'Instrument Sans',
+      background: '#0c0c0e',
+      color: '#f1f1f3',
+      fontFamily: 'Geist',
     },
     [
-      el('div', { display: 'flex', alignItems: 'center', gap: '16px', fontSize: '28px', color: '#a39e95' }, [
-        el('div', { width: '14px', height: '14px', borderRadius: '999px', background: '#aab8ff' }),
+      el('div', { display: 'flex', alignItems: 'center', gap: '16px', fontSize: '28px', color: '#a1a1aa' }, [
+        el('div', { width: '14px', height: '14px', borderRadius: '999px', background: '#7c95ff' }),
         el('div', { display: 'flex' }, label),
       ]),
-      el('div', { display: 'flex', fontFamily: 'Fraunces', fontSize: `${size}px`, lineHeight: 1.08, letterSpacing: '-1.5px', maxWidth: '1000px' }, title),
-      el('div', { display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', borderTop: '1px solid #2a2e35', paddingTop: '28px' }, [
-        el('div', { display: 'flex', fontFamily: 'Fraunces', fontSize: '36px' }, profile.name),
-        el('div', { display: 'flex', fontSize: '24px', color: '#a39e95' }, `${profile.location.city}, ${profile.location.country}`),
+      el('div', { display: 'flex', fontFamily: 'Geist Display', fontSize: `${size}px`, lineHeight: 1.05, letterSpacing: '-2.5px', maxWidth: '1000px' }, title),
+      el('div', { display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', borderTop: '1px solid #26262b', paddingTop: '28px' }, [
+        el('div', { display: 'flex', fontFamily: 'Geist Display', fontSize: '34px', letterSpacing: '-0.5px' }, profile.name),
+        el('div', { display: 'flex', fontSize: '24px', color: '#a1a1aa' }, `${profile.location.city}, ${profile.location.country}`),
       ]),
     ],
   );
@@ -69,8 +69,8 @@ export const GET: APIRoute = async ({ props }) => {
     width: 1200,
     height: 630,
     fonts: [
-      { name: 'Fraunces', data: fraunces, weight: 400, style: 'normal' },
-      { name: 'Instrument Sans', data: sans, weight: 500, style: 'normal' },
+      { name: 'Geist Display', data: display, weight: 600, style: 'normal' },
+      { name: 'Geist', data: sans, weight: 500, style: 'normal' },
     ],
   });
   const png = await sharp(Buffer.from(svg)).png({ compressionLevel: 9 }).toBuffer();

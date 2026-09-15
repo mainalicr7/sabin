@@ -13,32 +13,23 @@ const { heading = 'Have a product, content or AI problem to solve?' } = Astro.pr
       {
         profile.availability.open && (
           <p class="flex items-center gap-2 text-sm text-muted">
-            <span class="relative flex size-2" aria-hidden="true">
-              <span class="absolute inline-flex size-full rounded-full bg-accent opacity-40 motion-safe:animate-ping" />
-              <span class="relative inline-flex size-2 rounded-full bg-accent" />
-            </span>
+            <span class="inline-flex size-2 rounded-full bg-emerald-500" aria-hidden="true" />
             {profile.availability.label}
           </p>
         )
       }
-      <h2 id="cta-heading" class="mt-4 text-[clamp(2rem,1.3rem+2.8vw,3.4rem)]">{heading}</h2>
+      <h2 id="cta-heading" class="mt-4 text-[clamp(1.9rem,1.3rem+2.2vw,3rem)]">{heading}</h2>
       <p class="mt-4 max-w-[52ch] text-muted">
         Send a short brief: the problem, the deadline and what done looks like. I reply with questions or a proposed scope before any work starts.
       </p>
     </div>
-    <div class="flex flex-col items-start justify-end gap-3 md:col-span-4 md:items-end">
-      <a href="/contact/" class="btn btn-primary">Start a project</a>
-      {
-        links.contra ? (
-          <a href={links.contra} class="btn btn-ghost" target="_blank" rel="noopener">
-            Hire me on Contra<span class="sr-only"> (opens in a new tab)</span>
-          </a>
-        ) : (
-          <a href={links.linkedin} class="btn btn-ghost" target="_blank" rel="noopener">
-            Message on LinkedIn<span class="sr-only"> (opens in a new tab)</span>
-          </a>
-        )
-      }
+    <div class="flex flex-col items-start justify-end gap-4 md:col-span-4 md:items-end">
+      <a href={links.contra || '/contact/'} class="btn btn-primary" {...(links.contra ? { target: '_blank', rel: 'noopener' } : {})}>
+        Hire me{links.contra && <span class="sr-only"> on Contra (opens in a new tab)</span>}
+      </a>
+      <p class="text-sm text-muted">
+        or <a class="link" href={links.linkedin} target="_blank" rel="noopener">message on LinkedIn<span class="sr-only"> (opens in a new tab)</span></a>
+      </p>
     </div>
   </div>
 </section>

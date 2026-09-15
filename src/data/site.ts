@@ -50,6 +50,7 @@ export const disciplines: {
   short: string;
   summary: string;
   points: string[];
+  tags: string[];
 }[] = [
   {
     id: 'product',
@@ -62,6 +63,7 @@ export const disciplines: {
       'Role charters with decision rights and KPI tables',
       'Integration scoping and compliance-facing pages',
     ],
+    tags: ['Roadmaps', 'Prioritization', 'Competitor intel'],
   },
   {
     id: 'design',
@@ -74,6 +76,7 @@ export const disciplines: {
       'A custom AI skill that generates screens and lints them against the brand',
       'A validated chart palette and chart rules for reports',
     ],
+    tags: ['DESIGN.md', 'AI screen kits', 'Brand lint'],
   },
   {
     id: 'content',
@@ -86,6 +89,7 @@ export const disciplines: {
       'House voice rules and screenshot marking with personal data masked',
       'Search-ready and AI-search-ready output',
     ],
+    tags: ['Knowledge bases', 'Voice rules', 'Search-ready'],
   },
   {
     id: 'data',
@@ -98,6 +102,7 @@ export const disciplines: {
       'Email campaign attribution and list hygiene checks',
       'Cost reviews that test the assumption before the saving',
     ],
+    tags: ['Stripe exports', 'Churn', 'Attribution'],
   },
   {
     id: 'sales',
@@ -110,6 +115,7 @@ export const disciplines: {
       'Lead recovery callsheets with lead scoring and tiering',
       'Lifecycle and outreach email templates that survive dark mode',
     ],
+    tags: ['Playbooks', 'Lead scoring', 'Email templates'],
   },
   {
     id: 'motion',
@@ -122,6 +128,7 @@ export const disciplines: {
       'Visual QA loop plus caption and loudness checks',
       'Local AI voiceover for narration',
     ],
+    tags: ['Remotion', 'Storyboards', 'Caption checks'],
   },
   {
     id: 'ai',
@@ -134,6 +141,7 @@ export const disciplines: {
       'A knowledge graph over company documents for fast retrieval',
       'Reusable prompt systems for sales and support teams',
     ],
+    tags: ['Claude Code', 'Skills and hooks', 'Agents'],
   },
 ];
 

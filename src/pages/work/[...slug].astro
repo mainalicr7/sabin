@@ -143,7 +143,7 @@ const schema = [
       <div class="lg:col-span-8 lg:order-1">
         <section class="rounded-2xl border-l-2 border-accent bg-accent-soft px-6 py-5" aria-labelledby="outcome-heading">
           <h2 id="outcome-heading" class="font-sans text-sm font-medium tracking-normal text-muted">Outcome at a glance</h2>
-          <p class="mt-2 font-display text-xl leading-snug">{d.outcome}</p>
+          <p class="mt-2 text-lg font-medium leading-snug tracking-[-0.01em]">{d.outcome}</p>
         </section>
 
         <div class="article prose-measure mt-6">
@@ -157,7 +157,7 @@ const schema = [
         prev ? (
           <a href={`/work/${prev.id}/`} class="group rounded-2xl border border-line p-6 transition-colors hover:border-line-strong">
             <span class="text-sm text-muted">Previous case study</span>
-            <span class="mt-2 block font-display text-xl group-hover:text-accent">{prev.data.title}</span>
+            <span class="mt-2 block text-lg font-semibold tracking-[-0.02em] group-hover:text-accent">{prev.data.title}</span>
           </a>
         ) : (
           <span />
@@ -167,7 +167,7 @@ const schema = [
         next && (
           <a href={`/work/${next.id}/`} class="group rounded-2xl border border-line p-6 text-right transition-colors hover:border-line-strong">
             <span class="text-sm text-muted">Next case study</span>
-            <span class="mt-2 block font-display text-xl group-hover:text-accent">{next.data.title}</span>
+            <span class="mt-2 block text-lg font-semibold tracking-[-0.02em] group-hover:text-accent">{next.data.title}</span>
           </a>
         )
       }

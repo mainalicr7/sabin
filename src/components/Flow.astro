@@ -12,8 +12,8 @@ const { steps, label } = Astro.props;
     {
       steps.map((s, i) => (
         <li class="flex flex-col gap-2 bg-surface p-5">
-          <span class="text-sm text-muted tabular-nums">Step {i + 1}</span>
-          <span class="font-display text-lg leading-snug">{s.title}</span>
+          <span class="font-mono text-[0.8125rem] text-accent tabular-nums" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
+          <span class="text-base font-semibold leading-snug">{s.title}</span>
           <span class="text-[0.95rem] leading-relaxed text-muted">{s.detail}</span>
         </li>
       ))

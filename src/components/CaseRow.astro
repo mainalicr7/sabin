@@ -18,7 +18,7 @@ const number = String(index + 1).padStart(2, '0');
   class="case-row group relative grid gap-3 border-t border-line py-8 md:grid-cols-12 md:gap-8 md:py-10"
   data-disciplines={entry.data.disciplines.join(' ')}
 >
-  <p class="font-display text-lg text-muted tabular-nums md:col-span-1" aria-hidden="true">{number}</p>
+  <p class="font-mono text-sm text-muted tabular-nums md:col-span-1 md:pt-2" aria-hidden="true">{number}</p>
   <div class="md:col-span-7">
     <Heading class="text-[clamp(1.5rem,1.1rem+1.6vw,2.25rem)] transition-colors duration-200 group-hover:text-accent">
       <a href={`/work/${entry.id}/`} class="after:absolute after:inset-0 after:content-['']">

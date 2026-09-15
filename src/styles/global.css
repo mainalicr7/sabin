@@ -1,41 +1,52 @@
 @import 'tailwindcss';
-@import '@fontsource-variable/fraunces/full.css';
-@import '@fontsource-variable/instrument-sans/index.css';
+@import '@fontsource-variable/geist/wght.css';
+@import '@fontsource-variable/geist-mono/wght.css';
 
 /* Theme switch is driven by [data-theme] on <html>, set before paint. */
 @custom-variant dark (&:where([data-theme='dark'], [data-theme='dark'] *));
 
 :root {
   color-scheme: light;
-  --bg: #f2f2ee;
+  --bg: #f4f4f5;
   --surface: #ffffff;
-  --line: #d6d5cf;
-  --line-strong: #b9b8b1;
-  --text: #16181c;
-  --muted: #565a61;
-  --accent: #3043c2;
-  --accent-soft: rgb(48 67 194 / 0.1);
+  --surface-2: #ebebed;
+  --line: #dcdce0;
+  --line-strong: #b8b8bf;
+  --text: #111114;
+  --muted: #55555e;
+  --accent: #2346e8;
+  --accent-soft: rgb(35 70 232 / 0.08);
   --on-accent: #ffffff;
-  --grain-opacity: 0.05;
+  --grain-opacity: 0.035;
+  --tile: #111114;
+  --tile-text: #f4f4f5;
+  --tile-muted: #a1a1aa;
+  --tile-line: rgb(255 255 255 / 0.14);
 }
 
 :root[data-theme='dark'] {
   color-scheme: dark;
-  --bg: #0e1013;
-  --surface: #15181d;
-  --line: #262a31;
-  --line-strong: #3a3f48;
-  --text: #ece6dc;
-  --muted: #a39e95;
-  --accent: #aab8ff;
-  --accent-soft: rgb(170 184 255 / 0.12);
-  --on-accent: #0e1013;
-  --grain-opacity: 0.06;
+  --bg: #0c0c0e;
+  --surface: #141417;
+  --surface-2: #1c1c20;
+  --line: #26262b;
+  --line-strong: #3b3b42;
+  --text: #f1f1f3;
+  --muted: #a1a1aa;
+  --accent: #7c95ff;
+  --accent-soft: rgb(124 149 255 / 0.1);
+  --on-accent: #0c0c0e;
+  --grain-opacity: 0.04;
+  --tile: #1b1d2b;
+  --tile-text: #f1f1f3;
+  --tile-muted: #b4b6c6;
+  --tile-line: rgb(255 255 255 / 0.12);
 }
 
 @theme {
   --color-bg: var(--bg);
   --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
   --color-line: var(--line);
   --color-line-strong: var(--line-strong);
   --color-ink: var(--text);
@@ -43,9 +54,14 @@
   --color-accent: var(--accent);
   --color-accent-soft: var(--accent-soft);
   --color-on-accent: var(--on-accent);
+  --color-tile: var(--tile);
+  --color-tile-text: var(--tile-text);
+  --color-tile-muted: var(--tile-muted);
+  --color-tile-line: var(--tile-line);
 
-  --font-display: 'Fraunces Variable', 'Iowan Old Style', 'Palatino Linotype', Georgia, serif;
-  --font-sans: 'Instrument Sans Variable', ui-sans-serif, system-ui, 'Segoe UI', Roboto, sans-serif;
+  --font-display: 'Geist Variable', ui-sans-serif, system-ui, 'Segoe UI', Roboto, sans-serif;
+  --font-sans: 'Geist Variable', ui-sans-serif, system-ui, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: 'Geist Mono Variable', ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
 
   --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);
 }
@@ -58,15 +74,18 @@
     font-size: 100%;
     -webkit-text-size-adjust: 100%;
     text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
     scroll-behavior: smooth;
     scroll-padding-top: 5rem;
   }
 
   body {
     min-height: 100dvh;
-    font-size: 1.0625rem;
-    line-height: 1.65;
+    font-size: 1rem;
+    line-height: 1.6;
     font-kerning: normal;
+    font-feature-settings: 'ss01' 0;
     overflow-x: hidden;
   }
 
@@ -85,12 +104,10 @@
   h2,
   h3 {
     font-family: var(--font-display);
-    font-optical-sizing: auto;
-    font-variation-settings: 'SOFT' 30, 'WONK' 0;
     text-wrap: balance;
-    font-weight: 380;
-    letter-spacing: -0.02em;
-    line-height: 1.08;
+    font-weight: 600;
+    letter-spacing: -0.03em;
+    line-height: 1.1;
   }
 
   p {
@@ -152,6 +169,7 @@
     background-size: 100% 1px;
   }
 
+  /* Shape rule: interactive controls are pills, surfaces are 16px (rounded-2xl), inputs 12px. */
   .btn {
     display: inline-flex;
     align-items: center;
@@ -160,8 +178,9 @@
     min-height: 2.875rem;
     padding: 0.625rem 1.25rem;
     border-radius: 999px;
-    font-weight: 550;
-    font-size: 0.975rem;
+    font-weight: 500;
+    font-size: 0.9375rem;
+    white-space: nowrap;
     line-height: 1.2;
     text-decoration: none;
     border: 1px solid transparent;
@@ -186,6 +205,11 @@
     border-color: var(--text);
   }
 
+  .dot-grid {
+    background-image: radial-gradient(color-mix(in srgb, var(--accent) 22%, transparent) 1px, transparent 1px);
+    background-size: 18px 18px;
+  }
+
   .hairline {
     border-color: var(--line);
   }
@@ -198,13 +222,13 @@
 
   /* Long-form case study text rendered from MDX. */
   .article h2 {
-    font-size: clamp(1.6rem, 1.2rem + 1.4vw, 2.2rem);
+    font-size: clamp(1.45rem, 1.15rem + 1vw, 1.9rem);
     margin-top: 3.5rem;
     margin-bottom: 1rem;
     scroll-margin-top: 6rem;
   }
   .article h3 {
-    font-size: 1.3rem;
+    font-size: 1.2rem;
     margin-top: 2rem;
     margin-bottom: 0.5rem;
   }
@@ -239,9 +263,10 @@
   .article blockquote {
     border-left: 2px solid var(--accent);
     padding-left: 1.25rem;
-    font-family: var(--font-display);
-    font-size: 1.35rem;
-    line-height: 1.4;
+    font-size: 1.25rem;
+    font-weight: 500;
+    letter-spacing: -0.015em;
+    line-height: 1.45;
     margin: 2rem 0;
   }
 }

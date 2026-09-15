@@ -1,0 +1,29 @@
+---
+// Tool wall with real brand marks from Simple Icons, rendered in one neutral color.
+import { siClaude, siGoogle, siPython, siR, siStripe, siBrevo, siGit, siDocker, siCloudflare } from 'simple-icons';
+
+const tools = [
+  { icon: siClaude, name: 'Claude Code' },
+  { icon: siGoogle, name: 'Google Stitch' },
+  { icon: siPython, name: 'Python' },
+  { icon: siR, name: 'R' },
+  { icon: siStripe, name: 'Stripe' },
+  { icon: siBrevo, name: 'Brevo' },
+  { icon: siGit, name: 'Git' },
+  { icon: siDocker, name: 'Docker' },
+  { icon: siCloudflare, name: 'Cloudflare' },
+];
+---
+
+<ul class="grid grid-cols-2 gap-px overflow-hidden rounded-2xl border border-line bg-line sm:grid-cols-3 lg:grid-cols-9" aria-label="Tools">
+  {
+    tools.map((t) => (
+      <li class="group flex flex-col items-center justify-center gap-3 bg-bg px-3 py-7 text-center">
+        <svg viewBox="0 0 24 24" class="size-7 fill-current text-muted transition-colors duration-200 group-hover:text-ink" role="img" aria-label={t.name}>
+          <path d={t.icon.path} />
+        </svg>
+        <span class="text-[0.8125rem] text-muted" aria-hidden="true">{t.name}</span>
+      </li>
+    ))
+  }
+</ul>

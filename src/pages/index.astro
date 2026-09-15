@@ -1,19 +1,28 @@
 ---
 import { getCollection } from 'astro:content';
+import Check from '@lucide/astro/icons/check';
+import ArrowUpRight from '@lucide/astro/icons/arrow-up-right';
 import Base from '../layouts/Base.astro';
 import SystemMap from '../components/SystemMap.astro';
 import CaseRow from '../components/CaseRow.astro';
 import ContactCta from '../components/ContactCta.astro';
 import Faq from '../components/Faq.astro';
-import { profile, disciplines, method, toolGroups, faqs, links } from '../data/site';
+import DisciplineIcon from '../components/DisciplineIcon.astro';
+import ToolLogos from '../components/ToolLogos.astro';
+import { profile, disciplines, method, faqs, links, type DisciplineId } from '../data/site';
 import { faqNode, absolute } from '../lib/seo';
 
 const work = (await getCollection('work')).sort((a, b) => a.data.order - b.data.order);
 const featured = work.filter((w) => w.data.featured).slice(0, 4);
-const allIds = work.map((w) => w.id);
+const productWork = work.filter((w) => w.data.disciplines.includes('product')).slice(0, 2);
+const d = Object.fromEntries(disciplines.map((x) => [x.id, x])) as Record<DisciplineId, (typeof disciplines)[number]>;
 
-// Bento layout: wide cards for the two disciplines that anchor the rest.
-const wide = new Set(['product', 'ai']);
+const facts = [
+  { label: 'Current role', value: `${profile.jobTitle}, ${profile.employer.name}` },
+  { label: 'Working since', value: String(profile.experienceSince) },
+  { label: 'Case studies', value: String(work.length) },
+  { label: 'Time zone', value: 'UTC+5:45, Kathmandu' },
+];
 
 const schema = [
   {
@@ -34,101 +43,182 @@ const schema = [
   type="profile"
   schema={schema}
 >
-  <!-- Hero -->
-  <section class="wrap grid items-center gap-14 pt-14 pb-10 md:pt-20 lg:grid-cols-12 lg:gap-8 lg:pt-24" aria-labelledby="hero-heading">
+  <!-- Hero: message left, live system diagram right -->
+  <section class="wrap grid items-center gap-12 pt-12 pb-20 md:pt-16 lg:grid-cols-12 lg:gap-8 lg:pt-20 lg:pb-24" aria-labelledby="hero-heading">
     <div class="lg:col-span-7">
       {
         profile.availability.open && (
-          <p class="rise flex items-center gap-2 text-sm text-muted">
-            <span class="inline-block size-2 rounded-full bg-accent" aria-hidden="true" />
-            {profile.availability.label}
+          <p class="rise inline-flex items-center gap-2 rounded-full border border-line bg-surface py-1.5 pr-3.5 pl-2.5 text-[0.8125rem] text-muted">
+            <span class="relative flex size-2" aria-hidden="true">
+              <span class="absolute inline-flex size-full rounded-full bg-emerald-500 opacity-50 motion-safe:animate-ping" />
+              <span class="relative inline-flex size-2 rounded-full bg-emerald-500" />
+            </span>
+            Sabin Mainali, available for freelance projects
           </p>
         )
       }
-      <h1 id="hero-heading" class="rise mt-6 [animation-delay:80ms]">
-        <span class="block font-sans text-lg font-medium tracking-normal text-muted">Sabin Mainali, product manager</span>
-        <span
-          class="mt-4 block text-[clamp(2.6rem,1.4rem+5.2vw,5.4rem)] leading-[1.02] tracking-[-0.035em]"
-          style="font-variation-settings:'SOFT' 20,'WONK' 1;"
-        >
-          I run product, design, data, content and AI as one system.
-        </span>
+      <h1 id="hero-heading" class="rise mt-7 text-[clamp(2.4rem,1.6rem+2.9vw,3.6rem)] leading-[1.04] tracking-[-0.045em] [animation-delay:80ms]">
+        <span class="sr-only">Sabin Mainali, AI-native product manager. </span>
+        Product, design, data and AI as one system.
       </h1>
-      <p class="rise mt-7 max-w-[54ch] text-lg text-muted [animation-delay:160ms]">
-        I lead product and growth at <a class="link text-ink" href={profile.employer.url} target="_blank" rel="noopener">Calilio<span class="sr-only"> (opens in a new tab)</span></a>, a cloud phone system for businesses. I plan the roadmap, and I also build the design system, the help center, the analysis and the AI tooling behind it.
+      <p class="rise mt-6 max-w-[46ch] text-lg leading-relaxed text-muted [animation-delay:160ms]">
+        I lead product at Calilio and take freelance projects that need one owner from strategy to shipped automation.
       </p>
-      <div class="rise mt-9 flex flex-wrap gap-3 [animation-delay:240ms]">
-        <a href="/work/" class="btn btn-primary">View work</a>
-        <a href="/contact/" class="btn btn-ghost">Get in touch</a>
+      <div class="rise mt-9 flex flex-wrap items-center gap-3 [animation-delay:240ms]">
+        <a href="/contact/" class="btn btn-primary">Hire me</a>
+        <a href="/work/" class="btn btn-ghost">View work</a>
       </div>
     </div>
-    <div class="rise [animation-delay:320ms] lg:col-span-5">
+    <div class="rise [animation-delay:320ms] lg:col-span-5 lg:col-start-8">
       <SystemMap />
     </div>
   </section>
 
-  <!-- What I do -->
-  <section id="what-i-do" class="wrap mt-24" aria-labelledby="do-heading">
-    <div class="grid gap-6 md:grid-cols-12">
-      <h2 id="do-heading" class="text-[clamp(2.2rem,1.5rem+2.6vw,3.6rem)] md:col-span-5">What I do</h2>
-      <p class="max-w-[52ch] text-lg text-muted md:col-span-6 md:col-start-7 md:pt-3">
-        I cover seven disciplines that usually sit with seven different people. Each one feeds the others, which is why I build them as one system.
-      </p>
-    </div>
-
-    <ul class="mt-12 grid gap-4 md:grid-cols-3">
+  <!-- Key facts -->
+  <section aria-label="Key facts" class="border-y border-line bg-surface">
+    <dl class="wrap grid grid-cols-2 lg:grid-cols-4">
       {
-        disciplines.map((d) => (
-          <li
-            class:list={[
-              'flex flex-col rounded-2xl border border-line bg-surface p-6 md:p-8',
-              wide.has(d.id) && 'md:col-span-2',
-            ]}
-          >
-            <h3 class="text-2xl">{d.name}</h3>
-            <p class="mt-3 text-muted">{d.summary}</p>
-            <ul class:list={['mt-6 space-y-2 border-t border-line pt-5 text-[0.95rem]', wide.has(d.id) && 'sm:columns-2 sm:gap-8']}>
-              {d.points.map((p) => (
-                <li class="break-inside-avoid pl-4 relative before:absolute before:left-0 before:top-[0.7em] before:h-px before:w-2 before:bg-accent">{p}</li>
+        facts.map((f, i) => (
+          <div class:list={['py-6 lg:py-7', i % 2 === 1 && 'pl-5 border-l border-line', i >= 2 && 'border-t border-line lg:border-t-0', i === 2 && 'lg:pl-5 lg:border-l']}>
+            <dt class="text-[0.8125rem] text-muted">{f.label}</dt>
+            <dd class="mt-1 text-base font-medium tracking-[-0.01em] sm:text-lg">{f.value}</dd>
+          </div>
+        ))
+      }
+    </dl>
+  </section>
+
+  <!-- What I do: bento -->
+  <section id="what-i-do" class="wrap mt-28" aria-labelledby="do-heading">
+    <h2 id="do-heading" class="text-[clamp(2rem,1.4rem+2.2vw,3rem)]">What I do</h2>
+    <p class="mt-4 max-w-[58ch] text-lg text-muted">
+      Seven disciplines that usually sit with seven people. I run them together, so each one feeds the next.
+    </p>
+
+    <ul class="mt-12 grid auto-rows-auto gap-4 md:grid-cols-6 lg:grid-cols-12">
+      <!-- Product: anchor tile -->
+      <li class="relative flex flex-col overflow-hidden rounded-2xl border border-line bg-accent-soft p-7 md:col-span-6 lg:col-span-7 lg:row-span-2 lg:p-9">
+        <div class="dot-grid pointer-events-none absolute inset-x-0 top-0 h-48 [mask-image:linear-gradient(to_bottom,black,transparent)]" aria-hidden="true"></div>
+        <span class="relative grid size-11 place-items-center rounded-xl bg-accent text-on-accent"><DisciplineIcon id="product" /></span>
+        <h3 class="relative mt-8 text-[clamp(1.6rem,1.3rem+1vw,2.1rem)]">{d.product.name}</h3>
+        <p class="relative mt-3 max-w-[44ch] text-muted">{d.product.summary}</p>
+        <ul class="relative mt-8 grid gap-3 sm:grid-cols-2">
+          {
+            d.product.points.map((p) => (
+              <li class="flex gap-2.5 text-[0.9375rem]">
+                <Check class="mt-1 size-4 shrink-0 text-accent" stroke-width={2} aria-hidden="true" />
+                <span>{p}</span>
+              </li>
+            ))
+          }
+        </ul>
+        <div class="relative mt-auto pt-10">
+          <p class="text-[0.8125rem] text-muted">Product case studies</p>
+          <ul class="mt-3 divide-y divide-line overflow-hidden rounded-xl border border-line bg-surface">
+            {
+              productWork.map((w) => (
+                <li>
+                  <a href={`/work/${w.id}/`} class="group flex items-center justify-between gap-4 px-4 py-3.5 text-[0.9375rem] transition-colors hover:bg-accent-soft">
+                    <span>{w.data.title}</span>
+                    <ArrowUpRight class="size-4 shrink-0 text-muted transition-transform duration-200 group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-accent" stroke-width={1.5} aria-hidden="true" />
+                  </a>
+                </li>
+              ))
+            }
+          </ul>
+        </div>
+      </li>
+
+      <!-- Design -->
+      <li class="flex flex-col rounded-2xl border border-line bg-surface p-7 md:col-span-3 lg:col-span-5">
+        <span class="grid size-11 place-items-center rounded-xl border border-line text-ink"><DisciplineIcon id="design" /></span>
+        <h3 class="mt-6 text-xl">{d.design.name}</h3>
+        <p class="mt-2 text-[0.9375rem] text-muted">{d.design.summary}</p>
+        <ul class="mt-auto flex flex-wrap gap-1.5 pt-6" aria-label="Examples">
+          {d.design.tags.map((t) => <li class="rounded-full border border-line px-2.5 py-1 text-[0.8125rem] text-muted">{t}</li>)}
+        </ul>
+      </li>
+
+      <!-- AI: inverted tile -->
+      <li class="relative flex flex-col overflow-hidden rounded-2xl bg-tile p-7 text-tile-text md:col-span-3 lg:col-span-5">
+        <div class="ai-glow pointer-events-none absolute -top-24 -right-24 size-64 rounded-full" aria-hidden="true"></div>
+        <span class="relative grid size-11 place-items-center rounded-xl border border-tile-line text-tile-text"><DisciplineIcon id="ai" /></span>
+        <h3 class="relative mt-6 text-xl">{d.ai.name}</h3>
+        <p class="relative mt-2 text-[0.9375rem] text-tile-muted">{d.ai.summary}</p>
+        <div class="relative mt-auto flex flex-wrap items-center justify-between gap-3 pt-6">
+          <ul class="flex flex-wrap gap-1.5" aria-label="Examples">
+            {d.ai.tags.map((t) => <li class="rounded-full border border-tile-line px-2.5 py-1 text-[0.8125rem] text-tile-muted">{t}</li>)}
+          </ul>
+          <a href="/ai-lab/" class="text-sm text-tile-text underline decoration-tile-line underline-offset-4 hover:decoration-current">See the AI Lab</a>
+        </div>
+      </li>
+
+      <!-- Content, Data, Sales -->
+      {
+        (['content', 'data', 'sales'] as const).map((id) => (
+          <li class="flex flex-col rounded-2xl border border-line bg-surface p-7 md:col-span-2 lg:col-span-4">
+            <span class="grid size-11 place-items-center rounded-xl border border-line text-ink">
+              <DisciplineIcon id={id} />
+            </span>
+            <h3 class="mt-6 text-xl">{d[id].name}</h3>
+            <p class="mt-2 text-[0.9375rem] text-muted">{d[id].summary}</p>
+            <ul class="mt-auto flex flex-wrap gap-1.5 pt-6" aria-label="Examples">
+              {d[id].tags.map((t) => (
+                <li class="rounded-full border border-line px-2.5 py-1 text-[0.8125rem] text-muted">{t}</li>
               ))}
             </ul>
           </li>
         ))
       }
+
+      <!-- Motion: wide strip with a timeline texture -->
+      <li class="relative grid overflow-hidden rounded-2xl border border-line bg-surface md:col-span-6 lg:col-span-12 lg:grid-cols-12">
+        <div class="flex flex-col p-7 lg:col-span-6 lg:p-9">
+          <span class="grid size-11 place-items-center rounded-xl border border-line text-ink"><DisciplineIcon id="motion" /></span>
+          <h3 class="mt-6 text-xl">{d.motion.name}</h3>
+          <p class="mt-2 max-w-[48ch] text-[0.9375rem] text-muted">{d.motion.summary}</p>
+          <ul class="mt-6 flex flex-wrap gap-1.5" aria-label="Examples">
+            {d.motion.tags.map((t) => <li class="rounded-full border border-line px-2.5 py-1 text-[0.8125rem] text-muted">{t}</li>)}
+          </ul>
+        </div>
+        <div class="timeline relative hidden border-l border-line lg:col-span-6 lg:block" aria-hidden="true">
+          <div class="absolute inset-x-8 top-1/2 flex -translate-y-1/2 flex-col gap-2.5">
+            <span class="track w-[88%]"></span>
+            <span class="track ml-[12%] w-[64%] bg-accent-soft"></span>
+            <span class="track ml-[30%] w-[58%]"></span>
+          </div>
+          <span class="playhead"></span>
+        </div>
+      </li>
     </ul>
   </section>
 
   <!-- Selected work -->
   <section id="selected-work" class="wrap mt-28" aria-labelledby="work-heading">
-    <div class="flex flex-col justify-between gap-6 md:flex-row md:items-end">
-      <div>
-        <h2 id="work-heading" class="text-[clamp(2.2rem,1.5rem+2.6vw,3.6rem)]">Selected work</h2>
-        <p class="mt-3 max-w-[52ch] text-lg text-muted">
-          Case studies told as problem, approach and outcome. Confidential numbers stay out.
-        </p>
-      </div>
-      <a href="/work/" class="link shrink-0 self-start md:self-auto">All {allIds.length} case studies</a>
-    </div>
+    <h2 id="work-heading" class="text-[clamp(2rem,1.4rem+2.2vw,3rem)]">Selected work</h2>
+    <p class="mt-4 max-w-[58ch] text-lg text-muted">
+      Each case study covers the problem, what I built and what changed. Confidential numbers stay out.
+    </p>
     <div class="mt-10 border-b border-line">
       {featured.map((entry, i) => <CaseRow entry={entry} index={i} />)}
     </div>
+    <a href="/work/" class="btn btn-ghost mt-8">View work</a>
   </section>
 
   <!-- How I work -->
   <section id="how-i-work" class="wrap mt-28" aria-labelledby="method-heading">
-    <div class="grid gap-6 md:grid-cols-12">
-      <h2 id="method-heading" class="text-[clamp(2.2rem,1.5rem+2.6vw,3.6rem)] md:col-span-5">How I work</h2>
-      <p class="max-w-[52ch] text-lg text-muted md:col-span-6 md:col-start-7 md:pt-3">
-        Every project runs through the same four steps, in this order.
-      </p>
-    </div>
-    <ol class="mt-12 grid gap-px overflow-hidden rounded-2xl border border-line bg-line sm:grid-cols-2 lg:grid-cols-4">
+    <h2 id="method-heading" class="text-[clamp(2rem,1.4rem+2.2vw,3rem)]">How I work</h2>
+    <p class="mt-4 max-w-[58ch] text-lg text-muted">Every project runs through the same four steps, in this order.</p>
+    <ol class="relative mt-12 grid gap-10 sm:grid-cols-2 lg:grid-cols-4 lg:gap-6">
+      <span class="absolute top-[1.1rem] right-0 left-0 hidden h-px bg-line lg:block" aria-hidden="true"></span>
       {
         method.map((m, i) => (
-          <li class="flex flex-col bg-bg p-6 md:p-8">
-            <span class="font-display text-4xl text-accent tabular-nums" aria-hidden="true">{i + 1}</span>
-            <h3 class="mt-6 text-xl">{m.name}</h3>
-            <p class="mt-2 text-[0.975rem] text-muted">{m.detail}</p>
+          <li class="relative">
+            <span class="relative grid size-9 place-items-center rounded-full border border-line bg-bg font-mono text-[0.8125rem] text-accent" aria-hidden="true">
+              {i + 1}
+            </span>
+            <h3 class="mt-5 text-lg">{m.name}</h3>
+            <p class="mt-2 max-w-[32ch] text-[0.9375rem] text-muted">{m.detail}</p>
           </li>
         ))
       }
@@ -137,48 +227,75 @@ const schema = [
 
   <!-- Tools -->
   <section id="tools" class="wrap mt-28" aria-labelledby="tools-heading">
-    <h2 id="tools-heading" class="text-[clamp(1.8rem,1.3rem+1.8vw,2.6rem)]">Tools I use</h2>
-    <p class="mt-3 max-w-[56ch] text-muted">The tools behind the work, grouped by what they do.</p>
-    <dl class="mt-10 grid gap-8 border-t border-line pt-8 sm:grid-cols-2 lg:grid-cols-4">
-      {
-        toolGroups.map((g) => (
-          <div>
-            <dt class="text-sm text-muted">{g.name}</dt>
-            <dd class="mt-3 flex flex-col gap-1.5">
-              {g.tools.map((t) => (
-                <span class="font-display text-xl text-ink/80" style="font-variation-settings:'SOFT' 50">{t}</span>
-              ))}
-            </dd>
-          </div>
-        ))
-      }
-    </dl>
+    <h2 id="tools-heading" class="text-[clamp(1.6rem,1.3rem+1.2vw,2.2rem)]">Tools I work with</h2>
+    <div class="mt-8">
+      <ToolLogos />
+    </div>
   </section>
 
   <!-- About -->
   <section id="about" class="wrap mt-28" aria-labelledby="about-heading">
-    <div class="grid gap-10 md:grid-cols-12">
-      <figure class="flex flex-col justify-between rounded-2xl border border-line bg-surface p-8 md:col-span-5">
-        <blockquote class="font-display text-[clamp(1.5rem,1.2rem+1.2vw,2rem)] leading-snug" style="font-variation-settings:'SOFT' 80">
-          <p>"Most 'AI agents' I see are chatbots with extra steps. A chatbot answers. An agent finishes."</p>
-        </blockquote>
-        <figcaption class="mt-8 text-sm text-muted">
-          From a post by Sabin on <a class="link" href={links.linkedin} target="_blank" rel="noopener">LinkedIn<span class="sr-only"> (opens in a new tab)</span></a>
-        </figcaption>
-      </figure>
-      <div class="md:col-span-6 md:col-start-7">
-        <h2 id="about-heading" class="text-[clamp(2.2rem,1.5rem+2.6vw,3.6rem)]">About Sabin</h2>
-        <p class="mt-5 text-lg">
+    <div class="grid gap-10 lg:grid-cols-12 lg:gap-12">
+      <div class="lg:col-span-7">
+        <h2 id="about-heading" class="text-[clamp(2rem,1.4rem+2.2vw,3rem)]">About Sabin</h2>
+        <p class="mt-6 max-w-[56ch] text-lg">
           I started in IT operations in {profile.experienceSince}, moved into business analysis, and now lead product and growth at Calilio.
         </p>
-        <p class="mt-4 text-muted">
-          Along the way I stopped handing work off at the spec. I write the design system, plan the help center, run the analysis, build the sales playbooks, make the videos, and build the AI tooling that makes one person work like a small product team.
+        <p class="mt-4 max-w-[56ch] text-muted">
+          I do not hand work off at the spec. I write the design system, plan the help center, run the analysis, build the sales playbooks, make the videos, and build the AI tooling that lets one person work like a small product team.
         </p>
         <a href="/about/" class="btn btn-ghost mt-8">Read the full story</a>
       </div>
+      <figure class="flex flex-col justify-between rounded-2xl border border-line bg-surface p-8 lg:col-span-5">
+        <blockquote class="text-[clamp(1.35rem,1.15rem+0.8vw,1.75rem)] font-medium leading-snug tracking-[-0.02em]">
+          <p>Most 'AI agents' I see are chatbots with extra steps. A chatbot answers. An agent finishes.</p>
+        </blockquote>
+        <figcaption class="mt-8 text-sm text-muted">
+          Sabin Mainali, Product Manager, writing on <a class="link" href={links.linkedin} target="_blank" rel="noopener">LinkedIn<span class="sr-only"> (opens in a new tab)</span></a>
+        </figcaption>
+      </figure>
     </div>
   </section>
 
   <Faq items={faqs} />
   <ContactCta />
 </Base>
+
+<style>
+  .ai-glow {
+    background: radial-gradient(circle, color-mix(in srgb, var(--accent) 45%, transparent), transparent 70%);
+    opacity: 0.55;
+  }
+  .timeline {
+    background-image: repeating-linear-gradient(to right, var(--line) 0 1px, transparent 1px 32px);
+    background-size: 100% 12px;
+    background-repeat: no-repeat;
+    background-position: 0 1.5rem;
+  }
+  .track {
+    display: block;
+    height: 1.75rem;
+    border-radius: 0.5rem;
+    border: 1px solid var(--line);
+    background: var(--surface-2);
+  }
+  .playhead {
+    position: absolute;
+    top: 1rem;
+    bottom: 1rem;
+    left: 58%;
+    width: 1.5px;
+    background: var(--accent);
+  }
+  .playhead::before {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: 50%;
+    width: 9px;
+    height: 9px;
+    border-radius: 2px;
+    background: var(--accent);
+    transform: translateX(-50%) rotate(45deg);
+  }
+</style>

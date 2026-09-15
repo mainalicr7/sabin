@@ -1,0 +1,30 @@
+---
+// One Lucide icon per discipline, same stroke everywhere.
+import Compass from '@lucide/astro/icons/compass';
+import PenTool from '@lucide/astro/icons/pen-tool';
+import BookOpenText from '@lucide/astro/icons/book-open-text';
+import ChartColumn from '@lucide/astro/icons/chart-column';
+import Handshake from '@lucide/astro/icons/handshake';
+import Clapperboard from '@lucide/astro/icons/clapperboard';
+import Bot from '@lucide/astro/icons/bot';
+import type { DisciplineId } from '../data/site';
+
+interface Props {
+  id: DisciplineId;
+  class?: string;
+}
+
+const { id, class: className = 'size-5' } = Astro.props;
+const icons = {
+  product: Compass,
+  design: PenTool,
+  content: BookOpenText,
+  data: ChartColumn,
+  sales: Handshake,
+  motion: Clapperboard,
+  ai: Bot,
+};
+const Icon = icons[id];
+---
+
+<Icon class={className} stroke-width={1.5} aria-hidden="true" />

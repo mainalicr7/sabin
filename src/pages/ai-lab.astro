@@ -119,7 +119,7 @@ const schema = [
         </p>
       </div>
     </div>
-    <blockquote class="mt-14 max-w-[40ch] border-l-2 border-accent pl-6 font-display text-[clamp(1.6rem,1.2rem+1.6vw,2.4rem)] leading-snug" style="font-variation-settings:'SOFT' 80">
+    <blockquote class="mt-14 max-w-[40ch] border-l-2 border-accent pl-6 text-[clamp(1.5rem,1.2rem+1.2vw,2.1rem)] font-medium leading-snug tracking-[-0.02em]">
       <p>"A chatbot answers. An agent finishes."</p>
     </blockquote>
   </section>
@@ -133,7 +133,7 @@ const schema = [
         {
           flow.map((f, i) => (
             <li class="relative rounded-2xl border border-line bg-surface p-5">
-              <span class="text-sm text-muted tabular-nums">Stage {i + 1}</span>
+              <span class="font-mono text-[0.8125rem] text-accent tabular-nums" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
               <h3 class="mt-2 text-xl">{f.name}</h3>
               <p class="mt-2 text-[0.95rem] text-muted">{f.detail}</p>
               {i < flow.length - 1 && (

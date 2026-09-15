@@ -1,15 +1,17 @@
 ---
-// Signature moment: an interactive map of how the disciplines feed each other.
-// Without JavaScript the default selection still reads, and every summary is in the bento below;
-// with JavaScript, selecting a node highlights its connections.
+// Hero diagram: seven disciplines around one operator. Curved links show which
+// disciplines feed each other. It auto-steps through the disciplines until the
+// visitor interacts, and stays static under reduced motion.
+import DisciplineIcon from './DisciplineIcon.astro';
 import { disciplines, type DisciplineId } from '../data/site';
 
-const R = 38;
+const C = 50;
+const R = 37;
 const nodes = disciplines.map((d, i) => {
   const angle = (-90 + (i * 360) / disciplines.length) * (Math.PI / 180);
-  const x = 50 + R * Math.cos(angle);
-  const y = 50 + R * Math.sin(angle);
-  const side = y < 30 ? 'top' : y > 70 ? 'bottom' : x < 50 ? 'left' : 'right';
+  const x = C + R * Math.cos(angle);
+  const y = C + R * Math.sin(angle);
+  const side = y < 30 ? 'top' : y > 70 ? 'bottom' : x < C ? 'left' : 'right';
   return { ...d, x, y, side };
 });
 const pos = Object.fromEntries(nodes.map((n) => [n.id, n])) as Record<DisciplineId, (typeof nodes)[number]>;
@@ -28,30 +30,45 @@ const edges: [DisciplineId, DisciplineId][] = [
   ['motion', 'ai'],
 ];
 
-const initial: DisciplineId = 'ai';
-const first = pos[initial];
+// Bow every link toward the hub so the web reads as one system, not a star polygon.
+const curve = (a: DisciplineId, b: DisciplineId) => {
+  const p = pos[a];
+  const q = pos[b];
+  const cx = C + ((p.x + q.x) / 2 - C) * 0.4;
+  const cy = C + ((p.y + q.y) / 2 - C) * 0.4;
+  return `M${p.x.toFixed(2)} ${p.y.toFixed(2)} Q${cx.toFixed(2)} ${cy.toFixed(2)} ${q.x.toFixed(2)} ${q.y.toFixed(2)}`;
+};
+
+const linksOf = Object.fromEntries(
+  disciplines.map((d) => [
+    d.id,
+    edges.filter(([a, b]) => a === d.id || b === d.id).map(([a, b]) => (a === d.id ? b : a)),
+  ]),
+) as Record<DisciplineId, DisciplineId[]>;
+
+const initial: DisciplineId = 'product';
+const payload = disciplines.map(({ id, name, summary }) => ({
+  id,
+  name,
+  summary,
+  links: linksOf[id].map((l) => pos[l].short),
+}));
+const first = payload.find((p) => p.id === initial)!;
 ---
 
 <figure class="system-map" data-system-map data-active={initial}>
-  <div class="mx-auto w-full max-w-[30rem] px-14 py-6">
-  <div class="relative aspect-square w-full">
+  <div class="relative mx-auto aspect-square w-full max-w-[27rem]">
     <svg viewBox="0 0 100 100" class="absolute inset-0 size-full overflow-visible" aria-hidden="true">
-      <circle cx="50" cy="50" r={R} fill="none" stroke="var(--line)" stroke-width="0.25" stroke-dasharray="0.6 1.2"></circle>
-      {
-        edges.map(([a, b]) => (
-          <line
-            class="edge"
-            data-a={a}
-            data-b={b}
-            x1={pos[a].x}
-            y1={pos[a].y}
-            x2={pos[b].x}
-            y2={pos[b].y}
-            vector-effect="non-scaling-stroke"
-          />
-        ))
-      }
+      <circle cx={C} cy={C} r={R} class="ring"></circle>
+      <circle cx={C} cy={C} r={R * 0.5} class="ring ring-inner"></circle>
+      {nodes.map((n) => <line class="spoke" data-a={n.id} x1={C} y1={C} x2={n.x} y2={n.y} />)}
+      {edges.map(([a, b]) => <path class="edge" data-a={a} data-b={b} d={curve(a, b)} pathLength="1" />)}
     </svg>
+
+    <div class="absolute left-1/2 top-1/2 flex size-[22%] -translate-x-1/2 -translate-y-1/2 flex-col items-center justify-center rounded-full border border-line bg-surface text-center">
+      <span class="text-[clamp(0.8rem,2.6vw,1rem)] font-semibold tracking-[-0.02em]">Sabin</span>
+      <span class="mt-0.5 font-mono text-[clamp(0.55rem,1.6vw,0.65rem)] text-muted">operator</span>
+    </div>
 
     {
       nodes.map((n) => (
@@ -63,136 +80,249 @@ const first = pos[initial];
           data-side={n.side}
           aria-pressed={n.id === initial ? 'true' : 'false'}
           aria-controls="system-map-detail"
+          aria-label={n.name}
         >
-          <span class="node-dot" aria-hidden="true" />
-          <span class="node-label">{n.short}</span>
+          <span class="node-disc">
+            <DisciplineIcon id={n.id} class="size-[1.1rem]" />
+          </span>
+          <span class="node-label" aria-hidden="true">{n.short}</span>
         </button>
       ))
     }
   </div>
-  </div>
 
-  <figcaption id="system-map-detail" class="mx-auto mt-6 min-h-[8.5rem] max-w-[30rem] border-t border-line pt-4">
-    <p class="text-sm text-muted">One operator, one system. Select a discipline to see what it connects to.</p>
-    <p class="mt-3 font-display text-xl" data-detail-name>{first.name}</p>
-    <p class="mt-1 text-[0.975rem] text-muted" data-detail-summary>{first.summary}</p>
+  <figcaption id="system-map-detail" class="mx-auto mt-4 max-w-[27rem] rounded-2xl border border-line bg-surface p-5">
+    <p class="flex items-center justify-between gap-3">
+      <span class="text-base font-semibold tracking-[-0.01em]" data-detail-name>{first.name}</span>
+      <a class="link link-draw shrink-0 text-sm text-muted" href={`/work/?d=${initial}`} data-detail-link>Related work</a>
+    </p>
+    <p class="mt-1.5 min-h-[3.2em] text-[0.9375rem] leading-relaxed text-muted" data-detail-summary>{first.summary}</p>
+    <p class="mt-3 flex flex-wrap items-center gap-1.5 text-[0.8125rem]">
+      <span class="mr-1 text-muted">Feeds into</span>
+      <span class="contents" data-detail-links>
+        {first.links.map((l) => <span class="chip">{l}</span>)}
+      </span>
+    </p>
   </figcaption>
   <p class="sr-only" aria-live="polite" data-map-status></p>
 
-  <script is:inline type="application/json" data-map-data set:html={JSON.stringify(disciplines.map(({ id, name, summary }) => ({ id, name, summary }))).replace(/</g, '\\u003c')} />
+  <script is:inline type="application/json" data-map-data set:html={JSON.stringify(payload).replace(/</g, '\\u003c')} />
 </figure>
 
 <style>
-  .edge {
+  .ring {
+    fill: none;
     stroke: var(--line);
     stroke-width: 1;
-    transition: stroke 240ms ease;
+    vector-effect: non-scaling-stroke;
+  }
+  .ring-inner {
+    stroke-dasharray: 2 4;
+  }
+  .spoke {
+    stroke: transparent;
+    stroke-width: 1;
+    vector-effect: non-scaling-stroke;
+    transition: stroke 300ms ease;
+  }
+  .spoke.on {
+    stroke: color-mix(in srgb, var(--accent) 55%, transparent);
+  }
+  /* Edges use viewBox units (no non-scaling-stroke) so pathLength-based dashes stay continuous. */
+  .edge {
+    fill: none;
+    stroke: var(--line-strong);
+    stroke-opacity: 0.35;
+    stroke-width: 0.22;
+    stroke-linecap: round;
+    stroke-dasharray: 1;
+    stroke-dashoffset: 0;
+    transition: stroke 300ms ease, stroke-opacity 300ms ease;
   }
   .edge.on {
     stroke: var(--accent);
-    stroke-width: 1.5;
+    stroke-opacity: 1;
+    stroke-width: 0.42;
+    animation: draw 700ms var(--ease-out-soft) both;
   }
+  @keyframes draw {
+    from {
+      stroke-dashoffset: 1;
+    }
+    to {
+      stroke-dashoffset: 0;
+    }
+  }
+
   .node {
     width: 2.75rem;
     height: 2.75rem;
     border-radius: 999px;
     color: var(--muted);
-    font-size: clamp(0.8rem, 2.4vw, 0.95rem);
-    line-height: 1;
-    transition: color 200ms ease;
   }
-  .node-dot {
+  .node-disc {
     position: absolute;
-    left: 50%;
-    top: 50%;
-    width: 0.8rem;
-    height: 0.8rem;
-    margin: -0.4rem 0 0 -0.4rem;
+    inset: 0;
+    display: grid;
+    place-items: center;
     border-radius: 999px;
-    border: 1.5px solid var(--line-strong);
-    background: var(--bg);
-    transition: background-color 200ms ease, border-color 200ms ease, transform 240ms var(--ease-out-soft);
+    border: 1px solid var(--line-strong);
+    background: var(--surface);
+    transition: background-color 240ms ease, border-color 240ms ease, color 240ms ease, transform 300ms var(--ease-out-soft);
   }
   .node-label {
     position: absolute;
     white-space: nowrap;
-    padding: 0.2rem 0.35rem;
-    border-radius: 0.4rem;
-    background: var(--bg);
+    font-size: 0.8125rem;
+    font-weight: 500;
+    line-height: 1;
+    padding: 0.2rem 0.3rem;
+    color: var(--muted);
+    transition: color 240ms ease;
   }
   .node[data-side='top'] .node-label {
-    bottom: 78%;
+    bottom: calc(100% + 0.35rem);
     left: 50%;
     transform: translateX(-50%);
   }
   .node[data-side='bottom'] .node-label {
-    top: 78%;
+    top: calc(100% + 0.35rem);
     left: 50%;
     transform: translateX(-50%);
   }
   .node[data-side='left'] .node-label {
-    right: 78%;
+    right: calc(100% + 0.4rem);
     top: 50%;
     transform: translateY(-50%);
   }
   .node[data-side='right'] .node-label {
-    left: 78%;
+    left: calc(100% + 0.4rem);
     top: 50%;
     transform: translateY(-50%);
   }
-  .node:hover,
-  .node[aria-pressed='true'],
-  .node.linked {
+  /* Narrow screens: side labels would leave the viewport, so they sit under the node. */
+  @media (max-width: 639px) {
+    .node[data-side='left'] .node-label,
+    .node[data-side='right'] .node-label {
+      left: 50%;
+      right: auto;
+      top: calc(100% + 0.3rem);
+      transform: translateX(-50%);
+    }
+  }
+  .node:hover .node-disc,
+  .node.linked .node-disc {
+    border-color: var(--accent);
     color: var(--text);
   }
-  .node.linked .node-dot {
-    border-color: var(--accent);
+  .node:hover .node-label,
+  .node.linked .node-label,
+  .node[aria-pressed='true'] .node-label {
+    color: var(--text);
   }
-  .node[aria-pressed='true'] .node-dot {
+  .node[aria-pressed='true'] .node-disc {
     background: var(--accent);
     border-color: var(--accent);
-    transform: scale(1.4);
+    color: var(--on-accent);
+    transform: scale(1.12);
+  }
+  .system-map :global(.chip) {
+    display: inline-flex;
+    align-items: center;
+    border-radius: 999px;
+    border: 1px solid var(--line);
+    padding: 0.15rem 0.55rem;
+    color: var(--text);
   }
 </style>
 
 <script>
-  type Item = { id: string; name: string; summary: string };
+  type Item = { id: string; name: string; summary: string; links: string[] };
 
   document.querySelectorAll<HTMLElement>('[data-system-map]').forEach((map) => {
     const dataEl = map.querySelector('[data-map-data]');
     const items: Item[] = dataEl ? JSON.parse(dataEl.textContent || '[]') : [];
     const nameEl = map.querySelector('[data-detail-name]');
     const summaryEl = map.querySelector('[data-detail-summary]');
-    const buttons = map.querySelectorAll<HTMLButtonElement>('[data-node]');
-    const edges = map.querySelectorAll<SVGLineElement>('.edge');
-
+    const linksEl = map.querySelector('[data-detail-links]');
+    const linkEl = map.querySelector<HTMLAnchorElement>('[data-detail-link]');
     const status = map.querySelector('[data-map-status]');
+    const buttons = [...map.querySelectorAll<HTMLButtonElement>('[data-node]')];
+    const edges = map.querySelectorAll<SVGPathElement>('.edge');
+    const spokes = map.querySelectorAll<SVGLineElement>('.spoke');
+    let current = map.dataset.active || items[0]?.id;
 
     function select(id: string, announce = false) {
       const item = items.find((i) => i.id === id);
       if (!item) return;
+      current = id;
       const linked = new Set<string>();
       edges.forEach((e) => {
         const on = e.dataset.a === id || e.dataset.b === id;
-        e.classList.toggle('on', on);
-        if (on) linked.add(e.dataset.a === id ? e.dataset.b! : e.dataset.a!);
+        // Remove then re-add so the draw animation replays on each selection.
+        e.classList.remove('on');
+        if (on) {
+          void e.getBoundingClientRect();
+          e.classList.add('on');
+          linked.add(e.dataset.a === id ? e.dataset.b! : e.dataset.a!);
+        }
       });
+      spokes.forEach((s) => s.classList.toggle('on', s.dataset.a === id));
       buttons.forEach((b) => {
         b.setAttribute('aria-pressed', b.dataset.node === id ? 'true' : 'false');
         b.classList.toggle('linked', linked.has(b.dataset.node!));
       });
       if (nameEl) nameEl.textContent = item.name;
       if (summaryEl) summaryEl.textContent = item.summary;
+      if (linkEl) linkEl.href = `/work/?d=${id}`;
+      if (linksEl) {
+        linksEl.replaceChildren(
+          ...item.links.map((l) => {
+            const chip = document.createElement('span');
+            chip.className = 'chip';
+            chip.textContent = l;
+            return chip;
+          }),
+        );
+      }
       if (announce && status) status.textContent = `${item.name}. ${item.summary}`;
     }
 
+    // Auto-step through the disciplines to show the system, until the visitor takes over.
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    let timer: number | undefined;
+    let visible = true;
+    let stopped = reduced;
+
+    const tick = () => {
+      if (stopped || !visible || document.hidden) return;
+      const i = buttons.findIndex((b) => b.dataset.node === current);
+      select(buttons[(i + 1) % buttons.length].dataset.node!);
+    };
+    const stop = () => {
+      stopped = true;
+      window.clearInterval(timer);
+      timer = undefined;
+    };
+
     buttons.forEach((b) => {
-      b.addEventListener('click', () => select(b.dataset.node!, true));
-      b.addEventListener('pointerenter', (e) => {
-        if (e.pointerType === 'mouse') select(b.dataset.node!);
+      b.addEventListener('click', () => {
+        stop();
+        select(b.dataset.node!, true);
       });
+      b.addEventListener('pointerenter', (e) => {
+        if (e.pointerType !== 'mouse') return;
+        stop();
+        select(b.dataset.node!);
+      });
+      b.addEventListener('focus', stop);
     });
 
-    select(map.dataset.active || 'ai');
+    new IntersectionObserver(([entry]) => {
+      visible = entry.isIntersecting;
+    }).observe(map);
+
+    select(current);
+    if (!stopped) timer = window.setInterval(tick, 3200);
   });
 </script>
