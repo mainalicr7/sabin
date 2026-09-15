@@ -29,7 +29,7 @@ const direct = [
 // - Netlify Forms, when the key is empty. Only works if the site is hosted on Netlify, once
 //   "Enable form detection" is on (Netlify > Forms) and an email notification is added.
 //   It does not work on a local preview, only on Netlify.
-const WEB3FORMS_KEY = '';
+const WEB3FORMS_KEY = '97e86601-2425-4e67-9f04-2d82d8089e5a';
 // Netlify Forms cannot receive posts on Cloudflare Pages. Fail the deploy instead of
 // shipping a contact form that silently loses every brief.
 if (!WEB3FORMS_KEY && process.env.CF_PAGES === '1') {
