@@ -48,19 +48,21 @@ The Open Graph image, sitemap entry, llms.txt entry, JSON-LD and previous/next l
 
 **Confidentiality rule:** no Calilio revenue, margins, user counts, pricing internals, vendor contract terms, funding or exit details, customer names or internal screenshots. Outcomes stay qualitative unless a number is approved.
 
-## Deploy (Cloudflare Pages)
+## Deploy (Cloudflare Pages via GitHub Actions)
 
 Cloudflare Pages was chosen because the free plan has unlimited requests and bandwidth, never pauses a site, and Cloudflare Registrar sells domains at cost.
 
-1. In Cloudflare: **Workers & Pages > Create > Pages > Connect to Git**, pick `mainalicr7/sabin`, branch `main`.
-2. Build settings: framework preset **Astro**, build command `npm run build && npm run verify`, output directory `dist`. Node comes from `.node-version` (22).
-3. **Settings > Variables and Secrets**, production: `PUBLIC_SITE_URL` = the live address (for example `https://sabinmainali.pages.dev`, later `https://sabinmainali.com`). The build fails without it, so canonical links, the sitemap and OG tags are never wrong.
-4. The contact form needs a Web3Forms access key in `WEB3FORMS_KEY` (`src/pages/contact/index.astro`). The Cloudflare build fails while it is empty, so a broken form is never shipped.
-5. Send a test brief from the live contact page and check that it arrives.
+Every push to `main` runs `.github/workflows/deploy.yml`: install, build, `verify --production`, then `wrangler pages deploy dist` to the `sabinmainali` project (created on the first run if it does not exist). It can also be started by hand from **Actions > Deploy to Cloudflare Pages > Run workflow**.
 
-Custom domain: **Custom domains > Set up a domain** on the Pages project, then update `PUBLIC_SITE_URL` and redeploy. HTTPS is automatic. Every push to `main` deploys; other branches get preview URLs.
+One-time setup:
 
-Security headers and asset caching live in `public/_headers`.
+1. Cloudflare: **My Profile > API Tokens > Create Token > Custom token**, permission **Account > Cloudflare Pages > Edit**, limited to your account.
+2. GitHub repo: **Settings > Secrets and variables > Actions > New repository secret**: `CLOUDFLARE_API_TOKEN` (the token) and `CLOUDFLARE_ACCOUNT_ID` (from the dashboard URL or the account home page).
+3. The live address is set in the workflow as `PUBLIC_SITE_URL`. Change it there when a custom domain is added.
+
+The contact form needs a Web3Forms access key in `WEB3FORMS_KEY` (`src/pages/contact/index.astro`). Security headers and asset caching live in `public/_headers`.
+
+Custom domain: **Workers & Pages > sabinmainali > Custom domains > Set up a domain**, then update `PUBLIC_SITE_URL` in the workflow and push. HTTPS is automatic.
 
 ## What is inside
 
