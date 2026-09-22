@@ -27,7 +27,8 @@ if (!existsSync(DIST) || readdirSync(DIST).length === 0) {
 }
 
 const files = walk(DIST);
-const html = files.filter((f) => f.endsWith('.html'));
+// Client previews under /preview/ are private, noindex pages: skip the public SEO checks.
+const html = files.filter((f) => f.endsWith('.html') && !/[\\/]preview[\\/]/.test(f));
 if (html.length === 0) {
   console.error('verify: no HTML pages found in dist/. Did the build fail?');
   process.exit(1);
