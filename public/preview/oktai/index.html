@@ -63,16 +63,46 @@ svg{display:block}
 .js .logo .lg-chev{animation:lgFade .4s var(--ease) .35s both}
 .js .logo .lg-cur{animation:lgBlink 1.1s steps(1) .5s infinite}
 .js .logo .lg-rays line{animation:rayIn .55s var(--spring) both;animation-delay:calc(.45s + var(--i) * 70ms)}
-html[data-ai="run"] .logo .lg-rays line{animation:rayWork 1.4s ease-in-out infinite;animation-delay:calc(var(--i) * 140ms)}
-html[data-ai="run"] .logo .lg-chev{animation:lgNudge 1.4s ease-in-out infinite}
+/* one behaviour per agent step (html[data-ai] is set by the run script) */
+.logo .lg-rays line{stroke-dasharray:12 20}
+.logo .lg-glow{fill:url(#g-lglow);opacity:0;transition:opacity .5s var(--ease)}
+/* plan: rays pulse in sequence while the goal is read */
+html[data-ai="plan"] .logo .lg-rays line{animation:rayWork 1.4s ease-in-out infinite;animation-delay:calc(var(--i) * 140ms)}
+/* connect: rays slide inward, like signals arriving at the terminal */
+html[data-ai="connect"] .logo .lg-rays line{animation:rayRecv 1.1s var(--ease) infinite;animation-delay:calc((7 - var(--i)) * 90ms)}
+html[data-ai="connect"] .logo .lg-glow{opacity:.5}
+/* research: a bright radar sweep runs around the rays, the prompt scans */
+html[data-ai="research"] .logo .lg-rays line{animation:raySweep .96s linear infinite;animation-delay:calc(var(--i) * 120ms)}
+html[data-ai="research"] .logo .lg-chev{animation:lgNudge .8s ease-in-out infinite}
+/* analyze: rays change length like an equalizer, the computer is thinking */
+html[data-ai="analyze"] .logo .lg-rays line{animation:rayEq .5s ease-in-out infinite alternate;animation-delay:calc(var(--r) * -1s)}
+html[data-ai="analyze"] .logo .lg-glow{opacity:.7}
+/* decide: everything holds in coral and breathes slowly, waiting for the person */
+html[data-ai="decide"] .logo .lg-rays line{animation:rayHold 2s ease-in-out infinite}
+html[data-ai="decide"] .logo .lg-cur{animation:lgBlink 1.8s steps(1) infinite}
+html[data-ai="decide"] .logo .lg-box{animation:boxHold 2s ease-in-out infinite}
+/* produce: rays light up one by one like a progress bar, the cursor types */
+html[data-ai="produce"] .logo .lg-rays line{animation:rayBuild .35s var(--ease) both;animation-delay:calc(.2s + var(--i) * 380ms)}
+html[data-ai="produce"] .logo .lg-cur{animation:lgType .6s steps(3) infinite}
+/* done: mint flash, then a calm, fully lit mark */
 html[data-ai="done"] .logo .lg-rays line{animation:rayDone .9s var(--ease) both;animation-delay:calc(var(--i) * 45ms)}
+html[data-ai="done"] .logo .lg-box{animation:boxPop .6s var(--spring) both}
+html[data-ai="done"] .logo .lg-glow{opacity:.9;fill:url(#g-lglow-m)}
 @keyframes lgBox{from{opacity:0;transform:scale(.7)}}
 @keyframes lgFade{from{opacity:0;transform:translateX(-4px)}}
 @keyframes lgBlink{50%{opacity:0}}
-@keyframes lgNudge{0%,100%{transform:translateX(0)}50%{transform:translateX(2.5px)}}
+@keyframes lgNudge{0%,100%{transform:translateX(0)}50%{transform:translateX(3px)}}
+@keyframes lgType{from{transform:translateX(-3px)}to{transform:translateX(4px)}}
 @keyframes rayIn{from{opacity:0;transform:scale(.55)}}
 @keyframes rayWork{0%,100%{stroke:#4A2BC4;opacity:.55}45%{stroke:#B9A6FF;opacity:1}}
-@keyframes rayDone{0%{transform:scale(1)}40%{stroke:#35D6B4;transform:scale(1.14)}100%{stroke:#6D3DF7;transform:scale(1)}}
+@keyframes rayRecv{0%{opacity:0;transform:scale(1.3)}45%{opacity:1;transform:scale(1);stroke:#B9A6FF}100%{opacity:.45;transform:scale(1)}}
+@keyframes raySweep{0%{stroke:#E4DCFF;opacity:1}12%{stroke:#35D6B4}40%,100%{stroke:#4A2BC4;opacity:.45}}
+@keyframes rayEq{from{stroke-dashoffset:0;stroke:#9175FE}to{stroke-dashoffset:7;stroke:#6D3DF7}}
+@keyframes rayHold{0%,100%{stroke:#FF7A69;opacity:.35}50%{stroke:#FF7A69;opacity:1}}
+@keyframes boxHold{0%,100%{fill-opacity:1}50%{fill-opacity:.75}}
+@keyframes rayBuild{from{stroke:#3A2890;opacity:.3}to{stroke:#B9A6FF;opacity:1}}
+@keyframes rayDone{0%{transform:scale(1)}40%{stroke:#35D6B4;transform:scale(1.14)}100%{stroke:#7B55FF;transform:scale(1)}}
+@keyframes boxPop{50%{transform:scale(1.08)}}
 
 /* ================= NAVBAR ================= */
 .nav{position:fixed;top:0;left:0;right:0;z-index:50;padding:14px var(--gutter) 0;pointer-events:none}
@@ -144,6 +174,7 @@ html[data-ai="done"] .logo .lg-rays line{animation:rayDone .9s var(--ease) both;
 @keyframes au1{from{transform:translate3d(-80px,0,0) scale(1)}to{transform:translate3d(80px,60px,0) scale(1.1)}}
 @keyframes au2{from{transform:translate3d(0,0,0)}to{transform:translate3d(-140px,-70px,0)}}
 @keyframes au3{from{transform:translate3d(0,0,0)}to{transform:translate3d(160px,-60px,0)}}
+.circuit{position:absolute;inset:0;width:100%;height:100%;opacity:.9;-webkit-mask-image:radial-gradient(130% 100% at 50% 45%,rgba(0,0,0,.28) 0%,#000 60%);mask-image:radial-gradient(130% 100% at 50% 45%,rgba(0,0,0,.28) 0%,#000 60%)}
 .grid-top{position:absolute;inset:0;background-image:linear-gradient(rgba(245,244,250,.035) 1px,transparent 1px),linear-gradient(90deg,rgba(245,244,250,.035) 1px,transparent 1px);background-size:64px 64px;background-position:center -1px;-webkit-mask-image:radial-gradient(1000px 520px at 50% 0%,#000 10%,transparent 75%);mask-image:radial-gradient(1000px 520px at 50% 0%,#000 10%,transparent 75%)}
 .floor{position:absolute;left:-50%;right:-50%;bottom:0;height:34%;opacity:.4;perspective:520px;perspective-origin:50% 0%;-webkit-mask-image:linear-gradient(to bottom,transparent 0%,#000 45%,#000 70%,transparent 100%);mask-image:linear-gradient(to bottom,transparent 0%,#000 45%,#000 70%,transparent 100%)}
 .floor-plane{position:absolute;inset:0;transform:rotateX(72deg);transform-origin:50% 0%;overflow:hidden}
@@ -181,7 +212,7 @@ h1 .dim{color:var(--muted)}
 .orb{position:absolute;left:50%;top:50%;width:720px;height:720px;margin:-360px 0 0 -360px;pointer-events:none}
 .stage{position:relative;perspective:1600px;perspective-origin:50% 30%}
 .rig{transform-style:preserve-3d;transform:rotateX(calc(5deg + var(--rx,0deg))) rotateY(calc(-9deg + var(--ry,0deg)))}
-.float{position:relative;display:flex;flex-direction:column;gap:14px;width:464px;animation:float 8s ease-in-out infinite}
+.float{position:relative;display:flex;flex-direction:column;gap:14px;width:464px;will-change:transform;animation:float 8s ease-in-out infinite}
 @keyframes float{0%,100%{transform:translate3d(0,0,0)}50%{transform:translate3d(0,-10px,0)}}
 
 .panel{position:relative;border-radius:20px;background:linear-gradient(180deg,rgba(36,34,54,.94),rgba(22,21,33,.96));box-shadow:inset 0 1px 0 rgba(245,244,250,.08),inset 0 0 0 1px rgba(145,117,254,.26),0 40px 90px -24px rgba(0,0,0,.75),0 0 70px -16px rgba(90,53,245,.4);overflow:hidden}
@@ -193,7 +224,7 @@ h1 .dim{color:var(--muted)}
 .dots i:nth-child(2){background:var(--lavender)}
 .dots i:nth-child(3){background:var(--mint)}
 .win-title{flex:1;min-width:0;white-space:nowrap;display:flex;align-items:center;justify-content:center;gap:8px;font-size:12px;color:var(--muted)}
-.win-title .logo{width:17px;height:17px}
+.win-title .logo{width:21px;height:21px}
 .win-status{display:inline-flex;align-items:center;gap:6px;padding:3px 9px;border-radius:999px;font-family:var(--mono);font-size:10.5px;font-weight:500;letter-spacing:.03em;color:#C5B6FF;background:rgba(145,117,254,.14);transition:color .3s,background-color .3s}
 .win-status i{width:6px;height:6px;border-radius:50%;background:currentColor;animation:blink 1.2s steps(1) infinite}
 .win-status.is-wait{color:var(--coral);background:rgba(255,122,105,.14)}
@@ -215,10 +246,10 @@ h1 .dim{color:var(--muted)}
 .v-analyze .bar,.v-produce .pb{transform-origin:50% 100%}
 .v-produce .pl{transform-origin:0 50%}
 .v-research .hit{transform-origin:0 50%}
-.cap{display:flex;align-items:center;gap:10px;margin:10px 2px 12px;height:18px;font-family:var(--mono);font-size:11.5px;color:#CFCBDF;overflow:hidden;white-space:nowrap}
-.cap-spin{flex:0 0 auto;width:12px;height:12px;border-radius:50%;border:1.5px solid rgba(145,117,254,.25);border-top-color:var(--lavender);animation:rot .8s linear infinite}
-.cap.is-wait .cap-spin{border-color:rgba(255,122,105,.3);border-top-color:var(--coral);animation-duration:1.6s}
-.cap.is-done .cap-spin{border-color:var(--mint);background:var(--mint);animation:none}
+.cap{display:flex;align-items:center;gap:10px;margin:8px 2px 10px;height:32px;font-family:var(--mono);font-size:11.5px;color:#CFCBDF;overflow:hidden;white-space:nowrap}
+.cap .logo{flex:0 0 auto;width:30px;height:30px}
+.cap.is-wait{color:#FFC2B8}
+.cap.is-done{color:#A7EEDD}
 #cap-text{display:inline-block}
 #cap-text.swap{animation:capIn .35s var(--ease)}
 @keyframes capIn{from{opacity:0;transform:translateY(8px)}}
@@ -236,14 +267,15 @@ h1 .dim{color:var(--muted)}
 .v-connect.on .src rect{animation:srcLit .5s ease both;animation-delay:calc(var(--i) * .55s + .2s)}
 .v-connect.on .src .ok{animation:okPop .4s var(--spring) both;animation-delay:calc(var(--i) * .55s + .45s)}
 .v-connect.on .flow{animation:flowOn .3s ease both,dash .9s linear infinite;animation-delay:calc(var(--i) * .55s + .2s),0s}
-.v-connect.on .core{animation:corePulse 1.6s ease-in-out infinite}
+.v-connect .core-glow{fill:url(#g-lglow);opacity:0}
+.v-connect.on .core-glow{animation:glowPulse 1.8s ease-in-out infinite}
 .v-connect.on .core-ring{animation:ringOut 1.2s var(--ease) 2.3s both}
 @keyframes vIn{from{opacity:0;transform:translateX(-10px)}}
 @keyframes srcLit{from{stroke:rgba(245,244,250,.12);fill:rgba(245,244,250,.03)}}
 @keyframes okPop{from{opacity:0;transform:scale(0)}}
 @keyframes flowOn{from{opacity:0}}
 @keyframes dash{to{stroke-dashoffset:-12}}
-@keyframes corePulse{0%,100%{filter:drop-shadow(0 0 0 rgba(90,53,245,0))}50%{filter:drop-shadow(0 0 10px rgba(145,117,254,.8))}}
+@keyframes glowPulse{0%,100%{opacity:.25}50%{opacity:.9}}
 @keyframes ringOut{0%{opacity:.9;transform:scale(.7)}100%{opacity:0;transform:scale(1.5)}}
 
 /* 2 research */
@@ -456,6 +488,8 @@ li.is-wait .tag-wait,li.is-ok .tag-ok{display:inline;animation:capIn .3s var(--e
     <linearGradient id="g-logo" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#7B4DFF"/><stop offset="1" stop-color="#5320D8"/></linearGradient>
     <linearGradient id="g-beam" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#9175FE" stop-opacity="0"/><stop offset=".85" stop-color="#9175FE" stop-opacity=".28"/><stop offset="1" stop-color="#CDBFFF" stop-opacity=".9"/></linearGradient>
     <linearGradient id="g-bar" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#9175FE"/><stop offset="1" stop-color="#5A35F5" stop-opacity=".6"/></linearGradient>
+    <radialGradient id="g-lglow"><stop offset=".35" stop-color="#9175FE" stop-opacity=".55"/><stop offset="1" stop-color="#9175FE" stop-opacity="0"/></radialGradient>
+    <radialGradient id="g-lglow-m"><stop offset=".35" stop-color="#35D6B4" stop-opacity=".5"/><stop offset="1" stop-color="#35D6B4" stop-opacity="0"/></radialGradient>
     <radialGradient id="g-glow"><stop offset="0" stop-color="#35D6B4" stop-opacity=".35"/><stop offset="1" stop-color="#35D6B4" stop-opacity="0"/></radialGradient>
   </defs>
 </svg>
@@ -465,14 +499,7 @@ li.is-wait .tag-wait,li.is-ok .tag-ok{display:inline;animation:capIn .3s var(--e
 <header class="nav" id="nav">
   <div class="nav-in">
     <a class="brand" href="#top" aria-label="OKTAI Computer, back to top">
-      <svg class="logo" viewBox="-4 -4 104 104" aria-hidden="true">
-        <rect class="lg-box" x="6" y="6" width="58" height="58" rx="15" fill="url(#g-logo)"/>
-        <path class="lg-chev" d="M19 22l9 9-9 9"/>
-        <path class="lg-cur" d="M33 41h11"/>
-        <g class="lg-rays">
-          <line style="--i:0" x1="72.3" y1="9.8" x2="82.3" y2="3.1"/><line style="--i:1" x1="78.8" y1="24.9" x2="90.5" y2="22.2"/><line style="--i:2" x1="79.6" y1="41.3" x2="91.4" y2="42.9"/><line style="--i:3" x1="74.4" y1="56.8" x2="84.9" y2="62.6"/><line style="--i:4" x1="63.9" y1="69.5" x2="71.6" y2="78.7"/><line style="--i:5" x1="49.7" y1="77.5" x2="53.6" y2="88.9"/><line style="--i:6" x1="33.4" y1="80.0" x2="33.0" y2="92.0"/><line style="--i:7" x1="17.4" y1="76.4" x2="12.7" y2="87.5"/>
-        </g>
-      </svg>
+      <svg class="logo" viewBox="-4 -4 104 104" aria-hidden="true"><circle class="lg-glow" cx="35" cy="35" r="52"/><rect class="lg-box" x="6" y="6" width="58" height="58" rx="15" fill="url(#g-logo)"/><path class="lg-chev" d="M19 22l9 9-9 9"/><path class="lg-cur" d="M33 41h11"/><g class="lg-rays"><line style="--i:0;--r:0.05" x1="72.3" y1="9.8" x2="82.3" y2="3.1"/><line style="--i:1;--r:0.31" x1="78.8" y1="24.9" x2="90.5" y2="22.2"/><line style="--i:2;--r:0.62" x1="79.6" y1="41.3" x2="91.4" y2="42.9"/><line style="--i:3;--r:0.18" x1="74.4" y1="56.8" x2="84.9" y2="62.6"/><line style="--i:4;--r:0.47" x1="63.9" y1="69.5" x2="71.6" y2="78.7"/><line style="--i:5;--r:0.79" x1="49.7" y1="77.5" x2="53.6" y2="88.9"/><line style="--i:6;--r:0.24" x1="33.4" y1="80.0" x2="33.0" y2="92.0"/><line style="--i:7;--r:0.55" x1="17.4" y1="76.4" x2="12.7" y2="87.5"/></g></svg>
       <span>OKTAI</span>
     </a>
 
@@ -515,6 +542,8 @@ li.is-wait .tag-wait,li.is-ok .tag-ok{display:inline;animation:capIn .3s var(--e
   <section class="hero" id="top" aria-labelledby="hero-title">
     <div class="bg" aria-hidden="true">
       <div class="grid-top"></div>
+      <canvas class="circuit" id="circuit"></canvas>
+      <canvas class="circuit" id="circuit-fx"></canvas>
       <div class="aurora au-1"></div>
       <div class="aurora au-2"></div>
       <div class="aurora au-3"></div>
@@ -546,11 +575,7 @@ li.is-wait .tag-wait,li.is-ok .tag-ok{display:inline;animation:capIn .3s var(--e
                 <div class="win-bar">
                   <span class="dots"><i></i><i></i><i></i></span>
                   <span class="win-title">
-                    <svg class="logo" viewBox="-4 -4 104 104">
-                      <rect class="lg-box" x="6" y="6" width="58" height="58" rx="15" fill="url(#g-logo)"/>
-                      <path class="lg-chev" d="M19 22l9 9-9 9"/><path class="lg-cur" d="M33 41h11"/>
-                      <g class="lg-rays"><line style="--i:0" x1="72.3" y1="9.8" x2="82.3" y2="3.1"/><line style="--i:1" x1="78.8" y1="24.9" x2="90.5" y2="22.2"/><line style="--i:2" x1="79.6" y1="41.3" x2="91.4" y2="42.9"/><line style="--i:3" x1="74.4" y1="56.8" x2="84.9" y2="62.6"/><line style="--i:4" x1="63.9" y1="69.5" x2="71.6" y2="78.7"/><line style="--i:5" x1="49.7" y1="77.5" x2="53.6" y2="88.9"/><line style="--i:6" x1="33.4" y1="80.0" x2="33.0" y2="92.0"/><line style="--i:7" x1="17.4" y1="76.4" x2="12.7" y2="87.5"/></g>
-                    </svg>
+                    <svg class="logo" viewBox="-4 -4 104 104" aria-hidden="true"><circle class="lg-glow" cx="35" cy="35" r="52"/><rect class="lg-box" x="6" y="6" width="58" height="58" rx="15" fill="url(#g-logo)"/><path class="lg-chev" d="M19 22l9 9-9 9"/><path class="lg-cur" d="M33 41h11"/><g class="lg-rays"><line style="--i:0;--r:0.05" x1="72.3" y1="9.8" x2="82.3" y2="3.1"/><line style="--i:1;--r:0.31" x1="78.8" y1="24.9" x2="90.5" y2="22.2"/><line style="--i:2;--r:0.62" x1="79.6" y1="41.3" x2="91.4" y2="42.9"/><line style="--i:3;--r:0.18" x1="74.4" y1="56.8" x2="84.9" y2="62.6"/><line style="--i:4;--r:0.47" x1="63.9" y1="69.5" x2="71.6" y2="78.7"/><line style="--i:5;--r:0.79" x1="49.7" y1="77.5" x2="53.6" y2="88.9"/><line style="--i:6;--r:0.24" x1="33.4" y1="80.0" x2="33.0" y2="92.0"/><line style="--i:7;--r:0.55" x1="17.4" y1="76.4" x2="12.7" y2="87.5"/></g></svg>
                     <span>OKTAI Computer</span>
                   </span>
                   <span class="win-status" id="win-status"><i></i><span>Running</span></span>
@@ -567,7 +592,7 @@ li.is-wait .tag-wait,li.is-ok .tag-ok{display:inline;animation:capIn .3s var(--e
                       <g class="src" style="--i:1"><rect x="14" y="42" width="114" height="26" rx="8"/><path class="ico" d="M24 51h5l2 2h7v8H24z"/><text x="46" y="59">Drive</text><circle class="ok" cx="116" cy="55" r="4"/></g>
                       <g class="src" style="--i:2"><rect x="14" y="74" width="114" height="26" rx="8"/><path class="ico" d="M24 82h14v10H24zM24 87h14M31 82v10"/><text x="46" y="91">CRM</text><circle class="ok" cx="116" cy="87" r="4"/></g>
                       <g class="src" style="--i:3"><rect x="14" y="106" width="114" height="26" rx="8"/><path class="ico" d="M25 113h8l4 4v8H25zM33 113v4h4"/><text x="46" y="123">Contracts</text><circle class="ok" cx="116" cy="119" r="4"/></g>
-                      <circle class="core-ring" cx="346" cy="70" r="34"/>
+                      <circle class="core-glow" cx="346" cy="70" r="52"/><circle class="core-ring" cx="346" cy="70" r="34"/>
                       <g class="core"><rect class="core-box" x="320" y="44" width="52" height="52" rx="14"/><path class="core-mk" d="M333 60l8 8-8 8M345 79h11"/></g>
                       <text x="346" y="116" text-anchor="middle">OKTAI</text>
                     </svg>
@@ -656,7 +681,7 @@ li.is-wait .tag-wait,li.is-ok .tag-ok{display:inline;animation:capIn .3s var(--e
                     </svg>
                   </div>
 
-                  <p class="cap" id="cap"><span class="cap-spin"></span><span id="cap-text">Waiting for a goal...</span></p>
+                  <p class="cap" id="cap"><svg class="logo" viewBox="-4 -4 104 104" aria-hidden="true"><circle class="lg-glow" cx="35" cy="35" r="52"/><rect class="lg-box" x="6" y="6" width="58" height="58" rx="15" fill="url(#g-logo)"/><path class="lg-chev" d="M19 22l9 9-9 9"/><path class="lg-cur" d="M33 41h11"/><g class="lg-rays"><line style="--i:0;--r:0.05" x1="72.3" y1="9.8" x2="82.3" y2="3.1"/><line style="--i:1;--r:0.31" x1="78.8" y1="24.9" x2="90.5" y2="22.2"/><line style="--i:2;--r:0.62" x1="79.6" y1="41.3" x2="91.4" y2="42.9"/><line style="--i:3;--r:0.18" x1="74.4" y1="56.8" x2="84.9" y2="62.6"/><line style="--i:4;--r:0.47" x1="63.9" y1="69.5" x2="71.6" y2="78.7"/><line style="--i:5;--r:0.79" x1="49.7" y1="77.5" x2="53.6" y2="88.9"/><line style="--i:6;--r:0.24" x1="33.4" y1="80.0" x2="33.0" y2="92.0"/><line style="--i:7;--r:0.55" x1="17.4" y1="76.4" x2="12.7" y2="87.5"/></g></svg><span id="cap-text">Waiting for a goal...</span></p>
 
                   <ol class="steps" id="steps">
                     <li><span class="st"></span><span>Connect your data</span></li>
@@ -853,68 +878,239 @@ li.is-wait .tag-wait,li.is-ok .tag-ok{display:inline;animation:capIn .3s var(--e
     if (Math.abs(tx - cx) > .02 || Math.abs(ty - cy) > .02) requestAnimationFrame(tilt); else tilting = false;
   }
 
-  /* ---------- background: rotating dot sphere (canvas) ---------- */
+  /* ---------- background: circuit field + dot sphere on one animation loop ----------
+     Both canvases are driven by a single requestAnimationFrame loop, the static
+     circuit traces are pre-rendered once per resize, and the sphere batches its
+     dots by depth so each frame is a handful of fill calls instead of hundreds. */
+  var bgSpeed = 1, bgColor = [145, 117, 254];
+  var MODE_BG = {
+    idle: [.45, [145, 117, 254]], plan: [.9, [145, 117, 254]], connect: [1.15, [145, 117, 254]],
+    research: [1.8, [190, 175, 255]], analyze: [1.1, [145, 117, 254]], decide: [.25, [255, 122, 105]],
+    produce: [1.15, [145, 117, 254]], done: [1.35, [53, 214, 180]]
+  };
+  function setBgMode(mode) { var m = MODE_BG[mode] || MODE_BG.idle; bgSpeed = m[0]; bgColor = m[1]; }
+
+  /* --- circuit field: data buses with light running through them --- */
+  var circuit = $('circuit'), cctx = circuit.getContext('2d');
+  var fx = $('circuit-fx'), fxctx = fx.getContext('2d');
+  var traces = [], pulses = [], chips = [], baseLayer = null, CW = 0, CH = 0, cdpr = 1, fdpr = 1;
+  function buildCircuit() {
+    var cell = CW < 700 ? 40 : 56, cols = Math.ceil(CW / cell), rows = Math.ceil(CH / cell);
+    var count = CW < 700 ? 10 : CW < 1200 ? 20 : 30;
+    traces = [];
+    for (var i = 0; i < count; i++) {
+      var horiz = Math.random() < .5, pl = [], x, y, dx, dy;
+      if (horiz) { x = Math.random() < .5 ? 0 : cols; y = Math.round(Math.random() * rows); dx = x === 0 ? 1 : -1; dy = 0; }
+      else { y = Math.random() < .5 ? 0 : rows; x = Math.round(Math.random() * cols); dy = y === 0 ? 1 : -1; dx = 0; }
+      pl.push([x * cell, y * cell]);
+      for (var sg = 0, legs = 4 + Math.round(Math.random() * 4); sg < legs; sg++) {
+        var len = 1 + Math.round(Math.random() * 4);
+        x = Math.max(-1, Math.min(cols + 1, x + dx * len));
+        y = Math.max(-1, Math.min(rows + 1, y + dy * len));
+        pl.push([x * cell, y * cell]);
+        if (dx) { dx = 0; dy = Math.random() < .5 ? 1 : -1; } else { dy = 0; dx = Math.random() < .5 ? 1 : -1; }
+      }
+      var segs = [], total = 0;
+      for (var k = 1; k < pl.length; k++) {
+        var L = Math.abs(pl[k][0] - pl[k - 1][0]) + Math.abs(pl[k][1] - pl[k - 1][1]);
+        if (L > 0) { segs.push({ a: pl[k - 1], b: pl[k], len: L, at: total }); total += L; }
+      }
+      if (total > 60) traces.push({ pts: pl, segs: segs, total: total });
+    }
+    pulses = traces.map(function (t) { return { t: t, d: -Math.random() * t.total, v: 70 + Math.random() * 90 }; });
+    /* static layer: traces and pads, painted once per resize */
+    baseLayer = true;
+    var b = cctx;
+    b.setTransform(1, 0, 0, 1, 0, 0);
+    b.clearRect(0, 0, circuit.width, circuit.height);
+    b.setTransform(cdpr, 0, 0, cdpr, 0, 0);
+    b.lineWidth = 1; b.lineJoin = 'round'; b.lineCap = 'round';
+    b.strokeStyle = 'rgba(145,117,254,.16)';
+    traces.forEach(function (t) {
+      b.beginPath(); b.moveTo(t.pts[0][0], t.pts[0][1]);
+      for (var k = 1; k < t.pts.length; k++) b.lineTo(t.pts[k][0], t.pts[k][1]);
+      b.stroke();
+    });
+    b.fillStyle = 'rgba(145,117,254,.16)';
+    b.beginPath();
+    traces.forEach(function (t) {
+      t.pts.forEach(function (pt, k) { if (k % 2 === 0) { b.moveTo(pt[0] + 2.6, pt[1]); b.arc(pt[0], pt[1], 2.6, 0, 6.2832); } });
+    });
+    b.fill();
+    /* processor dies: a few chips wired into the bus, each with a row of LEDs */
+    chips = [];
+    var wanted = CW < 700 ? 2 : 5;
+    for (var c = 0; c < wanted && c < traces.length; c++) {
+      var tr = traces[Math.floor(c * traces.length / wanted)];
+      var anchor = tr.pts[Math.min(2, tr.pts.length - 1)];
+      var w = 58, h = 44, x0 = anchor[0] - w / 2, y0 = anchor[1] - h / 2;
+      if (x0 < 20 || y0 < 20 || x0 + w > CW - 20 || y0 + h > CH - 20) continue;
+      chips.push({ x: x0, y: y0, w: w, h: h, seed: Math.random() * 6 });
+      b.strokeStyle = 'rgba(145,117,254,.3)'; b.lineWidth = 1.2;
+      b.beginPath(); b.roundRect ? b.roundRect(x0, y0, w, h, 7) : b.rect(x0, y0, w, h); b.stroke();
+      b.fillStyle = 'rgba(90,53,245,.1)'; b.fill();
+      b.strokeStyle = 'rgba(145,117,254,.22)'; b.lineWidth = 1;
+      b.beginPath();
+      for (var pinI = 0; pinI < 4; pinI++) {
+        var py = y0 + 10 + pinI * 8;
+        b.moveTo(x0 - 8, py); b.lineTo(x0, py);
+        b.moveTo(x0 + w, py); b.lineTo(x0 + w + 8, py);
+      }
+      b.stroke();
+    }
+  }
+  function pointAt(t, d) {
+    if (d <= 0) return t.segs[0].a;
+    for (var i = 0; i < t.segs.length; i++) {
+      var sg = t.segs[i];
+      if (d <= sg.at + sg.len) {
+        var f = (d - sg.at) / sg.len;
+        return [sg.a[0] + (sg.b[0] - sg.a[0]) * f, sg.a[1] + (sg.b[1] - sg.a[1]) * f];
+      }
+    }
+    return t.segs[t.segs.length - 1].b;
+  }
+  function subPath(t, from, to) {
+    var out = [pointAt(t, from)];
+    t.segs.forEach(function (sg) { if (sg.at > from && sg.at < to) out.push(sg.a); });
+    out.push(pointAt(t, to));
+    return out;
+  }
+  function drawCircuit(dt) {
+    if (!baseLayer) return;
+    fxctx.setTransform(1, 0, 0, 1, 0, 0);
+    fxctx.clearRect(0, 0, fx.width, fx.height);
+    fxctx.setTransform(fdpr, 0, 0, fdpr, 0, 0);
+    var col = bgColor.join(','), trail = 160;
+    fxctx.lineWidth = 1.8; fxctx.lineCap = 'round'; fxctx.lineJoin = 'round';
+    for (var i = 0; i < pulses.length; i++) {
+      var p = pulses[i];
+      p.d += p.v * bgSpeed * dt;
+      if (p.d - trail > p.t.total) { p.d = -Math.random() * 300; continue; }
+      if (p.d <= 0) continue;
+      var head = Math.min(p.d, p.t.total), tail = Math.max(0, head - trail);
+      if (head - tail < 2) continue;
+      var line = subPath(p.t, tail, head), h = line[line.length - 1], a = line[0];
+      var grad = fxctx.createLinearGradient(a[0], a[1], h[0], h[1]);
+      grad.addColorStop(0, 'rgba(' + col + ',0)');
+      grad.addColorStop(1, 'rgba(' + col + ',1)');
+      fxctx.strokeStyle = grad;
+      fxctx.beginPath(); fxctx.moveTo(line[0][0], line[0][1]);
+      for (var k = 1; k < line.length; k++) fxctx.lineTo(line[k][0], line[k][1]);
+      fxctx.stroke();
+      fxctx.fillStyle = 'rgba(' + col + ',.2)';
+      fxctx.beginPath(); fxctx.arc(h[0], h[1], 5.5, 0, 6.2832); fxctx.fill();
+      fxctx.fillStyle = 'rgba(' + col + ',.95)';
+      fxctx.beginPath(); fxctx.arc(h[0], h[1], 1.9, 0, 6.2832); fxctx.fill();
+      if (p.d > p.t.total - 26) {
+        var e = p.t.pts[p.t.pts.length - 1];
+        fxctx.fillStyle = 'rgba(' + col + ',.45)';
+        fxctx.beginPath(); fxctx.arc(e[0], e[1], 4.5, 0, 6.2832); fxctx.fill();
+      }
+    }
+  }
+
+  function drawChips(t) {
+    for (var i = 0; i < chips.length; i++) {
+      var c = chips[i];
+      for (var k = 0; k < 4; k++) {
+        var phase = Math.sin(t * .0022 * (1 + k * .35) + c.seed + k);
+        if (phase < .1) continue;
+        fxctx.fillStyle = 'rgba(' + bgColor.join(',') + ',' + (phase * .7).toFixed(2) + ')';
+        fxctx.fillRect(c.x + 10 + k * 11, c.y + c.h - 12, 5, 5);
+      }
+    }
+  }
+
+  /* --- rotating dot sphere --- */
   var canvas = $('orb'), ctx = canvas.getContext('2d');
   var pts = [], ring = [], W = 0, H = 0, dpr = 1, running = false, visible = true;
+  var BUCKETS = 7, violet = [], mintShades = [], groups = [];
+  for (var bi = 0; bi < BUCKETS; bi++) {
+    var d0 = (bi + .5) / BUCKETS;
+    violet.push('rgba(' + Math.round(90 + 55 * d0) + ',' + Math.round(53 + 64 * d0) + ',254,' + (.07 + d0 * .48).toFixed(3) + ')');
+    mintShades.push('rgba(53,214,180,' + (.08 + d0 * .42).toFixed(3) + ')');
+  }
   function build() {
-    var n = W < 560 ? 420 : 720, golden = Math.PI * (3 - Math.sqrt(5));
+    var n = W < 560 ? 320 : 540, golden = Math.PI * (3 - Math.sqrt(5));
     pts = [];
     for (var i = 0; i < n; i++) {
       var y = 1 - (i / (n - 1)) * 2, r = Math.sqrt(1 - y * y), th = golden * i;
-      pts.push([Math.cos(th) * r, y, Math.sin(th) * r, Math.random() < .06]);
+      pts.push([Math.cos(th) * r, y, Math.sin(th) * r, Math.random() < .07]);
     }
     ring = [];
-    for (var k = 0; k < 150; k++) { var a = k / 150 * Math.PI * 2; ring.push([Math.cos(a) * 1.34, 0, Math.sin(a) * 1.34]); }
+    for (var k = 0; k < 130; k++) { var a = k / 130 * Math.PI * 2; ring.push([Math.cos(a) * 1.34, 0, Math.sin(a) * 1.34]); }
   }
   function resize() {
+    dpr = Math.min(window.devicePixelRatio || 1, 1.5);
     var rect = canvas.getBoundingClientRect();
-    dpr = Math.min(window.devicePixelRatio || 1, 2);
     W = rect.width; H = rect.height;
     canvas.width = Math.round(W * dpr); canvas.height = Math.round(H * dpr);
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     build();
-    if (!running) draw(0);
-  }
-  function dot(x, y, z, R, ox, oy, mint, t, i) {
-    var d = (z + 1.4) / 2.8, p = 1 + z * .22, a = (.1 + d * .75) * .7, s = .5 + d * 1.5;
-    if (mint) { a *= .55 + .45 * Math.sin(t * .003 + i); ctx.fillStyle = 'rgba(53,214,180,' + a.toFixed(3) + ')'; }
-    else ctx.fillStyle = 'rgba(' + Math.round(90 + 55 * d) + ',' + Math.round(53 + 64 * d) + ',' + Math.round(245 + 9 * d) + ',' + a.toFixed(3) + ')';
-    ctx.beginPath(); ctx.arc(ox + x * R * p, oy + y * R * p, s, 0, 6.2832); ctx.fill();
+    cdpr = Math.min(window.devicePixelRatio || 1, 1.5);
+    fdpr = 1;
+    var crect = circuit.getBoundingClientRect();
+    CW = crect.width; CH = crect.height;
+    circuit.width = Math.round(CW * cdpr); circuit.height = Math.round(CH * cdpr);
+    fx.width = Math.round(CW * fdpr); fx.height = Math.round(CH * fdpr);
+    buildCircuit();
+    if (!running) { draw(0); drawCircuit(0); }
   }
   function draw(t) {
     ctx.clearRect(0, 0, W, H);
     var R = Math.min(W, H) * .36, ox = W / 2, oy = H / 2;
     var ay = t * .00012 + cx * .01, ax = -.35 + cy * .01;
     var sy = Math.sin(ay), cyy = Math.cos(ay), sx = Math.sin(ax), cxx = Math.cos(ax);
+    var g;
+    for (g = 0; g < BUCKETS * 2; g++) { groups[g] = groups[g] || []; groups[g].length = 0; }
+    function place(x, y, z, mint) {
+      var d = (z + 1.4) / 2.8, pp = 1 + z * .22, sz = .8 + d * 1.6;
+      var b = Math.min(BUCKETS - 1, Math.max(0, Math.floor(d * BUCKETS)));
+      groups[mint ? BUCKETS + b : b].push(ox + x * R * pp, oy + y * R * pp, sz);
+    }
     for (var i = 0; i < pts.length; i++) {
-      var p = pts[i];
-      var x = p[0] * cyy + p[2] * sy, z = -p[0] * sy + p[2] * cyy;
-      var y = p[1] * cxx - z * sx; z = p[1] * sx + z * cxx;
-      dot(x, y, z, R, ox, oy, p[3], t, i);
+      var p0 = pts[i];
+      var x = p0[0] * cyy + p0[2] * sy, z = -p0[0] * sy + p0[2] * cyy;
+      var y = p0[1] * cxx - z * sx; z = p0[1] * sx + z * cxx;
+      place(x, y, z, p0[3]);
     }
     var ar = -t * .00025, tiltR = 1.22, sr = Math.sin(ar), cr = Math.cos(ar), st = Math.sin(tiltR), ct = Math.cos(tiltR);
     for (var k = 0; k < ring.length; k++) {
       var q = ring[k];
       var rx = q[0] * cr + q[2] * sr, rz = -q[0] * sr + q[2] * cr;
       var ry = -rz * st; rz = rz * ct;
-      var tx2 = rx * .94 - ry * .34, ty2 = rx * .34 + ry * .94;
-      dot(tx2, ty2, rz, R, ox, oy, k % 25 === 0, t, k);
+      place(rx * .94 - ry * .34, rx * .34 + ry * .94, rz, k % 22 === 0);
+    }
+    for (g = 0; g < BUCKETS * 2; g++) {
+      var arr = groups[g];
+      if (!arr.length) continue;
+      ctx.fillStyle = g < BUCKETS ? violet[g] : mintShades[g - BUCKETS];
+      for (var m = 0; m < arr.length; m += 3) ctx.fillRect(arr[m], arr[m + 1], arr[m + 2], arr[m + 2]);
     }
   }
+  var last = 0;
   function loop(t) {
-    if (!visible) { running = false; return; }
+    if (!visible || document.hidden) { running = false; return; }
+    var dt = last ? Math.min((t - last) / 1000, .05) : .016;
+    last = t;
     draw(t);
+    drawCircuit(dt);
+    drawChips(t);
     requestAnimationFrame(loop);
   }
+  function startLoop() {
+    if (running || reduce || !visible || document.hidden) return;
+    running = true; last = 0; requestAnimationFrame(loop);
+  }
+  var resizeTimer;
+  window.addEventListener('resize', function () { clearTimeout(resizeTimer); resizeTimer = setTimeout(resize, 150); });
+  document.addEventListener('visibilitychange', function () { if (!document.hidden) startLoop(); });
   resize();
-  window.addEventListener('resize', resize);
   if (!reduce) {
     if ('IntersectionObserver' in window) {
-      new IntersectionObserver(function (e) {
-        visible = e[0].isIntersecting;
-        if (visible && !running) { running = true; requestAnimationFrame(loop); }
-      }).observe(canvas);
-    } else { running = true; requestAnimationFrame(loop); }
+      new IntersectionObserver(function (e) { visible = e[0].isIntersecting; startLoop(); }).observe(hero);
+    } else { startLoop(); }
   }
 
   /* ---------- the agent run: goal -> 5 steps, each with its own scene -> delivered ---------- */
@@ -930,13 +1126,15 @@ li.is-wait .tag-wait,li.is-ok .tag-ok{display:inline;animation:capIn .3s var(--e
   var GOAL = 'Goal: supplier risk report, in our template';
   /* timings (ms) match the CSS delays inside each scene */
   var PLAN = [
-    { dur: 3300, model: 0, task: 'Connect', msgs: [[0, 'Connecting Mail...'], [550, 'Connecting Drive...'], [1100, 'Connecting CRM...'], [1650, 'Reading contract files...'], [2400, '4 of 4 sources connected']] },
-    { dur: 3400, model: 1, task: 'Research', msgs: [[0, 'Searching connected sources...'], [700, 'Documents read: 14'], [1400, 'Documents read: 31'], [2200, '48 read, 12 relevant findings']] },
-    { dur: 3300, model: 2, task: 'Analyze', msgs: [[0, 'Grouping 12 findings...'], [1100, 'Linking every fact to its source...'], [2000, 'Validation agent cross-checking...'], [2700, 'Findings verified']] },
-    { dur: 3600, model: -1, task: 'Your review', approveAt: 1980, msgs: [[0, 'Paused: your review is needed'], [900, 'Waiting for your approval...'], [1980, 'Approved by you. Continuing']] },
-    { dur: 3400, model: 0, task: 'Produce', msgs: [[0, 'Applying your template...'], [800, 'Writing the report sections...'], [1900, 'Adding your signature...'], [2700, 'Final quality check']] }
+    { dur: 3300, model: 0, state: 'connect', task: 'Connect', msgs: [[0, 'Connecting Mail...'], [550, 'Connecting Drive...'], [1100, 'Connecting CRM...'], [1650, 'Reading contract files...'], [2400, '4 of 4 sources connected']] },
+    { dur: 3400, model: 1, state: 'research', task: 'Research', msgs: [[0, 'Searching connected sources...'], [700, 'Documents read: 14'], [1400, 'Documents read: 31'], [2200, '48 read, 12 relevant findings']] },
+    { dur: 3300, model: 2, state: 'analyze', task: 'Analyze', msgs: [[0, 'Grouping 12 findings...'], [1100, 'Linking every fact to its source...'], [2000, 'Validation agent cross-checking...'], [2700, 'Findings verified']] },
+    { dur: 3600, model: -1, state: 'decide', task: 'Your review', approveAt: 1980, msgs: [[0, 'Paused: your review is needed'], [900, 'Waiting for your approval...'], [1980, 'Approved by you. Continuing']] },
+    { dur: 3400, model: 0, state: 'produce', task: 'Produce', msgs: [[0, 'Applying your template...'], [800, 'Writing the report sections...'], [1900, 'Adding your signature...'], [2700, 'Final quality check']] }
   ];
   function wait(ms) { return new Promise(function (r) { setTimeout(r, ms); }); }
+  /* one call keeps the logo animation, the background pulses and the page state in step */
+  function setMode(mode) { root.setAttribute('data-ai', mode); setBgMode(mode); }
   function setBar(f) { bar.style.transform = 'scaleX(' + f + ')'; }
   function restart(el, cls) { el.classList.remove(cls); void el.getBoundingClientRect(); el.classList.add(cls); }
   function showViz(i) { vizzes.forEach(function (v, k) { v.classList.toggle('on', k === i); }); }
@@ -971,39 +1169,40 @@ li.is-wait .tag-wait,li.is-ok .tag-ok{display:inline;animation:capIn .3s var(--e
     steps.forEach(function (s, i) { s.className = i === 3 ? 'is-done is-ok' : 'is-done'; });
     setBar(1); showViz(5); setCap('Delivered: checked, in your template', 'done'); setStatus('Delivered', 'done');
     rtTask.textContent = 'Research'; lanes[1].classList.add('on'); modelEls[1].classList.add('on'); rtPick.textContent = 'Best fit: Closed-source';
-    root.setAttribute('data-ai', 'done');
+    setMode('done');
   }
   async function runStep(i) {
     var step = PLAN[i], li = steps[i];
     li.style.setProperty('--dur', step.dur + 'ms');
     li.className = step.approveAt ? 'is-run is-wait' : 'is-run';
+    setMode(step.state);
     showViz(i);
     routeTo(step);
     setStatus(step.approveAt ? 'Awaiting you' : 'Running', step.approveAt ? 'wait' : '');
     step.msgs.forEach(function (m) {
       setTimeout(function () { setCap(m[1], step.approveAt && m[0] < step.approveAt ? 'wait' : ''); }, m[0]);
     });
-    if (step.approveAt) setTimeout(function () { li.className = 'is-run is-ok'; setStatus('Running'); }, step.approveAt);
+    if (step.approveAt) setTimeout(function () { li.className = 'is-run is-ok'; setStatus('Running'); setMode('plan'); }, step.approveAt);
     await wait(step.dur);
     li.className = step.approveAt ? 'is-done is-ok' : 'is-done';
     setBar((i + 1) / PLAN.length);
   }
   async function run() {
-    root.setAttribute('data-ai', 'idle');
+    setMode('idle');
     steps.forEach(function (s) { s.className = ''; }); setBar(0); typed.textContent = '';
     showViz(-1); setStatus('Ready'); setCap('Waiting for a goal...');
     route.classList.remove('paused'); rtTask.textContent = 'Goal'; rtPick.textContent = 'Choosing a model...';
     lanes.forEach(function (l) { l.classList.remove('on'); }); modelEls.forEach(function (m) { m.classList.remove('on'); });
     await wait(1400);
     for (var c = 1; c <= GOAL.length; c++) { typed.textContent = GOAL.slice(0, c); await wait(30); }
-    root.setAttribute('data-ai', 'run');
+    setMode('plan');
     setCap('Planning 5 steps...'); setStatus('Running');
     await wait(900);
     for (var i = 0; i < PLAN.length; i++) await runStep(i);
     showViz(5);
     setCap('Delivered: checked, in your template', 'done');
     setStatus('Delivered', 'done');
-    root.setAttribute('data-ai', 'done');
+    setMode('done');
     await wait(5200);
     run();
   }
