@@ -68,6 +68,21 @@ jobs:
             npx --yes wrangler@"$WRANGLER_VERSION" pages project create "$PROJECT_NAME" --production-branch=main
           fi
 
+      # Optional 10-day visit tracker (functions/api/hit.js). Without these two secrets it stays off.
+      - name: Set visit tracker secrets
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          TRACK_ENDPOINT: ${{ secrets.TRACK_ENDPOINT }}
+          TRACK_SECRET: ${{ secrets.TRACK_SECRET }}
+        run: |
+          if [ -n "$TRACK_ENDPOINT" ] && [ -n "$TRACK_SECRET" ]; then
+            printf '%s' "$TRACK_ENDPOINT" | npx --yes wrangler@"$WRANGLER_VERSION" pages secret put TRACK_ENDPOINT --project-name="$PROJECT_NAME"
+            printf '%s' "$TRACK_SECRET" | npx --yes wrangler@"$WRANGLER_VERSION" pages secret put TRACK_SECRET --project-name="$PROJECT_NAME"
+          else
+            echo "Visit tracker secrets not set, tracker stays off."
+          fi
+
       - name: Deploy
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}

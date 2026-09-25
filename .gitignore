@@ -11,3 +11,6 @@ Thumbs.db
 
 # Private brief: mentions internal employer details, never publish it.
 MASTER_PROMPT.md
+
+# wrangler local dev state
+.wrangler/
