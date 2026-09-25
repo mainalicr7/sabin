@@ -1,9 +1,13 @@
-// Visit counter for a 10-day window. No cookies, no IP, no fingerprint.
+// Visit counter for two pages only. No cookies, no IP, no fingerprint.
+//   Homepage "/": always on.  OKTAI pages "/preview/oktai/...": on until END, then off by itself.
 // Sends the page, how the visitor arrived, time on page, scroll depth and sections seen to /api/hit.
-// Turns itself off after END. Open any page with ?notrack=1 to stop counting your own visits (?notrack=0 undoes it).
+// Open any page with ?notrack=1 to stop counting your own visits (?notrack=0 undoes it).
 (function () {
-  var END = Date.UTC(2026, 9, 5, 18, 15); // 2026-10-06 00:00 Nepal time
-  if (Date.now() > END || navigator.webdriver || !navigator.sendBeacon || !window.JSON) return;
+  var END = Date.UTC(2026, 9, 5, 18, 15); // 2026-10-06 00:00 Nepal time, OKTAI pages only
+  var path = location.pathname;
+  var oktai = /^\/preview\/oktai(\/|$)/.test(path);
+  if (!oktai && path !== '/') return;
+  if ((oktai && Date.now() > END) || navigator.webdriver || !navigator.sendBeacon || !window.JSON) return;
   var q = new URLSearchParams(location.search);
   try {
     if (q.get('notrack') === '1') localStorage.setItem('sm_notrack', '1');

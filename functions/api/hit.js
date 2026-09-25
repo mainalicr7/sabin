@@ -1,7 +1,9 @@
 // Cloudflare Pages Function: receives visit beacons from /t.js and forwards a cleaned row to a private
-// Google Apps Script (Sheet + daily Gmail report). The visitor's IP is never read or forwarded; only the
-// country, region and city Cloudflare already resolved are added. Off after END or when secrets are missing.
-const END = Date.UTC(2026, 9, 5, 18, 15); // 2026-10-06 00:00 Nepal time
+// Google Apps Script (Sheet + Gmail reports). The visitor's IP is never read or forwarded; only the
+// country, region and city Cloudflare already resolved are added. Accepts the homepage (always) and the
+// OKTAI preview pages (until END). Off when the secrets are missing.
+const END = Date.UTC(2026, 9, 5, 18, 15); // 2026-10-06 00:00 Nepal time, OKTAI pages only
+const OKTAI = /^\/preview\/oktai(\/|$)/;
 const MAX_BODY = 2048;
 const BOTS = /bot|crawl|spider|slurp|facebookexternalhit|embedly|preview|headless|lighthouse|pagespeed/i;
 
@@ -12,7 +14,7 @@ const noContent = () => new Response(null, { status: 204, headers: { 'Cache-Cont
 
 export async function onRequestPost({ request, env, waitUntil }) {
   try {
-    if (Date.now() > END || !env.TRACK_ENDPOINT || !env.TRACK_SECRET) return noContent();
+    if (!env.TRACK_ENDPOINT || !env.TRACK_SECRET) return noContent();
 
     const host = new URL(request.url).host;
     const origin = request.headers.get('Origin');
@@ -44,7 +46,10 @@ export async function onRequestPost({ request, env, waitUntil }) {
       region: clean(cf.region, 60),
       city: clean(cf.city, 60),
     };
-    if (!row.id || !row.p.startsWith('/')) return noContent();
+    if (!row.id) return noContent();
+    const oktai = OKTAI.test(row.p);
+    if (!oktai && row.p !== '/') return noContent();
+    if (oktai && Date.now() > END) return noContent();
 
     waitUntil(
       fetch(env.TRACK_ENDPOINT, {
