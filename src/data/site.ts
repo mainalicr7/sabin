@@ -31,7 +31,7 @@ export const profile = {
 
 export const links = {
   linkedin: 'https://www.linkedin.com/in/sabin-mainali74',
-  contra: '', // e.g. https://contra.com/your-handle
+  contra: 'https://contra.com/sabin_mainali',
   github: '',
   email: '',
   booking: '', // e.g. a Cal.com link
